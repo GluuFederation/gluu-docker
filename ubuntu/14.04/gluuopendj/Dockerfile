@@ -42,7 +42,7 @@ RUN /opt/opendj/setup \
     --generateSelfSignedCertificate \
     --acceptLicense
 
-#todo opendj config
+#TODO opendj config
 RUN /opt/opendj/bin/dsconfig \
     --trustAll \
     --no-prompt \
@@ -55,6 +55,8 @@ RUN /opt/opendj/bin/dsconfig \
     set-password-policy-prop --policy-name "Default Password Policy" --set allow-pre-encoded-passwords:true \
     set-log-publisher-prop --publisher-name "File-Based Audit Logger" --set enabled:true \
     create-backend --backend-name site --set base-dn:o=site --type local-db --set enabled:true
+
+#TODO index opendj
 
 RUN mkdir /etc/certs
 RUN touch /root/.ldappw
