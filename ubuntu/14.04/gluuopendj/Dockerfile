@@ -2,8 +2,6 @@ FROM ubuntu:14.04
 
 MAINTAINER shouro@gluu.org
 
-RUN groupadd -r ldap && useradd -r -g ldap ldap
-
 RUN apt-get update && apt-get install -y \
     openjdk-7-jre-headless \
     unzip \
@@ -23,45 +21,4 @@ RUN curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/dow
 ENV OPENDJ_DOWNLOAD_URL http://ox.gluu.org/maven/org/gluu/gluu-opendj/2.6.0/gluu-opendj-2.6.0.zip
 
 RUN wget -q "$OPENDJ_DOWNLOAD_URL" -P /tmp && unzip -qq /tmp/gluu-opendj-2.6.0.zip -d /opt && rm -f /tmp/gluu-opendj-2.6.0.zip
-
-COPY ldappw /root/.ldappw
-
-#opendj setup
-RUN /opt/opendj/setup \
-    --cli \
-    --no-prompt \
-    --doNotStart \
-    --baseDN o=gluu \
-    --hostname localhost \
-    --ldapPort 1389 \
-    --ldapsPort 1636 \
-    --adminConnectorPort 4444 \
-    --rootUserDN "cn=Directory Manager" \
-    --rootUserPasswordFile /root/.ldappw \
-    --noPropertiesFile \
-    --generateSelfSignedCertificate \
-    --acceptLicense
-
-#TODO opendj config
-RUN /opt/opendj/bin/dsconfig \
-    --trustAll \
-    --no-prompt \
-    --hostname localgost \
-    --port 4444 \
-    --bindDN "cn=directory manager" \
-    --bindPasswordFile /root/.ldappw \
-    set-global-configuration-prop --set single-structural-objectclass-behavior:accept \
-    set-attribute-syntax-prop --syntax-name "Directory String" --set allow-zero-length-values:true \
-    set-password-policy-prop --policy-name "Default Password Policy" --set allow-pre-encoded-passwords:true \
-    set-log-publisher-prop --publisher-name "File-Based Audit Logger" --set enabled:true \
-    create-backend --backend-name site --set base-dn:o=site --type local-db --set enabled:true
-
-#TODO index opendj
-
-RUN mkdir /etc/certs
-RUN touch /root/.ldappw
-
-VOLUME ["/etc/certs"]
-
-COPY schema /opt/opendj/config/schema
 
