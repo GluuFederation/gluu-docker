@@ -1,6 +1,6 @@
 FROM ubuntu:14.04
 
-MAINTAINER shouro@gluu.org
+MAINTAINER Shouro shouro@gluu.org
 
 RUN apt-get update && apt-get install -y \
     openjdk-7-jre-headless \
@@ -22,3 +22,4 @@ ENV OPENDJ_DOWNLOAD_URL http://ox.gluu.org/maven/org/gluu/gluu-opendj/2.6.0/gluu
 
 RUN wget -q "$OPENDJ_DOWNLOAD_URL" -P /tmp && unzip -qq /tmp/gluu-opendj-2.6.0.zip -d /opt && rm -f /tmp/gluu-opendj-2.6.0.zip
 
+EXPOSE 1636
