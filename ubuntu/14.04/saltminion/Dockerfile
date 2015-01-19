@@ -1,6 +1,6 @@
 FROM ubuntu:14.04
 
-MAINTAINER Shouro shouro@gluu.org
+MAINTAINER Shouro <shouro@gluu.org>
 
 RUN apt-get install -y \
     wget \

@@ -1,11 +1,10 @@
 FROM saltminion
 
-MAINTAINER Shouro shouro@gluu.org
+MAINTAINER Shouro <shouro@gluu.org>
 
 RUN apt-get update && apt-get install -y \
     openjdk-7-jre-headless \
     wget \
-    apache2 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -27,4 +26,3 @@ RUN wget -q "$OXAUTH_DOWNLOAD_URL" -P /tmp && mv /tmp/oxauth-server-1.7.0.Beta6.
 
 EXPOSE 8009
 EXPOSE 8005
-EXPOSE 80
