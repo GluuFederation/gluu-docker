@@ -2,6 +2,8 @@ FROM saltminion
 
 MAINTAINER Shouro <shouro@gluu.org>
 
+RUN groupadd -r tomcat && useradd -r -g tomcat tomcat
+
 RUN apt-get update && apt-get install -y \
     openjdk-7-jre-headless \
     wget \
