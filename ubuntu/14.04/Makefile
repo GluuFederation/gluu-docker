@@ -9,5 +9,11 @@ build:
 run:
 	@docker run -e SALT_MASTER_IPADDR=${SALT_MASTER_IPADDR} -it $(RUN_ARGS)
 
+run-privileged:
+	@docker run --privileged -e SALT_MASTER_IPADDR=${SALT_MASTER_IPADDR} -it $(RUN_ARGS)
+
 main:
 	@docker run -it saltminion /usr/bin/docker-entrypoint.sh
+
+exec:
+	@docker exec -it `docker ps -q -n 1` bash
