@@ -7,7 +7,7 @@ build:
 	@docker build -t $(RUN_ARGS) $(RUN_ARGS)
 
 run:
-	@docker run -it $(RUN_ARGS)
+	@docker run -e SALT_MASTER_IPADDR=${SALT_MASTER_IPADDR} -it $(RUN_ARGS)
 
 main:
 	@docker run -it saltminion /usr/bin/docker-entrypoint.sh
