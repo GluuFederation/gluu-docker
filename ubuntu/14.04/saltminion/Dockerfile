@@ -16,5 +16,9 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY minion /etc/salt/minion
+COPY minion-stub /etc/salt/minion-stub
+COPY docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
 
-CMD ["/usr/bin/salt-minion"]
+RUN chmod +x /usr/bin/docker-entrypoint.sh
+
+CMD ["/usr/bin/docker-entrypoint.sh"]
