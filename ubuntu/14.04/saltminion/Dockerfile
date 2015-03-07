@@ -2,6 +2,8 @@ FROM ubuntu:14.04
 
 MAINTAINER Shouro <shouro@gluu.org>
 
+RUN apt-get update
+
 RUN apt-get install -y \
     wget \
     && apt-get clean \
