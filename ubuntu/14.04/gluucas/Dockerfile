@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 
 #ENV variables
 ENV CAS_DOWNLOAD_URL http://ox.gluu.org/maven/org/xdi/ox-cas-server-webapp/1.7.0.Final/ox-cas-server-webapp-1.7.0.Final.war
-ENV TOMCAT_DOWNLOAD_URL http://mirrors.advancedhosters.com/apache/tomcat/tomcat-7/v7.0.57/bin/apache-tomcat-7.0.57.tar.gz
+ENV TOMCAT_DOWNLOAD_URL http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.59/bin/apache-tomcat-7.0.59.tar.gz
 
 RUN wget -q "$TOMCAT_DOWNLOAD_URL" -P /tmp && tar -xzf /tmp/apache-tomcat-7.0.57.tar.gz -C /opt && rm -f /tmp/apache-tomcat-7.0.57.tar.gz
 RUN ln -sf /opt/apache-tomcat-7.0.57 /opt/tomcat
