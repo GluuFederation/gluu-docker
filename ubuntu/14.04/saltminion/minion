@@ -1,3 +1,3 @@
 #minion config
 
-master: {SALT_MASTER_IPADDR}
+master: SALT_MASTER_IPADDR

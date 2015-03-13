@@ -6,6 +6,7 @@ RUN apt-get update
 
 RUN apt-get install -y \
     wget \
+    supervisor \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -17,10 +18,13 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+RUN mkdir -p /var/log/supervisor
+RUN mkdir -p /opt/gluu/bin
+
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY minion /etc/salt/minion
-COPY minion-stub /etc/salt/minion-stub
-COPY docker-entrypoint.sh /usr/bin/docker-entrypoint.sh
+COPY render.sh /opt/gluu/bin/render.sh
 
-RUN chmod +x /usr/bin/docker-entrypoint.sh
+RUN chmod +x /opt/gluu/bin/render.sh
 
-CMD ["/usr/bin/docker-entrypoint.sh"]
+CMD ["/usr/bin/supervisord"]
