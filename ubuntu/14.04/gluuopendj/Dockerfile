@@ -16,7 +16,17 @@ ENV OPENDJ_DOWNLOAD_URL http://ox.gluu.org/maven/org/gluu/gluu-opendj/2.6.0/gluu
 
 RUN wget -q "$OPENDJ_DOWNLOAD_URL" -P /tmp && unzip -qq /tmp/gluu-opendj-2.6.0.zip -d /opt && rm -f /tmp/gluu-opendj-2.6.0.zip
 
+# LDAP port
 EXPOSE 1389
+
+# LDAPS port
 EXPOSE 1636
+
+# admin connector port
 EXPOSE 4444
+
+# JMX port
 EXPOSE 1689
+
+# replication port
+EXPOSE 8989
