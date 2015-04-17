@@ -7,6 +7,11 @@ RUN apt-get update
 RUN apt-get install -y \
     wget \
     supervisor \
+    git \
+    make \
+    curl \
+    mercurial \
+    gcc \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -18,6 +23,9 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+RUN git clone https://github.com/prometheus/node_exporter.git /opt/node_exporter
+RUN make -C /opt/node_exporter
+
 RUN mkdir -p /var/log/supervisor
 RUN mkdir -p /opt/gluu/bin
 
@@ -28,3 +36,5 @@ COPY render.sh /opt/gluu/bin/render.sh
 RUN chmod +x /opt/gluu/bin/render.sh
 
 CMD ["/usr/bin/supervisord"]
+
+EXPOSE 9100
