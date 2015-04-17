@@ -1,4 +1,4 @@
-FROM saltminion
+FROM gluubase
 
 MAINTAINER Shouro <shouro@gluu.org>
 
