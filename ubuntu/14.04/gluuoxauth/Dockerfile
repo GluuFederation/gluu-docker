@@ -7,6 +7,8 @@ RUN groupadd -r tomcat && useradd -r -g tomcat tomcat
 RUN apt-get update && apt-get install -y \
     openjdk-7-jre-headless \
     wget \
+    apache2 \
+    libapache2-mod-evasive \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -18,5 +20,5 @@ RUN wget -q "$TOMCAT_DOWNLOAD_URL" -P /tmp && tar -xzf /tmp/apache-tomcat-7.0.59
 RUN ln -sf /opt/apache-tomcat-7.0.59 /opt/tomcat
 RUN wget -q "$OXAUTH_DOWNLOAD_URL" -P /tmp && mv /tmp/oxauth-server-2.1.0.Final.war /tmp/oxauth.war && cp /tmp/oxauth.war /opt/tomcat/webapps && rm -f /tmp/oxauth.war
 
-EXPOSE 8009
-EXPOSE 8005
+EXPOSE 80
+EXPOSE 443
