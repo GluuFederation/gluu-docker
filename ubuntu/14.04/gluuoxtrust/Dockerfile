@@ -38,3 +38,4 @@ RUN wget -q "$JYTHON_DOWNLOAD_URL" -O /tmp/jython-standalone-2.7.0.jar \
 
 EXPOSE 8009
 EXPOSE 8005
+EXPOSE 8443
