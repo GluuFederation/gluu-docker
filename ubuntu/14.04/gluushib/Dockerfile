@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # ENV variables
-ENV OXIDP_DOWNLOAD_URL http://ox.gluu.org/maven/org/xdi/oxidp/2.3.3.Final/oxidp-2.3.3.Final.war
+ENV OXIDP_DOWNLOAD_URL http://ox.gluu.org/maven/org/xdi/oxidp/2.3.4.Final/oxidp-2.3.4.Final.war
 ENV TOMCAT_DOWNLOAD_URL http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.59/bin/apache-tomcat-7.0.59.tar.gz
 
 RUN wget -q "$TOMCAT_DOWNLOAD_URL" -P /tmp \
@@ -41,6 +41,8 @@ RUN wget -q "$OXIDP_DOWNLOAD_URL" -O /opt/idp/war/idp.war
 RUN mkdir -p /opt/tomcat/endorsed
 RUN wget -q http://ox.gluu.org/maven/xerces/xercesImpl/2.10.0/xercesImpl-2.10.0.jar -O /opt/tomcat/endorsed/xercesImpl-2.10.0.jar
 RUN wget -q http://ox.gluu.org/maven/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar -O /opt/tomcat/endorsed/xml-apis-1.4.01.jar
+
+RUN mkdir -p /etc/certs
 
 # Ports required by tomcat
 EXPOSE 8009
