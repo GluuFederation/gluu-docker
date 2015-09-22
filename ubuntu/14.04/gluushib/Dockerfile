@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     wget \
     memcached \
     twemproxy \
+    apache2 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -53,3 +54,6 @@ EXPOSE 22122
 
 # memcached port
 EXPOSE 11211
+
+# apache port
+EXPOSE 443

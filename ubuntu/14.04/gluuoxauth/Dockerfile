@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     openjdk-7-jre-headless \
     wget \
     unzip \
+    apache2 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -30,5 +31,9 @@ RUN wget -q "$JYTHON_DOWNLOAD_URL" -O /tmp/jython-standalone-2.7.0.jar \
 RUN mkdir -p /etc/certs \
     && mkdir -p /opt/tomcat/conf/python
 
+# Ports required by Tomcat
 EXPOSE 8009
 EXPOSE 8005
+
+# Ports required by Apache
+EXPOSE 443
