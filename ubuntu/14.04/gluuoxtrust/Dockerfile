@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-#ENV variables
-ENV OXTRUST_DOWNLOAD_URL http://ox.gluu.org/maven/org/xdi/oxtrust-server/2.3.3.Final/oxtrust-server-2.3.3.Final.war
+# ENV variables
+ENV OXTRUST_DOWNLOAD_URL http://ox.gluu.org/maven/org/xdi/oxtrust-server/2.3.4.Final/oxtrust-server-2.3.4.Final.war
 ENV TOMCAT_DOWNLOAD_URL http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.59/bin/apache-tomcat-7.0.59.tar.gz
 ENV CHECK_SSL_PY https://raw.githubusercontent.com/GluuFederation/gluu-util/master/check_ssl/check_ssl.py
 ENV JYTHON_DOWNLOAD_URL http://search.maven.org/remotecontent?filepath=org/python/jython-standalone/2.7.0/jython-standalone-2.7.0.jar
@@ -24,10 +24,7 @@ RUN wget -q "$TOMCAT_DOWNLOAD_URL" -P /tmp \
 
 RUN ln -sf /opt/apache-tomcat-7.0.59 /opt/tomcat
 
-RUN wget -q "$OXTRUST_DOWNLOAD_URL" -P /tmp \
-    && mv /tmp/oxtrust-server-2.3.3.Final.war /tmp/identity.war \
-    && cp /tmp/identity.war /opt/tomcat/webapps \
-    && rm -f /tmp/identity.war
+RUN wget -q "$OXTRUST_DOWNLOAD_URL" -O /opt/tomcat/webapps/identity.war
 
 RUN wget -q "$CHECK_SSL_PY" -O /usr/bin/check_ssl.py \
     && chmod +x /usr/bin/check_ssl.py
@@ -35,6 +32,8 @@ RUN wget -q "$CHECK_SSL_PY" -O /usr/bin/check_ssl.py \
 RUN wget -q "$JYTHON_DOWNLOAD_URL" -O /tmp/jython-standalone-2.7.0.jar \
     && unzip -q /tmp/jython-standalone-2.7.0.jar -d /opt/jython \
     && rm -f /tmp/jython-standalone-2.7.0.jar
+
+RUN mkdir -p /etc/certs
 
 EXPOSE 8009
 EXPOSE 8005
