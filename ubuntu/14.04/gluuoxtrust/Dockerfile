@@ -9,32 +9,40 @@ RUN apt-get update && apt-get install -y \
     wget \
     facter \
     unzip \
+    apache2 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# ENV variables
-ENV OXTRUST_DOWNLOAD_URL http://ox.gluu.org/maven/org/xdi/oxtrust-server/2.3.4.Final/oxtrust-server-2.3.4.Final.war
-ENV TOMCAT_DOWNLOAD_URL http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.59/bin/apache-tomcat-7.0.59.tar.gz
-ENV CHECK_SSL_PY https://raw.githubusercontent.com/GluuFederation/gluu-util/master/check_ssl/check_ssl.py
-ENV JYTHON_DOWNLOAD_URL http://search.maven.org/remotecontent?filepath=org/python/jython-standalone/2.7.0/jython-standalone-2.7.0.jar
+# Install Tomcat
+RUN wget -q http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.65/bin/apache-tomcat-7.0.65.tar.gz -O /tmp/tomcat.tar.gz \
+    && tar -xzf /tmp/tomcat.tar.gz -C /opt \
+    && mv /opt/apache-tomcat-7.0.65 /opt/tomcat \
+    && rm -f /tmp/tomcat.tar.gz
 
-RUN wget -q "$TOMCAT_DOWNLOAD_URL" -P /tmp \
-    && tar -xzf /tmp/apache-tomcat-7.0.59.tar.gz -C /opt \
-    && rm -f /tmp/apache-tomcat-7.0.59.tar.gz
+# Install oxTrust
+RUN wget -q http://ox.gluu.org/maven/org/xdi/oxtrust-server/2.4.0.Final/oxtrust-server-2.4.0.Final.war -O /tmp/oxtrust.war \
+    && unzip -qq /tmp/oxtrust.war -d /opt/tomcat/webapps/identity \
+    && rm -f /tmp/oxtrust.war
 
-RUN ln -sf /opt/apache-tomcat-7.0.59 /opt/tomcat
-
-RUN wget -q "$OXTRUST_DOWNLOAD_URL" -O /opt/tomcat/webapps/identity.war
-
-RUN wget -q "$CHECK_SSL_PY" -O /usr/bin/check_ssl.py \
+# Install utility scripts
+RUN wget -q https://raw.githubusercontent.com/GluuFederation/gluu-util/master/check_ssl/check_ssl.py -O /usr/bin/check_ssl.py \
     && chmod +x /usr/bin/check_ssl.py
 
-RUN wget -q "$JYTHON_DOWNLOAD_URL" -O /tmp/jython-standalone-2.7.0.jar \
+# Install Jython
+RUN wget -q http://central.maven.org/maven2/org/python/jython-standalone/2.7.0/jython-standalone-2.7.0.jar -O /tmp/jython-standalone-2.7.0.jar \
     && unzip -q /tmp/jython-standalone-2.7.0.jar -d /opt/jython \
+    && ln -sf /opt/jython/Lib /opt/tomcat/webapps/identity/WEB-INF/lib/Lib \
     && rm -f /tmp/jython-standalone-2.7.0.jar
 
+# Directory for certificates
 RUN mkdir -p /etc/certs
 
+# Directory required by oxTrust
+RUN mkdir -p /var/ox/photos /var/ox/oxtrust/removed /var/ox/oxtrust/vds-snapshots
+
+# Ports required by tomcat
 EXPOSE 8009
 EXPOSE 8005
-EXPOSE 8443
+
+# Ports required by apache
+EXPOSE 443

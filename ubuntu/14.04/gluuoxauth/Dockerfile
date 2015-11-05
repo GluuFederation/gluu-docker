@@ -12,26 +12,30 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# ENV variables
-ENV OXAUTH_DOWNLOAD_URL http://ox.gluu.org/maven/org/xdi/oxauth-server/2.3.4.Final/oxauth-server-2.3.4.Final.war
-ENV TOMCAT_DOWNLOAD_URL http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.59/bin/apache-tomcat-7.0.59.tar.gz
-ENV JYTHON_DOWNLOAD_URL http://search.maven.org/remotecontent?filepath=org/python/jython-standalone/2.7.0/jython-standalone-2.7.0.jar
+# Install Tomcat
+RUN wget -q http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.65/bin/apache-tomcat-7.0.65.tar.gz -O /tmp/tomcat.tar.gz \
+    && tar -xzf /tmp/tomcat.tar.gz -C /opt \
+    && mv /opt/apache-tomcat-7.0.65 /opt/tomcat \
+    && rm -f /tmp/tomcat.tar.gz
 
-RUN wget -q "$TOMCAT_DOWNLOAD_URL" -P /tmp \
-    && tar -xzf /tmp/apache-tomcat-7.0.59.tar.gz -C /opt \
-    && rm -f /tmp/apache-tomcat-7.0.59.tar.gz
-RUN ln -sf /opt/apache-tomcat-7.0.59 /opt/tomcat
+# Install oxAuth
+RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.0.Final/oxauth-server-2.4.0.Final.war -O /tmp/oxauth.war \
+    && unzip -qq /tmp/oxauth.war -d /opt/tomcat/webapps/oxauth \
+    && rm -f /tmp/oxauth.war
 
-RUN wget -q "$OXAUTH_DOWNLOAD_URL" -O /opt/tomcat/webapps/oxauth.war
-
-RUN wget -q "$JYTHON_DOWNLOAD_URL" -O /tmp/jython-standalone-2.7.0.jar \
+# Install Jython
+RUN wget -q http://central.maven.org/maven2/org/python/jython-standalone/2.7.0/jython-standalone-2.7.0.jar -O /tmp/jython-standalone-2.7.0.jar \
     && unzip -q /tmp/jython-standalone-2.7.0.jar -d /opt/jython \
+    && ln -sf /opt/jython/Lib /opt/tomcat/webapps/oxauth/WEB-INF/lib/Lib \
     && rm -f /tmp/jython-standalone-2.7.0.jar
 
-RUN mkdir -p /etc/certs \
-    && mkdir -p /opt/tomcat/conf/python
+# Directory for certificates
+RUN mkdir -p /etc/certs
 
-# Ports required by Tomcat
+# Directory for scripts, e.g. duo_web.py
+RUN mkdir -p /opt/tomcat/conf/python
+
+# Ports required by tomcat
 EXPOSE 8009
 EXPOSE 8005
 
