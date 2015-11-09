@@ -23,16 +23,8 @@ RUN wget -q http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.65/bin/apache-to
     && rm -f /tmp/tomcat.tar.gz
 
 # Creates directories for oxIdp setup
-RUN mkdir -p /opt/idp/war \
-    && mkdir -p /opt/idp/sp \
-    && mkdir -p /opt/idp/metadata \
-    && mkdir -p /opt/idp/logs \
-    && mkdir -p /opt/idp/lib \
-    && mkdir -p /opt/idp/conf \
-    && mkdir -p /opt/idp/ssl \
-    && mkdir -p /opt/idp/temp_metadata \
-    && mkdir -p /opt/tomcat/conf/shibboleth2/idp \
-    && mkdir -p /opt/tomcat/conf/Catalina/localhost
+RUN mkdir -p /opt/idp/war /opt/idp/sp /opt/idp/metadata /opt/idp/logs /opt/idp/lib /opt/idp/conf /opt/idp/ssl /opt/idp/temp_metadata \
+    && mkdir -p /opt/tomcat/conf/shibboleth2/idp /opt/tomcat/conf/Catalina/localhost
 
 # Install oxIDP
 RUN wget -q http://ox.gluu.org/maven/org/xdi/oxidp/2.4.0.Final/oxidp-2.4.0.Final.war -O /opt/idp/war/idp.war
@@ -56,4 +48,5 @@ EXPOSE 22122
 EXPOSE 11211
 
 # apache port
+EXPOSE 80
 EXPOSE 443
