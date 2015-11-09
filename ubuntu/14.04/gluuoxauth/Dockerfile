@@ -40,4 +40,5 @@ EXPOSE 8009
 EXPOSE 8005
 
 # Ports required by Apache
+EXPOSE 80
 EXPOSE 443
