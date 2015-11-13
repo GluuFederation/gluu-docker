@@ -43,6 +43,7 @@ RUN mkdir -p /var/ox/photos /var/ox/oxtrust/removed /var/ox/oxtrust/vds-snapshot
 # Ports required by tomcat
 EXPOSE 8009
 EXPOSE 8005
+EXPOSE 8443
 
 # Ports required by apache
 EXPOSE 80
