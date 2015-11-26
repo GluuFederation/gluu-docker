@@ -27,7 +27,7 @@ RUN mkdir -p /opt/idp/war /opt/idp/sp /opt/idp/metadata /opt/idp/logs /opt/idp/l
     && mkdir -p /opt/tomcat/conf/shibboleth2/idp /opt/tomcat/conf/Catalina/localhost
 
 # Install oxIDP
-RUN wget -q http://ox.gluu.org/maven/org/xdi/oxidp/2.4.0.Final/oxidp-2.4.0.Final.war -O /opt/idp/war/idp.war
+RUN wget -q http://ox.gluu.org/maven/org/xdi/oxidp/2.4.1.Final/oxidp-2.4.1.Final.war -O /opt/idp/war/idp.war
 
 # Additional JARs required by oxIdp
 RUN mkdir -p /opt/tomcat/endorsed
