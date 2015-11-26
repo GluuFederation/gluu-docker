@@ -19,7 +19,7 @@ RUN wget -q http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.65/bin/apache-to
     && rm -f /tmp/tomcat.tar.gz
 
 # Install oxAuth
-RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.0.Final/oxauth-server-2.4.0.Final.war -O /tmp/oxauth.war \
+RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.1.Final/oxauth-server-2.4.1.Final.war -O /tmp/oxauth.war \
     && unzip -qq /tmp/oxauth.war -d /opt/tomcat/webapps/oxauth \
     && rm -f /tmp/oxauth.war
 
