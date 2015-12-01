@@ -31,8 +31,11 @@ RUN wget -q http://ox.gluu.org/maven/org/xdi/oxidp/2.4.1.Final/oxidp-2.4.1.Final
 
 # Additional JARs required by oxIdp
 RUN mkdir -p /opt/tomcat/endorsed
-RUN wget -q http://ox.gluu.org/maven/xerces/xercesImpl/2.10.0/xercesImpl-2.10.0.jar -O /opt/tomcat/endorsed/xercesImpl-2.10.0.jar
-RUN wget -q http://ox.gluu.org/maven/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar -O /opt/tomcat/endorsed/xml-apis-1.4.01.jar
+RUN wget -q http://ox.gluu.org/maven/xerces/xercesImpl/2.10.0/xercesImpl-2.10.0.jar -P /opt/tomcat/endorsed
+RUN wget -q http://ox.gluu.org/maven/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar -P /opt/tomcat/endorsed
+RUN wget -q http://ox.gluu.org/maven/xalan/xalan/2.7.1/xalan-2.7.1.jar -P /opt/tomcat/endorsed
+RUN wget -q http://ox.gluu.org/maven/commons-io/commons-io/2.4/commons-io-2.4.jar -P /opt/tomcat/endorsed
+RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-client/2.4.1.Final/oxauth-client-2.4.1.Final.jar -P /opt/tomcat/endorsed
 
 # Directory for certificates
 RUN mkdir -p /etc/certs
