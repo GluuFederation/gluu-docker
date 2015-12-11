@@ -13,6 +13,7 @@ RUN apt-get update \
 
 # Directory for certificates
 RUN mkdir -p /etc/certs
+RUN openssl dhparam -out /etc/certs/dhparams.pem 2048
 
 # Ports for nginx
 EXPOSE 80
