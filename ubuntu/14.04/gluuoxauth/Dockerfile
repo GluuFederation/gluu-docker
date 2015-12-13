@@ -35,6 +35,9 @@ RUN mkdir -p /etc/certs
 # Directory for scripts, e.g. duo_web.py
 RUN mkdir -p /opt/tomcat/conf/python
 
+# Directory for custom oxAuth context
+RUN mkdir -p /opt/tomcat/conf/Catalina/localhost
+
 # Ports required by tomcat
 EXPOSE 8009
 EXPOSE 8005
