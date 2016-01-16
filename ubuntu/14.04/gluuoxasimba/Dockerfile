@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # ENV variables
-ENV ASIMBA_DOWNLOAD_URL http://ox.gluu.org/maven/org/xdi/oxasimba-proxy/2.4.0.Final/oxasimba-proxy-2.4.0.Final.war
+ENV ASIMBA_DOWNLOAD_URL http://ox.gluu.org/maven/org/xdi/oxasimba-proxy/2.4.1.Final/oxasimba-proxy-2.4.1.Final.war
 ENV TOMCAT_DOWNLOAD_URL http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.65/bin/apache-tomcat-7.0.65.tar.gz
 
 # Install Tomcat
