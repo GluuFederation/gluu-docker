@@ -30,10 +30,9 @@ RUN wget -q "$ASIMBA_DOWNLOAD_URL" -P /tmp \
     && cp /tmp/oxasimba.war /opt/tomcat/webapps \
     && rm -f /tmp/oxasimba.war
 
-# Directory for certificates
 RUN mkdir -p /etc/certs
-
 RUN mkdir -p /tmp/asimba
+RUN mkdir -p /opt/idp/metadata
 
 # Ports required by Tomcat
 EXPOSE 8009
