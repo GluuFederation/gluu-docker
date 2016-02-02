@@ -40,6 +40,10 @@ RUN wget -q http://ox.gluu.org/maven/org/xdi/saml-openid-auth-client/2.4.1.Final
 # Directory for certificates
 RUN mkdir -p /etc/certs
 
+LABEL vendor="Gluu Federation" \
+      org.gluu.oxidp.version="2.4.1" \
+      org.gluu.oxidp.build-date="2015-12-17"
+
 # Ports required by tomcat
 EXPOSE 8009
 EXPOSE 8005

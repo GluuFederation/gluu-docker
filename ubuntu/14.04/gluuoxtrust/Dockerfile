@@ -40,6 +40,10 @@ RUN mkdir -p /etc/certs
 # Directory required by oxTrust
 RUN mkdir -p /var/ox/photos /var/ox/oxtrust/removed /var/ox/oxtrust/vds-snapshots
 
+LABEL vendor="Gluu Federation" \
+      org.gluu.oxtrust.version="2.4.1" \
+      org.gluu.oxtrust.build-date="2016-01-18"
+
 # Ports required by tomcat
 EXPOSE 8009
 EXPOSE 8005

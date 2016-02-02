@@ -38,6 +38,10 @@ RUN mkdir -p /opt/tomcat/conf/python
 # Directory for custom oxAuth context
 RUN mkdir -p /opt/tomcat/conf/Catalina/localhost
 
+LABEL vendor="Gluu Federation" \
+      org.gluu.oxauth.version="2.4.1" \
+      org.gluu.oxauth.build-date="2015-12-22"
+
 # Ports required by tomcat
 EXPOSE 8009
 EXPOSE 8005

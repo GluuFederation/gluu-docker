@@ -26,6 +26,10 @@ RUN wget -q http://central.maven.org/maven2/commons-codec/commons-codec/1.5/comm
 RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-model/2.4.1.Final/oxauth-model-2.4.1.Final.jar -O /opt/gluu/lib/oxauth-model-2.4.1.Final.jar
 RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.1.Final/oxauth-server-2.4.1.Final.jar -O /opt/gluu/lib/oxauth-server-2.4.1.Final.jar
 
+LABEL vendor="Gluu Federation" \
+      org.gluu.opendj.version="2.6.0" \
+      org.gluu.opendj.build-date="2015-09-11"
+
 # LDAP port
 EXPOSE 1389
 
