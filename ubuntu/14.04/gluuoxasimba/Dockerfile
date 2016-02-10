@@ -34,6 +34,10 @@ RUN mkdir -p /etc/certs
 RUN mkdir -p /tmp/asimba
 RUN mkdir -p /opt/idp/metadata
 
+LABEL vendor="Gluu Federation" \
+      org.gluu.oxasimba.version="2.4.1" \
+      org.gluu.oxasimba.build-date="2015-12-17"
+
 # Ports required by Tomcat
 EXPOSE 8009
 EXPOSE 8005
