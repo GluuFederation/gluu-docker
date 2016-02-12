@@ -23,12 +23,12 @@ RUN wget -q http://central.maven.org/maven2/org/codehaus/jettison/jettison/1.3/j
 RUN wget -q http://central.maven.org/maven2/commons-lang/commons-lang/2.6/commons-lang-2.6.jar -O /opt/gluu/lib/commons-lang-2.6.jar
 RUN wget -q http://central.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17.jar -O /opt/gluu/lib/log4j-1.2.17.jar
 RUN wget -q http://central.maven.org/maven2/commons-codec/commons-codec/1.5/commons-codec-1.5.jar -O /opt/gluu/lib/commons-codec-1.5.jar
-RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-model/2.4.1.Final/oxauth-model-2.4.1.Final.jar -O /opt/gluu/lib/oxauth-model-2.4.1.Final.jar
-RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.1.Final/oxauth-server-2.4.1.Final.jar -O /opt/gluu/lib/oxauth-server-2.4.1.Final.jar
+RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-model/2.4.2.Final/oxauth-model-2.4.2.Final.jar -O /opt/gluu/lib/oxauth-model-2.4.2.Final.jar
+RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.2.Final/oxauth-server-2.4.2.Final.jar -O /opt/gluu/lib/oxauth-server-2.4.2.Final.jar
 
 LABEL vendor="Gluu Federation" \
       org.gluu.opendj.version="2.6.0" \
-      org.gluu.opendj.build-date="2015-09-11"
+      org.gluu.opendj.build-date="2016-02-10"
 
 # LDAP port
 EXPOSE 1389
