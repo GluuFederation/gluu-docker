@@ -41,8 +41,8 @@ RUN mkdir -p /etc/certs
 RUN mkdir -p /var/ox/photos /var/ox/oxtrust/removed /var/ox/oxtrust/vds-snapshots
 
 LABEL vendor="Gluu Federation" \
-      org.gluu.oxtrust.version="2.4.2" \
-      org.gluu.oxtrust.build-date="2016-02-12"
+      org.gluu.oxtrust-server.version="2.4.2" \
+      org.gluu.oxtrust-server.build-date="2016-02-17"
 
 # Ports required by tomcat
 EXPOSE 8009

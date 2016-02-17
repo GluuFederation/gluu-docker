@@ -42,7 +42,7 @@ RUN mkdir -p /etc/certs
 
 LABEL vendor="Gluu Federation" \
       org.gluu.oxidp.version="2.4.2" \
-      org.gluu.oxidp.build-date="2016-02-12"
+      org.gluu.oxidp.build-date="2016-02-17"
 
 # Ports required by tomcat
 EXPOSE 8009

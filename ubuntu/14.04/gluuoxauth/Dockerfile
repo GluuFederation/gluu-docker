@@ -39,8 +39,8 @@ RUN mkdir -p /opt/tomcat/conf/python
 RUN mkdir -p /opt/tomcat/conf/Catalina/localhost
 
 LABEL vendor="Gluu Federation" \
-      org.gluu.oxauth.version="2.4.2" \
-      org.gluu.oxauth.build-date="2016-02-12"
+      org.gluu.oxauth-server.version="2.4.2" \
+      org.gluu.oxauth-server.build-date="2016-02-17"
 
 # Ports required by tomcat
 EXPOSE 8009

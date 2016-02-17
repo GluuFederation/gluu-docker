@@ -27,8 +27,12 @@ RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-model/2.4.2.Final/oxauth-mod
 RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.2.Final/oxauth-server-2.4.2.Final.jar -O /opt/gluu/lib/oxauth-server-2.4.2.Final.jar
 
 LABEL vendor="Gluu Federation" \
-      org.gluu.opendj.version="2.6.0" \
-      org.gluu.opendj.build-date="2016-02-10"
+      org.gluu.gluu-opendj.version="2.6.0" \
+      org.gluu.gluu-opendj.build-date="2016-02-10" \
+      org.gluu.oxauth-server.version="2.4.2" \
+      org.gluu.oxauth-server.build-date="2016-02-17" \
+      org.gluu.oxauth-model.version="2.4.2" \
+      org.gluu.oxauth-model.build-date="2016-02-17"
 
 # LDAP port
 EXPOSE 1389
