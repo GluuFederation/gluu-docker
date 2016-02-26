@@ -40,7 +40,7 @@ RUN mkdir -p /opt/tomcat/conf/Catalina/localhost
 
 LABEL vendor="Gluu Federation" \
       org.gluu.oxauth-server.version="2.4.2" \
-      org.gluu.oxauth-server.build-date="2016-02-19"
+      org.gluu.oxauth-server.build-date="2016-02-26"
 
 # Ports required by tomcat
 EXPOSE 8009
