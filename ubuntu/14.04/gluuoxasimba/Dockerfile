@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # ENV variables
-ENV ASIMBA_DOWNLOAD_URL http://ox.gluu.org/maven/org/xdi/oxasimba-proxy/2.4.2.Final/oxasimba-proxy-2.4.2.Final.war
+ENV ASIMBA_DOWNLOAD_URL http://ox.gluu.org/maven/org/xdi/oxasimba-proxy/2.4.1.Final/oxasimba-proxy-2.4.1.Final.war
 ENV TOMCAT_DOWNLOAD_URL http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.65/bin/apache-tomcat-7.0.65.tar.gz
 
 # Install Tomcat
@@ -35,8 +35,8 @@ RUN mkdir -p /tmp/asimba
 RUN mkdir -p /opt/idp/metadata
 
 LABEL vendor="Gluu Federation" \
-      org.gluu.oxasimba.version="2.4.2" \
-      org.gluu.oxasimba.build-date="2016-02-12"
+      org.gluu.oxasimba.version="2.4.1" \
+      org.gluu.oxasimba.build-date="2016-02-10"
 
 # Ports required by Tomcat
 EXPOSE 8009
