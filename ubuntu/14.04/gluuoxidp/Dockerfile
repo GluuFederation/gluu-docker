@@ -2,6 +2,8 @@ FROM gluubase
 
 MAINTAINER Shouro <shouro@gluu.org>
 
+RUN groupadd -r tomcat && useradd -r -g tomcat tomcat
+
 # Adds repo for twemproxy
 RUN echo 'deb http://ppa.launchpad.net/twemproxy/stable/ubuntu trusty main' >> /etc/apt/sources.list.d/twemproxy.list \
     && echo 'deb-src http://ppa.launchpad.net/twemproxy/stable/ubuntu trusty main' >> /etc/apt/sources.list.d/twemproxy.list \
