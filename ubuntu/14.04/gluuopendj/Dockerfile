@@ -26,6 +26,9 @@ RUN wget -q http://central.maven.org/maven2/commons-codec/commons-codec/1.5/comm
 RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-model/2.4.2.Final/oxauth-model-2.4.2.Final.jar -O /opt/gluu/lib/oxauth-model-2.4.2.Final.jar
 RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.2.Final/oxauth-server-2.4.2.Final.jar -O /opt/gluu/lib/oxauth-server-2.4.2.Final.jar
 
+# Directory for certificates
+RUN mkdir -p /etc/certs
+
 LABEL vendor="Gluu Federation" \
       org.gluu.gluu-opendj.version="2.6.0" \
       org.gluu.gluu-opendj.build-date="2016-02-10" \
