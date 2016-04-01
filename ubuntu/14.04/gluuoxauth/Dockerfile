@@ -19,7 +19,7 @@ RUN wget -q http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.65/bin/apache-to
     && rm -f /tmp/tomcat.tar.gz
 
 # Install oxAuth
-RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.2.Final/oxauth-server-2.4.2.Final.war -O /tmp/oxauth.war \
+RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.3.Final/oxauth-server-2.4.3.Final.war -O /tmp/oxauth.war \
     && unzip -qq /tmp/oxauth.war -d /opt/tomcat/webapps/oxauth \
     && rm -f /tmp/oxauth.war
 
@@ -38,9 +38,12 @@ RUN mkdir -p /opt/tomcat/conf/python
 # Directory for custom oxAuth context
 RUN mkdir -p /opt/tomcat/conf/Catalina/localhost
 
+# Directory for custom files
+RUN mkdir -p /var/gluu/webapps/oxauth
+
 LABEL vendor="Gluu Federation" \
-      org.gluu.oxauth-server.version="2.4.2" \
-      org.gluu.oxauth-server.build-date="2016-03-15"
+      org.gluu.oxauth-server.version="2.4.3" \
+      org.gluu.oxauth-server.build-date="2016-04-01"
 
 # Ports required by tomcat
 EXPOSE 8009

@@ -20,7 +20,7 @@ RUN wget -q http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.65/bin/apache-to
     && rm -f /tmp/tomcat.tar.gz
 
 # Install oxTrust
-RUN wget -q http://ox.gluu.org/maven/org/xdi/oxtrust-server/2.4.2.Final/oxtrust-server-2.4.2.Final.war -O /tmp/oxtrust.war \
+RUN wget -q http://ox.gluu.org/maven/org/xdi/oxtrust-server/2.4.3.Final/oxtrust-server-2.4.3.Final.war -O /tmp/oxtrust.war \
     && unzip -qq /tmp/oxtrust.war -d /opt/tomcat/webapps/identity \
     && rm -f /tmp/oxtrust.war
 
@@ -40,9 +40,12 @@ RUN mkdir -p /etc/certs
 # Directory required by oxTrust
 RUN mkdir -p /var/ox/photos /var/ox/oxtrust/removed /var/ox/oxtrust/vds-snapshots
 
+# Directory for custom files
+RUN mkdir -p /var/gluu/webapps/identity
+
 LABEL vendor="Gluu Federation" \
-      org.gluu.oxtrust-server.version="2.4.2" \
-      org.gluu.oxtrust-server.build-date="2016-03-01"
+      org.gluu.oxtrust-server.version="2.4.3" \
+      org.gluu.oxtrust-server.build-date="2016-04-01"
 
 # Ports required by tomcat
 EXPOSE 8009

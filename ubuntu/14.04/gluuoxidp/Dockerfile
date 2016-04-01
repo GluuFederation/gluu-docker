@@ -29,7 +29,7 @@ RUN mkdir -p /opt/idp/war /opt/idp/sp /opt/idp/metadata /opt/idp/logs /opt/idp/l
     && mkdir -p /opt/tomcat/conf/shibboleth2/idp /opt/tomcat/conf/Catalina/localhost
 
 # Install oxIDP
-RUN wget -q http://ox.gluu.org/maven/org/xdi/oxidp/2.4.2.Final/oxidp-2.4.2.Final.war -O /opt/idp/war/idp.war
+RUN wget -q http://ox.gluu.org/maven/org/xdi/oxidp/2.4.3.Final/oxidp-2.4.3.Final.war -O /opt/idp/war/idp.war
 
 # Additional JARs required by oxIdp
 RUN mkdir -p /opt/tomcat/endorsed
@@ -37,14 +37,14 @@ RUN wget -q http://ox.gluu.org/maven/xerces/xercesImpl/2.10.0/xercesImpl-2.10.0.
 RUN wget -q http://ox.gluu.org/maven/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar -P /opt/tomcat/endorsed
 RUN wget -q http://ox.gluu.org/maven/xalan/xalan/2.7.1/xalan-2.7.1.jar -P /opt/tomcat/endorsed
 RUN wget -q http://ox.gluu.org/maven/commons-io/commons-io/2.4/commons-io-2.4.jar -P /opt/tomcat/endorsed
-RUN wget -q http://ox.gluu.org/maven/org/xdi/saml-openid-auth-client/2.4.2.Final/saml-openid-auth-client-2.4.2.Final.jar -P /opt/tomcat/lib
+RUN wget -q http://ox.gluu.org/maven/org/xdi/saml-openid-auth-client/2.4.3.Final/saml-openid-auth-client-2.4.3.Final.jar -P /opt/tomcat/lib
 
 # Directory for certificates
 RUN mkdir -p /etc/certs
 
 LABEL vendor="Gluu Federation" \
-      org.gluu.oxidp.version="2.4.2" \
-      org.gluu.oxidp.build-date="2016-02-29"
+      org.gluu.oxidp.version="2.4.3" \
+      org.gluu.oxidp.build-date="2016-04-01"
 
 # Ports required by tomcat
 EXPOSE 8009
