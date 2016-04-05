@@ -39,7 +39,10 @@ RUN mkdir -p /opt/tomcat/conf/python
 RUN mkdir -p /opt/tomcat/conf/Catalina/localhost
 
 # Directory for custom files
-RUN mkdir -p /var/gluu/webapps/oxauth
+RUN mkdir -p /var/gluu/webapps/oxauth \
+    && mkdir -p /var/gluu/webapps/oxauth/pages \
+    && mkdir -p /var/gluu/webapps/oxauth/resources \
+    && mkdir -p /var/gluu/webapps/oxauth/libs
 
 LABEL vendor="Gluu Federation" \
       org.gluu.oxauth-server.version="2.4.3" \
