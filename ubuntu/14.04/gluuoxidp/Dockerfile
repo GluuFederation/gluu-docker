@@ -29,7 +29,7 @@ RUN mkdir -p /opt/idp/war /opt/idp/sp /opt/idp/metadata /opt/idp/logs /opt/idp/l
     && mkdir -p /opt/tomcat/conf/shibboleth2/idp /opt/tomcat/conf/Catalina/localhost
 
 # Install oxIDP
-RUN wget -q http://ox.gluu.org/maven/org/xdi/oxidp/2.4.3.Final/oxidp-2.4.3.Final.war -O /opt/idp/war/idp.war
+RUN wget -q http://ox.gluu.org/maven/org/xdi/oxidp/2.4.2.Final/oxidp-2.4.2.Final.war -O /opt/idp/war/idp.war
 
 # Additional JARs required by oxIdp
 RUN mkdir -p /opt/tomcat/endorsed
@@ -42,8 +42,8 @@ RUN wget -q http://ox.gluu.org/maven/commons-io/commons-io/2.4/commons-io-2.4.ja
 RUN mkdir -p /etc/certs
 
 LABEL vendor="Gluu Federation" \
-      org.gluu.oxidp.version="2.4.3" \
-      org.gluu.oxidp.build-date="2016-04-03"
+      org.gluu.oxidp.version="2.4.2" \
+      org.gluu.oxidp.build-date="2016-02-29"
 
 # Ports required by tomcat
 EXPOSE 8009
