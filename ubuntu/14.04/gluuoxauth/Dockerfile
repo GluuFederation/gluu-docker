@@ -46,7 +46,7 @@ RUN mkdir -p /var/gluu/webapps/oxauth \
 
 LABEL vendor="Gluu Federation" \
       org.gluu.oxauth-server.version="2.4.3" \
-      org.gluu.oxauth-server.build-date="2016-04-01"
+      org.gluu.oxauth-server.build-date="2016-04-08"
 
 # Ports required by tomcat
 EXPOSE 8009

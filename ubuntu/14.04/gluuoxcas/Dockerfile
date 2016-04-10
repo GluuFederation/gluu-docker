@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
 
 # ENV variables
 ENV CAS_DOWNLOAD_URL http://ox.gluu.org/maven/org/xdi/ox-cas-server-webapp/2.4.3.Final/ox-cas-server-webapp-2.4.3.Final.war
-ENV TOMCAT_DOWNLOAD_URL http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.65/bin/apache-tomcat-7.0.65.tar.gz
+ENV TOMCAT_DOWNLOAD_URL https://olex-secure.openlogic.com/content/openlogic/tomcat/7.0.65/apache-tomcat-7.0.65.tar.gz
 
 # Install Tomcat
 RUN wget -q "$TOMCAT_DOWNLOAD_URL" -P /tmp \
@@ -32,7 +32,7 @@ RUN wget -q "$CAS_DOWNLOAD_URL" -P /tmp \
 
 LABEL vendor="Gluu Federation" \
       org.gluu.oxcas-server-webapp.version="2.4.3" \
-      org.gluu.oxcas-server-webapp.build-date="2016-04-01"
+      org.gluu.oxcas-server-webapp.build-date="2016-04-08"
 
 RUN mkdir -p /etc/certs
 RUN mkdir -p /tmp/cas

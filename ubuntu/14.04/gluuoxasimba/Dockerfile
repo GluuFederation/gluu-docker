@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
 
 # ENV variables
 ENV ASIMBA_DOWNLOAD_URL https://ox.gluu.org/maven/org/asimba/asimba-wa/2.4.3.Final/asimba-wa-2.4.3.Final.war
-ENV TOMCAT_DOWNLOAD_URL http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.65/bin/apache-tomcat-7.0.65.tar.gz
+ENV TOMCAT_DOWNLOAD_URL https://olex-secure.openlogic.com/content/openlogic/tomcat/7.0.65/apache-tomcat-7.0.65.tar.gz
 
 # Install Tomcat
 RUN wget -q "$TOMCAT_DOWNLOAD_URL" -P /tmp \
@@ -36,7 +36,7 @@ RUN mkdir -p /opt/idp/metadata
 
 LABEL vendor="Gluu Federation" \
       org.gluu.asimba-wa.version="2.4.3" \
-      org.gluu.asimba-wa.build-date="2016-04-01"
+      org.gluu.asimba-wa.build-date="2016-04-08"
 
 # Ports required by Tomcat
 EXPOSE 8009

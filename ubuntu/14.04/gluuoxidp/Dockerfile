@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Tomcat
-RUN wget -q http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.65/bin/apache-tomcat-7.0.65.tar.gz -O /tmp/tomcat.tar.gz \
+RUN wget -q https://olex-secure.openlogic.com/content/openlogic/tomcat/7.0.65/apache-tomcat-7.0.65.tar.gz -O /tmp/tomcat.tar.gz \
     && tar -xzf /tmp/tomcat.tar.gz -C /opt \
     && mv /opt/apache-tomcat-7.0.65 /opt/tomcat \
     && rm -f /tmp/tomcat.tar.gz
@@ -29,7 +29,7 @@ RUN mkdir -p /opt/idp/war /opt/idp/sp /opt/idp/metadata /opt/idp/logs /opt/idp/l
     && mkdir -p /opt/tomcat/conf/shibboleth2/idp /opt/tomcat/conf/Catalina/localhost
 
 # Install oxIDP
-RUN wget -q http://ox.gluu.org/maven/org/xdi/oxidp/2.4.2.Final/oxidp-2.4.2.Final.war -O /opt/idp/war/idp.war
+RUN wget -q http://ox.gluu.org/maven/org/xdi/oxidp/2.4.3.Final/oxidp-2.4.3.Final.war -O /opt/idp/war/idp.war
 
 # Additional JARs required by oxIdp
 RUN mkdir -p /opt/tomcat/endorsed
@@ -42,8 +42,8 @@ RUN wget -q http://ox.gluu.org/maven/commons-io/commons-io/2.4/commons-io-2.4.ja
 RUN mkdir -p /etc/certs
 
 LABEL vendor="Gluu Federation" \
-      org.gluu.oxidp.version="2.4.2" \
-      org.gluu.oxidp.build-date="2016-02-29"
+      org.gluu.oxidp.version="2.4.3" \
+      org.gluu.oxidp.build-date="2016-04-08"
 
 # Ports required by tomcat
 EXPOSE 8009

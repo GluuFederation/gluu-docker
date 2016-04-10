@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Tomcat
-RUN wget -q http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.65/bin/apache-tomcat-7.0.65.tar.gz -O /tmp/tomcat.tar.gz \
+RUN wget -q https://olex-secure.openlogic.com/content/openlogic/tomcat/7.0.65/apache-tomcat-7.0.65.tar.gz -O /tmp/tomcat.tar.gz \
     && tar -xzf /tmp/tomcat.tar.gz -C /opt \
     && mv /opt/apache-tomcat-7.0.65 /opt/tomcat \
     && rm -f /tmp/tomcat.tar.gz
@@ -44,14 +44,14 @@ RUN mkdir -p /var/ox/photos /var/ox/oxtrust/removed /var/ox/oxtrust/vds-snapshot
 RUN mkdir -p /opt/tomcat/conf/Catalina/localhost
 
 # Directory for custom files
-RUN mkdir -p /var/gluu/webapps/oxtrust
+RUN mkdir -p /var/gluu/webapps/oxtrust \
     && mkdir -p /var/gluu/webapps/oxtrust/pages \
     && mkdir -p /var/gluu/webapps/oxtrust/resources \
     && mkdir -p /var/gluu/webapps/oxtrust/libs
 
 LABEL vendor="Gluu Federation" \
       org.gluu.oxtrust-server.version="2.4.3" \
-      org.gluu.oxtrust-server.build-date="2016-04-01"
+      org.gluu.oxtrust-server.build-date="2016-04-08"
 
 # Ports required by tomcat
 EXPOSE 8009

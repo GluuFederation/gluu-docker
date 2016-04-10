@@ -33,9 +33,9 @@ LABEL vendor="Gluu Federation" \
       org.gluu.gluu-opendj.version="2.6.0" \
       org.gluu.gluu-opendj.build-date="2016-02-10" \
       org.gluu.oxauth-server.version="2.4.3" \
-      org.gluu.oxauth-server.build-date="2016-04-01" \
+      org.gluu.oxauth-server.build-date="2016-04-08" \
       org.gluu.oxauth-model.version="2.4.3" \
-      org.gluu.oxauth-model.build-date="2016-04-01"
+      org.gluu.oxauth-model.build-date="2016-04-08"
 
 # LDAP port
 EXPOSE 1389
