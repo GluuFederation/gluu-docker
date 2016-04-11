@@ -41,6 +41,17 @@ RUN wget -q http://ox.gluu.org/maven/commons-io/commons-io/2.4/commons-io-2.4.ja
 # Directory for certificates
 RUN mkdir -p /etc/certs
 
+# Copy static templates
+COPY idp.xml /opt/tomcat/conf/Catalina/localhost
+COPY idp-metadata.xml /opt/idp/metadata
+COPY attribute-resolver.xml /opt/idp/conf
+COPY relying-party.xml /opt/idp/conf
+COPY attribute-filter.xml /opt/idp/conf
+COPY internal.xml /opt/idp/conf
+COPY service.xml /opt/idp/conf
+COPY logging.xml /opt/idp/conf
+COPY handler.xml /opt/idp/conf
+
 LABEL vendor="Gluu Federation" \
       org.gluu.oxidp.version="2.4.3" \
       org.gluu.oxidp.build-date="2016-04-08"
