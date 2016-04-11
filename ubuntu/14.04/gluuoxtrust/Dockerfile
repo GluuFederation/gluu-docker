@@ -49,6 +49,16 @@ RUN mkdir -p /var/gluu/webapps/oxtrust \
     && mkdir -p /var/gluu/webapps/oxtrust/resources \
     && mkdir -p /var/gluu/webapps/oxtrust/libs
 
+# Unpack Shib config
+RUN unzip -q /opt/tomcat/webapps/identity/WEB-INF/lib/oxtrust-configuration-2.4.3.Final.jar shibboleth2/* -d /opt/tomcat/conf
+
+# Copy static templates
+COPY setenv.sh /opt/tomcat/bin
+COPY attribute-resolver.xml.vm /opt/tomcat/conf/shibboleth2/idp
+COPY oxTrustLogRotationConfiguration.xml /opt/tomcat/conf
+COPY identity.xml /opt/tomcat/conf/Catalina/localhost
+COPY index.html /opt/tomcat/webapps/ROOT
+
 LABEL vendor="Gluu Federation" \
       org.gluu.oxtrust-server.version="2.4.3" \
       org.gluu.oxtrust-server.build-date="2016-04-08"
