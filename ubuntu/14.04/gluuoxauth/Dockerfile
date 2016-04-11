@@ -44,6 +44,14 @@ RUN mkdir -p /var/gluu/webapps/oxauth \
     && mkdir -p /var/gluu/webapps/oxauth/resources \
     && mkdir -p /var/gluu/webapps/oxauth/libs
 
+# Copy static templates
+COPY duo_web.py /opt/tomcat/conf/python
+COPY cert_creds.json /etc/certs
+COPY duo_creds.json /etc/certs
+COPY gplus_client_secrets.json /etc/certs
+COPY oxpush2_creds.json /etc/certs
+COPY setenv.sh /opt/tomcat/bin
+
 LABEL vendor="Gluu Federation" \
       org.gluu.oxauth-server.version="2.4.3" \
       org.gluu.oxauth-server.build-date="2016-04-08"
