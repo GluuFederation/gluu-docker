@@ -29,6 +29,16 @@ RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.3.Final/oxauth-se
 # Directory for certificates
 RUN mkdir -p /etc/certs
 
+RUN mkdir -p /opt/opendj/template/config/schema
+RUN mkdir -p /opt/opendj/ldif
+
+# Copy static templates
+COPY opendj_index.json /opt/opendj
+COPY o_site.ldif /opt/opendj/ldif
+COPY 101-ox.ldif /opt/opendj/template/config/schema
+COPY 77-customAttributes.ldif /opt/opendj/template/config/schema
+COPY 96-eduperson.ldif /opt/opendj/template/config/schema
+
 LABEL vendor="Gluu Federation" \
       org.gluu.gluu-opendj.version="2.6.0" \
       org.gluu.gluu-opendj.build-date="2016-02-10" \
