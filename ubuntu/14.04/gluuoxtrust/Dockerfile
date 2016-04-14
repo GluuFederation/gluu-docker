@@ -61,7 +61,7 @@ COPY index.html /opt/tomcat/webapps/ROOT
 
 LABEL vendor="Gluu Federation" \
       org.gluu.oxtrust-server.version="2.4.3" \
-      org.gluu.oxtrust-server.build-date="2016-04-08"
+      org.gluu.oxtrust-server.build-date="2016-04-14"
 
 # Ports required by tomcat
 EXPOSE 8009
