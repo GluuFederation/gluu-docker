@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y \
     memcached \
     twemproxy \
     apache2 \
+    unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -31,13 +32,6 @@ RUN mkdir -p /opt/idp/war /opt/idp/sp /opt/idp/metadata /opt/idp/logs /opt/idp/l
 # Install oxIDP
 RUN wget -q http://ox.gluu.org/maven/org/xdi/oxidp/2.4.3.Final/oxidp-2.4.3.Final.war -O /opt/idp/war/idp.war
 
-# Additional JARs required by oxIdp
-RUN mkdir -p /opt/tomcat/endorsed
-RUN wget -q http://ox.gluu.org/maven/xerces/xercesImpl/2.10.0/xercesImpl-2.10.0.jar -P /opt/tomcat/endorsed
-RUN wget -q http://ox.gluu.org/maven/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar -P /opt/tomcat/endorsed
-RUN wget -q http://ox.gluu.org/maven/xalan/xalan/2.7.1/xalan-2.7.1.jar -P /opt/tomcat/endorsed
-RUN wget -q http://ox.gluu.org/maven/commons-io/commons-io/2.4/commons-io-2.4.jar -P /opt/tomcat/endorsed
-
 # Directory for certificates
 RUN mkdir -p /etc/certs
 
@@ -52,9 +46,17 @@ COPY service.xml /opt/idp/conf
 COPY logging.xml /opt/idp/conf
 COPY handler.xml /opt/idp/conf
 
+# Libs for oxIdp
+RUN mkdir -p /tmp/idp \
+    && unzip -q /opt/idp/war/idp.war -d /tmp/idp \
+    && cp /tmp/idp/WEB-INF/lib/* /opt/idp/lib \
+    && rm -rf /tmp/idp
+RUN wget -q https://github.com/GluuFederation/community-edition-setup/raw/master/static/idp/lib/jsp-api-2.1.jar -P /opt/idp/lib
+RUN wget -q https://github.com/GluuFederation/community-edition-setup/raw/master/static/idp/lib/servlet-api-2.5.jar -P /opt/idp/lib
+
 LABEL vendor="Gluu Federation" \
       org.gluu.oxidp.version="2.4.3" \
-      org.gluu.oxidp.build-date="2016-04-08"
+      org.gluu.oxidp.build-date="2016-04-13"
 
 # Ports required by tomcat
 EXPOSE 8009
