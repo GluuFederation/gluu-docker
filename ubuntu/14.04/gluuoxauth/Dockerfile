@@ -54,7 +54,7 @@ COPY setenv.sh /opt/tomcat/bin
 
 LABEL vendor="Gluu Federation" \
       org.gluu.oxauth-server.version="2.4.3" \
-      org.gluu.oxauth-server.build-date="2016-04-15"
+      org.gluu.oxauth-server.build-date="2016-04-16"
 
 # Ports required by tomcat
 EXPOSE 8009

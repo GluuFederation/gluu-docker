@@ -36,7 +36,7 @@ RUN mkdir -p /opt/idp/metadata
 
 LABEL vendor="Gluu Federation" \
       org.gluu.asimba-wa.version="2.4.3" \
-      org.gluu.asimba-wa.build-date="2016-04-15"
+      org.gluu.asimba-wa.build-date="2016-04-16"
 
 # Ports required by Tomcat
 EXPOSE 8009
