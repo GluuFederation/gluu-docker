@@ -59,9 +59,12 @@ COPY oxTrustLogRotationConfiguration.xml /opt/tomcat/conf
 COPY identity.xml /opt/tomcat/conf/Catalina/localhost
 COPY index.html /opt/tomcat/webapps/ROOT
 
+RUN mkdir -p /opt/tomcat/endorsed
+RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk16/1.46/bcprov-jdk16-1.46.jar -O /opt/tomcat/endorsed/bcprov-jdk16-1.46.jar
+
 LABEL vendor="Gluu Federation" \
       org.gluu.oxtrust-server.version="2.4.3" \
-      org.gluu.oxtrust-server.build-date="2016-04-16"
+      org.gluu.oxtrust-server.build-date="2016-06-13"
 
 # Ports required by tomcat
 EXPOSE 8009

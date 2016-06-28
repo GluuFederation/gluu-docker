@@ -52,9 +52,12 @@ COPY gplus_client_secrets.json /etc/certs
 COPY oxpush2_creds.json /etc/certs
 COPY setenv.sh /opt/tomcat/bin
 
+RUN mkdir -p /opt/tomcat/endorsed
+RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk16/1.46/bcprov-jdk16-1.46.jar -O /opt/tomcat/endorsed/bcprov-jdk16-1.46.jar
+
 LABEL vendor="Gluu Federation" \
       org.gluu.oxauth-server.version="2.4.3" \
-      org.gluu.oxauth-server.build-date="2016-04-16"
+      org.gluu.oxauth-server.build-date="2016-06-15"
 
 # Ports required by tomcat
 EXPOSE 8009
