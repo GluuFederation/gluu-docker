@@ -15,6 +15,10 @@ RUN apt-get update \
 RUN mkdir -p /etc/certs
 RUN openssl dhparam -out /etc/certs/dhparams.pem 2048
 
+COPY index.html /usr/share/nginx/html
+
+LABEL vendor="Gluu Federation"
+
 # Ports for nginx
 EXPOSE 80
 EXPOSE 443

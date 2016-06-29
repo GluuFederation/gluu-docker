@@ -19,7 +19,7 @@ RUN wget -q http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.65/bin/apache-to
     && rm -f /tmp/tomcat.tar.gz
 
 # Install oxAuth
-RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.1.Final/oxauth-server-2.4.1.Final.war -O /tmp/oxauth.war \
+RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.3.Final/oxauth-server-2.4.3.Final.war -O /tmp/oxauth.war \
     && unzip -qq /tmp/oxauth.war -d /opt/tomcat/webapps/oxauth \
     && rm -f /tmp/oxauth.war
 
@@ -38,9 +38,26 @@ RUN mkdir -p /opt/tomcat/conf/python
 # Directory for custom oxAuth context
 RUN mkdir -p /opt/tomcat/conf/Catalina/localhost
 
+# Directory for custom files
+RUN mkdir -p /var/gluu/webapps/oxauth \
+    && mkdir -p /var/gluu/webapps/oxauth/pages \
+    && mkdir -p /var/gluu/webapps/oxauth/resources \
+    && mkdir -p /var/gluu/webapps/oxauth/libs
+
+# Copy static templates
+COPY duo_web.py /opt/tomcat/conf/python
+COPY cert_creds.json /etc/certs
+COPY duo_creds.json /etc/certs
+COPY gplus_client_secrets.json /etc/certs
+COPY oxpush2_creds.json /etc/certs
+COPY setenv.sh /opt/tomcat/bin
+
+RUN mkdir -p /opt/tomcat/endorsed
+RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk16/1.46/bcprov-jdk16-1.46.jar -O /opt/tomcat/endorsed/bcprov-jdk16-1.46.jar
+
 LABEL vendor="Gluu Federation" \
-      org.gluu.oxauth.version="2.4.1" \
-      org.gluu.oxauth.build-date="2015-12-22"
+      org.gluu.oxauth-server.version="2.4.3" \
+      org.gluu.oxauth-server.build-date="2016-06-15"
 
 # Ports required by tomcat
 EXPOSE 8009

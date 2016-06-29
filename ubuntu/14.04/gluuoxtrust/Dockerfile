@@ -14,13 +14,13 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Tomcat
-RUN wget -q http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.65/bin/apache-tomcat-7.0.65.tar.gz -O /tmp/tomcat.tar.gz \
+RUN wget -q https://olex-secure.openlogic.com/content/openlogic/tomcat/7.0.65/apache-tomcat-7.0.65.tar.gz -O /tmp/tomcat.tar.gz \
     && tar -xzf /tmp/tomcat.tar.gz -C /opt \
     && mv /opt/apache-tomcat-7.0.65 /opt/tomcat \
     && rm -f /tmp/tomcat.tar.gz
 
 # Install oxTrust
-RUN wget -q http://ox.gluu.org/maven/org/xdi/oxtrust-server/2.4.1.Final/oxtrust-server-2.4.1.Final.war -O /tmp/oxtrust.war \
+RUN wget -q http://ox.gluu.org/maven/org/xdi/oxtrust-server/2.4.3.Final/oxtrust-server-2.4.3.Final.war -O /tmp/oxtrust.war \
     && unzip -qq /tmp/oxtrust.war -d /opt/tomcat/webapps/identity \
     && rm -f /tmp/oxtrust.war
 
@@ -40,9 +40,31 @@ RUN mkdir -p /etc/certs
 # Directory required by oxTrust
 RUN mkdir -p /var/ox/photos /var/ox/oxtrust/removed /var/ox/oxtrust/vds-snapshots
 
+# Directory for custom oxTrust context
+RUN mkdir -p /opt/tomcat/conf/Catalina/localhost
+
+# Directory for custom files
+RUN mkdir -p /var/gluu/webapps/oxtrust \
+    && mkdir -p /var/gluu/webapps/oxtrust/pages \
+    && mkdir -p /var/gluu/webapps/oxtrust/resources \
+    && mkdir -p /var/gluu/webapps/oxtrust/libs
+
+# Unpack Shib config
+RUN unzip -q /opt/tomcat/webapps/identity/WEB-INF/lib/oxtrust-configuration-2.4.3.Final.jar shibboleth2/* -d /opt/tomcat/conf
+
+# Copy static templates
+COPY setenv.sh /opt/tomcat/bin
+COPY attribute-resolver.xml.vm /opt/tomcat/conf/shibboleth2/idp
+COPY oxTrustLogRotationConfiguration.xml /opt/tomcat/conf
+COPY identity.xml /opt/tomcat/conf/Catalina/localhost
+COPY index.html /opt/tomcat/webapps/ROOT
+
+RUN mkdir -p /opt/tomcat/endorsed
+RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk16/1.46/bcprov-jdk16-1.46.jar -O /opt/tomcat/endorsed/bcprov-jdk16-1.46.jar
+
 LABEL vendor="Gluu Federation" \
-      org.gluu.oxtrust.version="2.4.1" \
-      org.gluu.oxtrust.build-date="2016-01-18"
+      org.gluu.oxtrust-server.version="2.4.3" \
+      org.gluu.oxtrust-server.build-date="2016-06-13"
 
 # Ports required by tomcat
 EXPOSE 8009
