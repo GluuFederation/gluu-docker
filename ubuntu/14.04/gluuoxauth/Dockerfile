@@ -49,7 +49,7 @@ COPY duo_web.py /opt/tomcat/conf/python
 COPY cert_creds.json /etc/certs
 COPY duo_creds.json /etc/certs
 COPY gplus_client_secrets.json /etc/certs
-COPY oxpush2_creds.json /etc/certs
+COPY super_gluu_creds.json /etc/certs
 COPY setenv.sh /opt/tomcat/bin
 
 RUN mkdir -p /opt/tomcat/endorsed

@@ -18,13 +18,15 @@ RUN wget -q "$OPENDJ_DOWNLOAD_URL" -P /tmp && unzip -qq /tmp/gluu-opendj-2.6.0.z
 
 # JAR files required to generate OpenID Connect keys
 RUN mkdir -p /opt/gluu/lib
-RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk16/1.46/bcprov-jdk16-1.46.jar -O /opt/gluu/lib/bcprov-jdk16-1.46.jar
+RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.54/bcprov-jdk15on-1.54.jar -O /opt/gluu/lib/bcprov-jdk15on-1.54.jar
+RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.54/bcpkix-jdk15on-1.54.jar -O /opt/gluu/lib/bcpkix-jdk15on-1.54.jar
 RUN wget -q http://central.maven.org/maven2/org/codehaus/jettison/jettison/1.3/jettison-1.3.jar -O /opt/gluu/lib/jettison-1.3.jar
 RUN wget -q http://central.maven.org/maven2/commons-lang/commons-lang/2.6/commons-lang-2.6.jar -O /opt/gluu/lib/commons-lang-2.6.jar
-RUN wget -q http://central.maven.org/maven2/log4j/log4j/1.2.17/log4j-1.2.17.jar -O /opt/gluu/lib/log4j-1.2.17.jar
+RUN wget -q http://central.maven.org/maven2/log4j/log4j/1.2.14/log4j-1.2.14.jar -O /opt/gluu/lib/log4j-1.2.14.jar
 RUN wget -q http://central.maven.org/maven2/commons-codec/commons-codec/1.5/commons-codec-1.5.jar -O /opt/gluu/lib/commons-codec-1.5.jar
-RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-model/2.4.3.Final/oxauth-model-2.4.3.Final.jar -O /opt/gluu/lib/oxauth-model-2.4.3.Final.jar
-RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.3.Final/oxauth-server-2.4.3.Final.jar -O /opt/gluu/lib/oxauth-server-2.4.3.Final.jar
+RUN wget -q http://central.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.jar -O /opt/gluu/lib/commons-cli-1.2.jar
+RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-model/2.4.4.Final/oxauth-model-2.4.4.Final.jar -O /opt/gluu/lib/oxauth-model-2.4.4.Final.jar
+RUN wget -q http://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.4.Final/oxauth-server-2.4.4.Final.jar -O /opt/gluu/lib/oxauth-server-2.4.4.Final.jar
 
 # Directory for certificates
 RUN mkdir -p /etc/certs
@@ -42,10 +44,10 @@ COPY 96-eduperson.ldif /opt/opendj/template/config/schema
 LABEL vendor="Gluu Federation" \
       org.gluu.gluu-opendj.version="2.6.0" \
       org.gluu.gluu-opendj.build-date="2016-02-10" \
-      org.gluu.oxauth-server.version="2.4.3" \
-      org.gluu.oxauth-server.build-date="2016-06-15" \
-      org.gluu.oxauth-model.version="2.4.3" \
-      org.gluu.oxauth-model.build-date="2016-06-15"
+      org.gluu.oxauth-server.version="2.4.4" \
+      org.gluu.oxauth-server.build-date="2016-07-12" \
+      org.gluu.oxauth-model.version="2.4.4" \
+      org.gluu.oxauth-model.build-date="2016-07-12"
 
 # LDAP port
 EXPOSE 1389

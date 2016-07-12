@@ -1490,6 +1490,12 @@ attributeTypes: ( oxDeviceData-oid NAME 'oxDeviceData'
   EQUALITY caseIgnoreMatch
   SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
   X-ORIGIN 'Gluu created attribute' )
+attributeTypes: ( oxEnrollmentCode-oid NAME 'oxEnrollmentCode'
+  DESC 'oxEnrollmentCode'
+  SUBSTR caseIgnoreSubstringsMatch
+  EQUALITY caseIgnoreMatch
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+  X-ORIGIN 'Gluu created attribute' )
 attributeTypes: ( oxProxyClientId-oid NAME 'oxProxyClientId'
   DESC 'oxProx client id'
   SUBSTR caseIgnoreSubstringsMatch
@@ -2106,6 +2112,12 @@ attributeTypes: ( oxSessionStateId-oid NAME 'oxSessionStateId'
   EQUALITY caseIgnoreMatch
   SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
   X-ORIGIN 'Gluu created attribute' )
+attributeTypes: ( oxAuthSessionDn-oid NAME 'oxAuthSessionDn'
+  DESC 'oxAuth Session DN'
+  SUBSTR caseIgnoreSubstringsMatch
+  EQUALITY caseIgnoreMatch
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+  X-ORIGIN 'Gluu created attribute' )
 attributeTypes: ( oxPasswordExpirationDate-oid NAME 'oxPasswordExpirationDate'
   DESC 'Password Expiration date, represented as an ISO 8601 (YYYY-MM-DD) format'
   ORDERING generalizedTimeOrderingMatch
@@ -2130,6 +2142,18 @@ attributeTypes: ( oxAsimbaEntry-oid NAME 'oxAsimbaEntry'
   EQUALITY caseIgnoreMatch
   SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
   X-ORIGIN 'Gluu created attribute' )
+attributeTypes: ( oxCountInvalidLogin-oid NAME 'oxCountInvalidLogin'
+  DESC 'Invalid login attempts count'
+  SUBSTR caseIgnoreSubstringsMatch
+  EQUALITY caseIgnoreMatch
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+  X-ORIGIN 'Gluu created attribute' )
+attributeTypes: ( gluuIMAPData-oid NAME 'gluuIMAPData'
+  DESC 'This data has information about your imap connection'
+  SUBSTR caseIgnoreSubstringsMatch
+  EQUALITY caseIgnoreMatch
+  SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+  X-ORIGIN 'Gluu created attribute' )
 objectclasses: ( pairwiseIdentifier-oid NAME 'pairwiseIdentifier' SUP top STRUCTURAL MUST objectclass MAY
    ( oxId $ oxSectorIdentifierURI )
     X-ORIGIN 'Gluu created objectclass' )
@@ -2146,11 +2170,12 @@ objectclasses: ( gluuPerson-oid NAME 'gluuPerson' SUP top STRUCTURAL MUST object
   $ persistentId $ middleName $ nickname $ preferredUsername $ profile $ picture
   $ website $ emailVerified $ gender $ birthdate $ zoneinfo $ locale $ phoneNumberVerified
   $ address $ updatedAt $ preferredLanguage $ role $ secretAnswer $ secretQuestion
-  $ seeAlso $ sn $ cn $ transientId $ uid $ userPassword $ st $ street $ l )
+  $ seeAlso $ sn $ cn $ transientId $ uid $ userPassword $ st $ street $ l $ oxCountInvalidLogin $ oxEnrollmentCode $ gluuIMAPData )
   X-ORIGIN 'Gluu created objectclass' )
 objectclasses: ( gluuGroup-oid NAME 'gluuGroup' SUP top STRUCTURAL MUST objectclass MAY 
  ( c $ description $ displayName $ gluuGroupType $ gluuGroupVisibility $ gluuStatus
-  $ iname $ inum $ member $ o $ owner $ seeAlso ) 
+  $ iname $ inum $ member $ o $ owner $ seeAlso
+  $ oxTrustMetaCreated $ oxTrustMetaLastModified $ oxTrustMetaLocation $ oxTrustMetaVersion ) 
   X-ORIGIN 'Gluu created objectclass' )
 objectclasses: ( gluuOrganization-oid NAME 'gluuOrganization' SUP top STRUCTURAL MUST objectclass MAY 
  ( c $ county $ deployedAppliances $ description $ displayName $ gluuAddPersonCapability
@@ -2305,7 +2330,7 @@ objectclasses: ( oxAuthToken-oid NAME 'oxAuthToken' SUP top STRUCTURAL MUST obje
   ( createTimestamp $ oxAuthAuthenticationTime $ oxAuthAuthorizationCode
   $ oxAuthCreation $ oxAuthExpiration $ oxAuthGrantId $ oxAuthGrantType $ oxAuthJwtRequest
   $ oxAuthNonce $ oxAuthScope $ oxAuthTokenCode $ oxAuthTokenType $ oxAuthUserId $ oxAuthClientId
-  $ oxAuthenticationMode $ uniqueIdentifier $ oxCodeChallenge $ oxCodeChallengeMethod )
+  $ oxAuthenticationMode $ uniqueIdentifier $ oxCodeChallenge $ oxCodeChallengeMethod $ oxAuthSessionDn )
   X-ORIGIN 'Gluu created objectclass' )
 objectclasses: ( oxAuthUmaRPT-oid NAME 'oxAuthUmaRPT' SUP top STRUCTURAL MUST objectclass MAY 
  ( oxAmHost $ oxAuthAuthenticationTime $ oxAuthClientId $ oxAuthCreation $ oxAuthExpiration
