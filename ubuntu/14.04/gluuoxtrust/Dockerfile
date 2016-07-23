@@ -20,7 +20,7 @@ RUN wget -q https://olex-secure.openlogic.com/content/openlogic/tomcat/7.0.65/ap
     && rm -f /tmp/tomcat.tar.gz
 
 # Install oxTrust
-RUN wget -q http://ox.gluu.org/maven/org/xdi/oxtrust-server/2.4.4.rc2/oxtrust-server-2.4.4.rc2.war -O /tmp/oxtrust.war \
+RUN wget -q https://ox.gluu.org/maven/org/xdi/oxtrust-server/2.4.4/oxtrust-server-2.4.4.war -O /tmp/oxtrust.war \
     && unzip -qq /tmp/oxtrust.war -d /opt/tomcat/webapps/identity \
     && rm -f /tmp/oxtrust.war
 
@@ -50,7 +50,7 @@ RUN mkdir -p /var/gluu/webapps/oxtrust \
     && mkdir -p /var/gluu/webapps/oxtrust/libs
 
 # Unpack Shib config
-RUN unzip -q /opt/tomcat/webapps/identity/WEB-INF/lib/oxtrust-configuration-2.4.4.rc2.jar shibboleth2/* -d /opt/tomcat/conf
+RUN unzip -q /opt/tomcat/webapps/identity/WEB-INF/lib/oxtrust-configuration-2.4.4.jar shibboleth2/* -d /opt/tomcat/conf
 
 # Copy static templates
 COPY setenv.sh /opt/tomcat/bin
@@ -63,8 +63,8 @@ RUN mkdir -p /opt/tomcat/endorsed
 RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk16/1.46/bcprov-jdk16-1.46.jar -O /opt/tomcat/endorsed/bcprov-jdk16-1.46.jar
 
 LABEL vendor="Gluu Federation" \
-      org.gluu.oxtrust-server.version="2.4.4.rc2" \
-      org.gluu.oxtrust-server.build-date="2016-07-20"
+      org.gluu.oxtrust-server.version="2.4.4" \
+      org.gluu.oxtrust-server.build-date="2016-07-22"
 
 # Ports required by tomcat
 EXPOSE 8009
