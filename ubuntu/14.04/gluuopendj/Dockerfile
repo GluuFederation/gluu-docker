@@ -12,9 +12,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # ENV variables
-ENV OPENDJ_DOWNLOAD_URL http://ox.gluu.org/maven/org/gluu/gluu-opendj/2.6.0/gluu-opendj-2.6.0.zip
+ENV OPENDJ_DOWNLOAD_URL http://ox.gluu.org/maven/org/forgerock/opendj/opendj-server-legacy/3.0.0.gluu-SNAPSHOT/opendj-server-legacy-3.0.0.gluu-SNAPSHOT.zip
 
-RUN wget -q "$OPENDJ_DOWNLOAD_URL" -P /tmp && unzip -qq /tmp/gluu-opendj-2.6.0.zip -d /opt && rm -f /tmp/gluu-opendj-2.6.0.zip
+RUN wget -q "$OPENDJ_DOWNLOAD_URL" -P /tmp \
+    && unzip -qq /tmp/opendj-server-legacy-3.0.0.gluu-SNAPSHOT.zip -d /opt \
+    && rm -f /tmp/opendj-server-legacy-3.0.0.gluu-SNAPSHOT.zip
 
 # JAR files required to generate OpenID Connect keys
 RUN mkdir -p /opt/gluu/lib
@@ -42,8 +44,8 @@ COPY 77-customAttributes.ldif /opt/opendj/template/config/schema
 COPY 96-eduperson.ldif /opt/opendj/template/config/schema
 
 LABEL vendor="Gluu Federation" \
-      org.gluu.gluu-opendj.version="2.6.0" \
-      org.gluu.gluu-opendj.build-date="2016-02-10" \
+      org.gluu.gluu-opendj.version="3.0.0-gluu" \
+      org.gluu.gluu-opendj.build-date="2016-04-11" \
       org.gluu.oxauth-server.version="2.4.4" \
       org.gluu.oxauth-server.build-date="2016-07-22" \
       org.gluu.oxauth-model.version="2.4.4" \
