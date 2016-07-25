@@ -2,6 +2,8 @@ FROM ubuntu:14.04
 
 MAINTAINER Shouro <shouro@gluu.org>
 
+ENV DEBIAN_FRONTEND noninteractive
+
 RUN apt-get update && apt-get install -y --force-yes \
     python \
     python-dev \
@@ -25,8 +27,8 @@ RUN pip install -U pip
 ADD https://raw.githubusercontent.com/GluuFederation/gluu-engine/master/requirements.txt /tmp
 RUN pip install -r /tmp/requirements.txt
 
-RUN curl -L https://github.com/docker/machine/releases/download/v0.7.0/docker-machine-`uname -s`-`uname -m` > /usr/local/bin/docker-machine && \
-    chmod +x /usr/local/bin/docker-machine
+RUN curl -L https://github.com/docker/machine/releases/download/v0.7.0/docker-machine-`uname -s`-`uname -m` > /usr/local/bin/docker-machine
+RUN chmod +x /usr/local/bin/docker-machine
 
 RUN mkdir -p /var/log/gluuengine
 RUN mkdir -p /var/lib/gluuengine
