@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --force-yes \
     libssl-dev \
     curl \
     openjdk-7-jre-headless \
+    apt-transport-https \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -39,4 +40,3 @@ WORKDIR /app
 CMD gunicorn -w $(($(nproc)*2+1)) --threads $(($(nproc)*2+1)) -k gthread -b :8080 --log-level warning --access-logfile - --error-logfile - -e API_ENV=prod wsgi:app
 
 EXPOSE 8080
-
