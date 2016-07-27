@@ -11,17 +11,18 @@ RUN apt-get update && apt-get install -y --force-yes \
     swig \
     libssl-dev \
     curl \
-    openjdk-7-jre-headless \
+    openssh-client \
+#    openjdk-7-jre-headless \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN echo "deb http://repo.gluu.org/ubuntu/ trusty-devel main" | tee /etc/apt/sources.list.d/gluu-repo.list
-RUN curl -s https://repo.gluu.org/ubuntu/gluu-apt.key | apt-key add -
+#RUN echo "deb http://repo.gluu.org/ubuntu/ trusty-devel main" | tee /etc/apt/sources.list.d/gluu-repo.list
+#RUN curl -s https://repo.gluu.org/ubuntu/gluu-apt.key | apt-key add -
 
-RUN apt-get update && apt-get install -y --force-yes \
-    oxd-license-validator \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+#RUN apt-get update && apt-get install -y --force-yes \
+#    oxd-license-validator \
+#    && apt-get clean \
+#    && rm -rf /var/lib/apt/lists/*
 
 RUN pip install -U pip
 ADD https://raw.githubusercontent.com/GluuFederation/gluu-engine/master/requirements.txt /tmp
