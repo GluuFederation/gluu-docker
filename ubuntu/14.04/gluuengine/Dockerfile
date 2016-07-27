@@ -12,17 +12,18 @@ RUN apt-get update && apt-get install -y --force-yes \
     libssl-dev \
     curl \
     openssh-client \
-#    openjdk-7-jre-headless \
+    openjdk-7-jre-headless \
+    apt-transport-https \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-#RUN echo "deb http://repo.gluu.org/ubuntu/ trusty-devel main" | tee /etc/apt/sources.list.d/gluu-repo.list
-#RUN curl -s https://repo.gluu.org/ubuntu/gluu-apt.key | apt-key add -
+RUN echo "deb http://repo.gluu.org/ubuntu/ trusty-devel main" | tee /etc/apt/sources.list.d/gluu-repo.list
+RUN curl -s https://repo.gluu.org/ubuntu/gluu-apt.key | apt-key add -
 
-#RUN apt-get update && apt-get install -y --force-yes \
-#    oxd-license-validator \
-#    && apt-get clean \
-#    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --force-yes \
+    oxd-license-validator \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN pip install -U pip
 ADD https://raw.githubusercontent.com/GluuFederation/gluu-engine/master/requirements.txt /tmp
@@ -40,4 +41,3 @@ WORKDIR /app
 CMD gunicorn -w $(($(nproc)*2+1)) --threads $(($(nproc)*2+1)) -k gthread -b :8080 --log-level warning --access-logfile - --error-logfile - -e API_ENV=prod wsgi:app
 
 EXPOSE 8080
-
