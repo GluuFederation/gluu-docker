@@ -56,7 +56,7 @@ RUN wget -q https://github.com/GluuFederation/community-edition-setup/raw/master
 
 LABEL vendor="Gluu Federation" \
       org.gluu.oxidp.version="2.4.4" \
-      org.gluu.oxidp.build-date="2016-07-22"
+      org.gluu.oxidp.build-date="2016-07-26"
 
 # Ports required by tomcat
 EXPOSE 8009
