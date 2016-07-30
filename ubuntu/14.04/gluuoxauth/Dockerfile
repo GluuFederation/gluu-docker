@@ -57,7 +57,7 @@ RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk16/1.46/b
 
 LABEL vendor="Gluu Federation" \
       org.gluu.oxauth-server.version="2.4.4" \
-      org.gluu.oxauth-server.build-date="2016-07-26"
+      org.gluu.oxauth-server.build-date="2016-07-29"
 
 # Ports required by tomcat
 EXPOSE 8009
