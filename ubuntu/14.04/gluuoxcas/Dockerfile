@@ -32,7 +32,7 @@ RUN wget -q "$CAS_DOWNLOAD_URL" -P /tmp \
 
 LABEL vendor="Gluu Federation" \
       org.gluu.oxcas-server-webapp.version="2.4.4" \
-      org.gluu.oxcas-server-webapp.build-date="2016-07-29"
+      org.gluu.oxcas-server-webapp.build-date="2016-08-01"
 
 RUN mkdir -p /etc/certs
 RUN mkdir -p /tmp/cas
