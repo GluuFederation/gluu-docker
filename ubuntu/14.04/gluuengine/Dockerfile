@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y --force-yes \
     swig \
     libssl-dev \
     curl \
+    git \
     openssh-client \
     openjdk-7-jre-headless \
     apt-transport-https \
@@ -34,10 +35,15 @@ RUN chmod +x /usr/local/bin/docker-machine
 
 RUN mkdir -p /var/log/gluuengine
 RUN mkdir -p /var/lib/gluuengine
+RUN mkdir -p /etc/gunicorn
 RUN mkdir -p /app
+
+COPY gunicorn.conf.py /etc/gunicorn
 
 WORKDIR /app
 
-CMD gunicorn -w $(($(nproc)*2+1)) --threads $(($(nproc)*2+1)) -k gthread -b :8080 --log-level warning --access-logfile - --error-logfile - -e API_ENV=prod wsgi:app
+RUN git clone https://github.com/GluuFederation/gluu-engine.git /app
+
+ENTRYPOINT ["gunicorn", "--config", "file:/etc/gunicorn/gunicorn.conf.py", "wsgi:app"]
 
 EXPOSE 8080
