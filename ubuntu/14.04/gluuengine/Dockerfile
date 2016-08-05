@@ -44,6 +44,7 @@ WORKDIR /app
 
 RUN git clone https://github.com/GluuFederation/gluu-engine.git /app
 
-ENTRYPOINT ["gunicorn", "--config", "file:/etc/gunicorn/gunicorn.conf.py", "wsgi:app"]
+ENTRYPOINT ["gunicorn"]
+CMD ["--config", "file:/etc/gunicorn/gunicorn.conf.py", "wsgi:app"]
 
 EXPOSE 8080
