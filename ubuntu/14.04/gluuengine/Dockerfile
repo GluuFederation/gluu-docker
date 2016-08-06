@@ -3,6 +3,7 @@ FROM ubuntu:14.04
 MAINTAINER Shouro <shouro@gluu.org>
 
 ENV DEBIAN_FRONTEND noninteractive
+ENV GELINK https://github.com/GluuFederation/gluu-engine/archive/0.5.0-beta8.tar.gz
 
 RUN apt-get update && apt-get install -y --force-yes \
     python \
@@ -42,7 +43,9 @@ COPY gunicorn.conf.py /etc/gunicorn
 
 WORKDIR /app
 
-RUN git clone https://github.com/GluuFederation/gluu-engine.git /app
+RUN curl -o /tmp/ge.tar.gz "$GELINK"
+RUN tar -zxf /tmp/ge.tar.gz --strip-components=1 -C /app
+RUN rm -f /tmp/ge.tar.gz
 
 ENTRYPOINT ["gunicorn"]
 CMD ["--config", "file:/etc/gunicorn/gunicorn.conf.py", "wsgi:app"]
