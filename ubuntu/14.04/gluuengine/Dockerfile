@@ -43,9 +43,9 @@ COPY gunicorn.conf.py /etc/gunicorn
 
 WORKDIR /app
 
-RUN curl -o /tmp/ge.tar.gz "$GELINK"
-RUN tar -zxf /tmp/ge.tar.gz --strip-components=1 -C /app
-RUN rm -f /tmp/ge.tar.gz
+RUN curl -L "$GELINK" > /tmp/ge.tar.gz \
+    && tar -zxf /tmp/ge.tar.gz --strip-components=1 -C /app \
+    && rm -f /tmp/ge.tar.gz
 
 ENTRYPOINT ["gunicorn"]
 CMD ["--config", "file:/etc/gunicorn/gunicorn.conf.py", "wsgi:app"]
