@@ -23,7 +23,6 @@ RUN pip install -U pip
 RUN pip install -r requirements/prod.txt
 RUN pip install gunicorn
 
-ENTRYPOINT ["gunicorn"]
-CMD ["-b", ":8800", "--access-logfile", "-", "--error-logfile", "-", "gluuwebui:app"]
+ENTRYPOINT ["gunicorn", "-b", ":8800", "--access-logfile", "-", "--error-logfile", "-", "gluuwebui:app"]
 
 EXPOSE 8800
