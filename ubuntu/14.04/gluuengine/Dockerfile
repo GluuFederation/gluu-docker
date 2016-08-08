@@ -12,7 +12,6 @@ RUN apt-get update && apt-get install -y --force-yes \
     swig \
     libssl-dev \
     curl \
-    git \
     openssh-client \
     openjdk-7-jre-headless \
     apt-transport-https \
@@ -27,25 +26,17 @@ RUN apt-get update && apt-get install -y --force-yes \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install -U pip
-ADD https://raw.githubusercontent.com/GluuFederation/gluu-engine/master/requirements.txt /tmp
-RUN pip install -r /tmp/requirements.txt
+RUN curl -L https://github.com/docker/machine/releases/download/v0.7.0/docker-machine-`uname -s`-`uname -m` > /usr/local/bin/docker-machine && chmod +x /usr/local/bin/docker-machine
 
-RUN curl -L https://github.com/docker/machine/releases/download/v0.7.0/docker-machine-`uname -s`-`uname -m` > /usr/local/bin/docker-machine
-RUN chmod +x /usr/local/bin/docker-machine
-
-RUN mkdir -p /var/log/gluuengine
-RUN mkdir -p /var/lib/gluuengine
-RUN mkdir -p /etc/gunicorn
-RUN mkdir -p /app
+RUN mkdir -p /var/log/gluuengine /var/lib/gluuengine /etc/gunicorn /app
 
 COPY gunicorn.conf.py /etc/gunicorn
 
-WORKDIR /app
+RUN curl -o /tmp/ge.tar.gz "$GELINK" && tar -zxf /tmp/ge.tar.gz --strip-components=1 -C /app && rm -f /tmp/ge.tar.gz
 
-RUN curl -o /tmp/ge.tar.gz "$GELINK"
-RUN tar -zxf /tmp/ge.tar.gz --strip-components=1 -C /app
-RUN rm -f /tmp/ge.tar.gz
+RUN pip install -U pip && pip install -r /app/requirements.txt
+
+WORKDIR /app
 
 ENTRYPOINT ["gunicorn"]
 CMD ["--config", "file:/etc/gunicorn/gunicorn.conf.py", "wsgi:app"]
