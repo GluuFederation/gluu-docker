@@ -34,6 +34,10 @@ COPY gunicorn.conf.py /etc/gunicorn
 
 RUN curl -o /tmp/ge.tar.gz "$GELINK" && tar -zxf /tmp/ge.tar.gz --strip-components=1 -C /app && rm -f /tmp/ge.tar.gz
 
+RUN curl -L "$GELINK" > /tmp/ge.tar.gz \
+    && tar -zxf /tmp/ge.tar.gz --strip-components=1 -C /app \
+    && rm -f /tmp/ge.tar.gz
+
 RUN pip install -U pip && pip install -r /app/requirements.txt
 
 WORKDIR /app
