@@ -3,7 +3,6 @@ FROM ubuntu:14.04
 MAINTAINER Shouro <shouro@gluu.org>
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV GELINK https://github.com/GluuFederation/gluu-engine/archive/0.5.0-beta8.tar.gz
 
 RUN apt-get update && apt-get install -y --force-yes \
     python \
@@ -30,7 +29,7 @@ RUN curl -L https://github.com/docker/machine/releases/download/v0.7.0/docker-ma
 
 RUN mkdir -p /var/log/gluuengine /var/lib/gluuengine /etc/gunicorn /app
 
-COPY gunicorn.conf.py /etc/gunicorn
+ENV GELINK https://github.com/GluuFederation/gluu-engine/archive/0.5.0-beta9.tar.gz
 
 RUN curl -L "$GELINK" > /tmp/ge.tar.gz \
     && tar -zxf /tmp/ge.tar.gz --strip-components=1 -C /app \
@@ -40,6 +39,6 @@ RUN pip install -U pip && pip install -r /app/requirements.txt
 
 WORKDIR /app
 
-ENTRYPOINT ["gunicorn", "--config", "file:/etc/gunicorn/gunicorn.conf.py", "wsgi:app"]
+ENTRYPOINT ["gunicorn", "-c", "file:gluuengine/gsettings.py", "wsgi:app"]
 
 EXPOSE 8080
