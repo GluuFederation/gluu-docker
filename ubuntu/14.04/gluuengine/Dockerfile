@@ -36,7 +36,7 @@ RUN curl -L "$GELINK" > /tmp/ge.tar.gz \
     && rm -f /tmp/ge.tar.gz
 
 RUN pip install -U pip && pip install -r /app/requirements.txt
-RUN python setup.py install
+RUN python /app/setup.py install
 
 WORKDIR /app
 
