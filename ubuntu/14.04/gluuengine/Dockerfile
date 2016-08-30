@@ -13,23 +13,17 @@ RUN apt-get update && apt-get install -y --force-yes \
     curl \
     openssh-client \
     openjdk-7-jre-headless \
-    apt-transport-https \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN echo "deb http://repo.gluu.org/ubuntu/ trusty-devel main" | tee /etc/apt/sources.list.d/gluu-repo.list
-RUN curl -s https://repo.gluu.org/ubuntu/gluu-apt.key | apt-key add -
-
-RUN apt-get update && apt-get install -y --force-yes \
-    oxd-license-validator \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /usr/share/oxlicense-validator
+RUN curl -L http://ox.gluu.org/maven/org/xdi/oxlicense-validator/2.4.4.sp1/oxlicense-validator-2.4.4.sp1-jar-with-dependencies.jar > /usr/share/oxlicense-validator/oxlicense-validator.jar
 
 RUN curl -L https://github.com/docker/machine/releases/download/v0.7.0/docker-machine-`uname -s`-`uname -m` > /usr/local/bin/docker-machine && chmod +x /usr/local/bin/docker-machine
 
 RUN mkdir -p /var/log/gluuengine /var/lib/gluuengine /app
 
-ENV GELINK https://github.com/GluuFederation/gluu-engine/archive/0.5.0.tar.gz
+ENV GELINK https://github.com/GluuFederation/gluu-engine/archive/0.5.1.tar.gz
 
 RUN curl -L "$GELINK" > /tmp/ge.tar.gz \
     && tar -zxf /tmp/ge.tar.gz --strip-components=1 -C /app \
