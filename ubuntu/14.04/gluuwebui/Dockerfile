@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --force-yes \
 
 RUN mkdir -p /app
 
-ENV UILINK https://github.com/GluuFederation/gluu-webui/archive/v0.5.1.tar.gz
+ENV UILINK https://github.com/GluuFederation/gluu-webui/archive/v0.5.2.tar.gz
 
 RUN curl -L "$UILINK" > /tmp/ui.tar.gz \
     && tar -zxf /tmp/ui.tar.gz --strip-components=1 -C /app \
