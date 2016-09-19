@@ -24,7 +24,7 @@ RUN curl -L "$OXLICENSE_URL" > /usr/share/oxlicense-validator/oxlicense-validato
 
 RUN mkdir -p /var/log/gluuengine /var/lib/gluuengine /app
 
-ENV GELINK https://github.com/GluuFederation/gluu-engine/archive/0.5.4.tar.gz
+ENV GELINK https://github.com/GluuFederation/gluu-engine/archive/0.5.5.tar.gz
 
 RUN curl -L "$GELINK" > /tmp/ge.tar.gz \
     && tar -zxf /tmp/ge.tar.gz --strip-components=1 -C /app \
