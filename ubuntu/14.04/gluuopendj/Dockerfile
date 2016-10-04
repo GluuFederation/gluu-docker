@@ -27,8 +27,8 @@ RUN wget -q http://central.maven.org/maven2/commons-lang/commons-lang/2.6/common
 RUN wget -q http://central.maven.org/maven2/log4j/log4j/1.2.14/log4j-1.2.14.jar -O /opt/gluu/lib/log4j-1.2.14.jar
 RUN wget -q http://central.maven.org/maven2/commons-codec/commons-codec/1.5/commons-codec-1.5.jar -O /opt/gluu/lib/commons-codec-1.5.jar
 RUN wget -q http://central.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.jar -O /opt/gluu/lib/commons-cli-1.2.jar
-RUN wget -q https://ox.gluu.org/maven/org/xdi/oxauth-model/2.4.4/oxauth-model-2.4.4.jar -O /opt/gluu/lib/oxauth-model.jar
-RUN wget -q https://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.4/oxauth-server-2.4.4.jar -O /opt/gluu/lib/oxauth-server.jar
+RUN wget -q https://ox.gluu.org/maven/org/xdi/oxauth-model/2.4.4.sp1/oxauth-model-2.4.4.sp1.jar -O /opt/gluu/lib/oxauth-model.jar
+RUN wget -q https://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.4.sp1/oxauth-server-2.4.4.sp1.jar -O /opt/gluu/lib/oxauth-server.jar
 
 # Directory for certificates
 RUN mkdir -p /etc/certs
@@ -46,10 +46,10 @@ COPY 96-eduperson.ldif /opt/opendj/template/config/schema
 LABEL vendor="Gluu Federation" \
       org.gluu.gluu-opendj.version="3.0.0-gluu" \
       org.gluu.gluu-opendj.build-date="2016-04-11" \
-      org.gluu.oxauth-server.version="2.4.4" \
-      org.gluu.oxauth-server.build-date="2016-08-01" \
-      org.gluu.oxauth-model.version="2.4.4" \
-      org.gluu.oxauth-model.build-date="2016-08-01"
+      org.gluu.oxauth-server.version="2.4.4.sp1" \
+      org.gluu.oxauth-server.build-date="2016-09-28" \
+      org.gluu.oxauth-model.version="2.4.4.sp1" \
+      org.gluu.oxauth-model.build-date="2016-09-28"
 
 # LDAP port
 EXPOSE 1389

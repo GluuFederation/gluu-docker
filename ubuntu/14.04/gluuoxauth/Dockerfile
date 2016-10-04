@@ -19,7 +19,7 @@ RUN wget -q http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.65/bin/apache-to
     && rm -f /tmp/tomcat.tar.gz
 
 # Install oxAuth
-RUN wget -q https://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.4/oxauth-server-2.4.4.war -O /tmp/oxauth.war \
+RUN wget -q https://ox.gluu.org/maven/org/xdi/oxauth-server/2.4.4.sp1/oxauth-server-2.4.4.sp1.war -O /tmp/oxauth.war \
     && unzip -qq /tmp/oxauth.war -d /opt/tomcat/webapps/oxauth \
     && rm -f /tmp/oxauth.war
 
@@ -56,8 +56,8 @@ RUN mkdir -p /opt/tomcat/endorsed
 RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk16/1.46/bcprov-jdk16-1.46.jar -O /opt/tomcat/endorsed/bcprov-jdk16-1.46.jar
 
 LABEL vendor="Gluu Federation" \
-      org.gluu.oxauth-server.version="2.4.4" \
-      org.gluu.oxauth-server.build-date="2016-08-01"
+      org.gluu.oxauth-server.version="2.4.4.sp1" \
+      org.gluu.oxauth-server.build-date="2016-09-28"
 
 # Ports required by tomcat
 EXPOSE 8009
