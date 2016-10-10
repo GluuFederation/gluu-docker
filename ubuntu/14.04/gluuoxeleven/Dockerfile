@@ -31,7 +31,7 @@ ENV JETTY_TGZ_URL https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distrib
 # Install jetty
 RUN wget -q ${JETTY_TGZ_URL} -O /tmp/jetty.tar.gz \
     && tar -xzf /tmp/jetty.tar.gz -C /opt \
-    && mv /opt/jetty-distribution-${JETTY_VERSION}/ /opt/jetty \
+    && mv /opt/jetty-distribution-${JETTY_VERSION} /opt/jetty \
     && rm -rf /tmp/jetty.tar.gz
 
 # Install oxEleven
@@ -39,11 +39,14 @@ RUN wget -q https://ox.gluu.org/maven/org/gluu/oxeleven-server/2.4.4.sp1/oxeleve
     && mkdir -p /opt/jetty_base/oxeleven/webapps \
     && unzip -qq /tmp/oxeleven.war -d /opt/jetty_base/oxeleven/webapps/oxeleven \
     && cd /opt/jetty_base/oxeleven \
-    && java -jar /opt/jetty/start.jar --add-to-start=deploy,http,https,logging,jsp \
+    && java -jar /opt/jetty/start.jar --add-to-start=deploy,http,logging,jsp \
     && rm -f /tmp/oxeleven.war
 
 # Directory for certificates
 RUN mkdir -p /etc/certs
+
+# Directory for config required by oxEleven (e.g. oxeleven-config.json)
+RUN mkdir -p /etc/gluu/conf
 
 LABEL vendor="Gluu Federation" \
       org.gluu.oxeleven-server.version="2.4.4.sp1" \
@@ -51,8 +54,6 @@ LABEL vendor="Gluu Federation" \
 
 # Ports required by jetty
 EXPOSE 8080
-EXPOSE 8443
 
 # Ports required by Apache
-EXPOSE 80
 EXPOSE 443
