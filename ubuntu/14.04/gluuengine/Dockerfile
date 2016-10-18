@@ -18,7 +18,10 @@ RUN apt-get update && apt-get install -y --force-yes \
 
 RUN curl -L https://github.com/docker/machine/releases/download/v0.7.0/docker-machine-`uname -s`-`uname -m` > /usr/local/bin/docker-machine && chmod +x /usr/local/bin/docker-machine
 
-ENV OXLICENSE_URL https://ox.gluu.org/maven/org/xdi/oxlicense-validator/2.4.4/oxlicense-validator-2.4.4-jar-with-dependencies.jar
+ENV OXLICENSE_VERSION 2.4.4
+ENV OXLICENSE_BUILD_DATE 2016-10-18
+ENV OXLICENSE_URL https://ox.gluu.org/maven/org/xdi/oxlicense-validator/${OXLICENSE_VERSION}/oxlicense-validator-${OXLICENSE_VERSION}-jar-with-dependencies.jar
+
 RUN mkdir -p /usr/share/oxlicense-validator
 RUN curl -L "$OXLICENSE_URL" > /usr/share/oxlicense-validator/oxlicense-validator.jar
 
