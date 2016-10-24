@@ -1,0 +1,10 @@
+{
+  "pkcs11Config": {
+    "name": "SoftHSM",
+    "library": "/usr/local/lib/softhsm/libsofthsm2.so",
+    "slot": "%(slot)s",
+    "showInfo": "true"
+  },
+  "pkcs11Pin": "$(pin)s",
+  "dnName": "CN=oxAuth CA Certificate"
+}
