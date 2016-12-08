@@ -41,7 +41,12 @@ ENV PYTHONPATH="/usr/local/lib/python2.7/dist-packages:/usr/lib/python2.7/dist-p
 
 WORKDIR /app
 
-RUN pip install -r requirements.txt && python setup.py develop
+# TODO: remove this when gluuengine with db layer feature is released
+RUN echo 'flask-dataset==0.1.2' >> requirements.txt \
+    && echo 'PyMySQL==0.7.9' >> requirements.txt \
+    && echo 'schematics==1.1.1' >> requirements.txt
+
+RUN pip install -r requirements.txt --ignore-installed six && python setup.py develop
 
 ENTRYPOINT ["gunicorn", "-c", "python:gluuengine.gsettings", "wsgi:app"]
 
