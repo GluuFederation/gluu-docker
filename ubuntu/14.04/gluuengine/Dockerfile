@@ -27,7 +27,7 @@ RUN curl -L "$OXLICENSE_URL" > /usr/share/oxlicense-validator/oxlicense-validato
 
 RUN mkdir -p /var/log/gluuengine /var/lib/gluuengine /app
 
-ENV GELINK https://github.com/GluuFederation/gluu-engine/archive/0.5.9.tar.gz
+ENV GELINK https://github.com/GluuFederation/gluu-engine/archive/0.6.0.tar.gz
 
 RUN curl -L "$GELINK" > /tmp/ge.tar.gz \
     && tar -zxf /tmp/ge.tar.gz --strip-components=1 -C /app \
@@ -40,11 +40,6 @@ RUN pip install -U pip
 ENV PYTHONPATH="/usr/local/lib/python2.7/dist-packages:/usr/lib/python2.7/dist-packages"
 
 WORKDIR /app
-
-# TODO: remove this when gluuengine with db layer feature is released
-RUN echo 'flask-dataset==0.1.2' >> requirements.txt \
-    && echo 'PyMySQL==0.7.9' >> requirements.txt \
-    && echo 'schematics==1.1.1' >> requirements.txt
 
 RUN pip install -r requirements.txt --ignore-installed six && python setup.py develop
 
