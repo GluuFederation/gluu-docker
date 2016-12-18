@@ -2,27 +2,37 @@ FROM gluufederation/base
 
 MAINTAINER Shouro <shouro@gluu.org>
 
-RUN groupadd -r tomcat && useradd -r -g tomcat tomcat
+RUN groupadd -r jetty && useradd -r -g jetty jetty
+
+# JDK 8 repo
+RUN echo "deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc/apt/sources.list.d/openjdk.list \
+    && echo "deb-src http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc/apt/sources.list.d/openjdk.list \
+    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 86F44E2A
 
 RUN apt-get update && apt-get install -y \
-    openjdk-7-jre-headless \
-    wget \
-    unzip \
+    openjdk-8-jre-headless \
     apache2 \
+    unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ENV TOMCAT_VERSION 7.0.65
-ENV TOMCAT_DOWNLOAD_URL http://archive.apache.org/dist/tomcat/tomcat-7/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz
+# workaround for bug on ubuntu 14.04 with openjdk-8-jre-headless
+RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
 
-# Install Tomcat
-RUN wget -q ${TOMCAT_DOWNLOAD_URL} -O /tmp/tomcat.tar.gz \
-    && tar -xzf /tmp/tomcat.tar.gz -C /opt \
-    && mv /opt/apache-tomcat-${TOMCAT_VERSION} /opt/tomcat \
-    && rm -f /tmp/tomcat.tar.gz
+ENV JETTY_VERSION 9.3.12.v20160915
+ENV JETTY_TGZ_URL https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/${JETTY_VERSION}/jetty-distribution-${JETTY_VERSION}.tar.gz
+ENV JETTY_HOME /opt/jetty
+ENV JETTY_BASE /opt/gluu/jetty
+ENV JETTY_USER_HOME_LIB /home/jetty/lib
 
-ENV OX_VERSION 2.4.4.sp1
-ENV OX_BUILD_DATE 2016-10-12
+# Install jetty
+RUN wget -q ${JETTY_TGZ_URL} -O /tmp/jetty.tar.gz \
+    && tar -xzf /tmp/jetty.tar.gz -C /opt \
+    && mv /opt/jetty-distribution-${JETTY_VERSION} ${JETTY_HOME} \
+    && rm -rf /tmp/jetty.tar.gz
+
+ENV OX_VERSION 3.0.0-SNAPSHOT
+ENV OX_BUILD_DATE 2016-12-16
 ENV OXAUTH_DOWNLOAD_URL https://ox.gluu.org/maven/org/xdi/oxauth-server/${OX_VERSION}/oxauth-server-${OX_VERSION}.war
 
 # the LABEL defined before downloading ox war/jar files to make sure
@@ -33,7 +43,9 @@ LABEL vendor="Gluu Federation" \
 
 # Install oxAuth
 RUN wget -q ${OXAUTH_DOWNLOAD_URL} -O /tmp/oxauth.war \
-    && unzip -qq /tmp/oxauth.war -d /opt/tomcat/webapps/oxauth \
+    && mkdir -p ${JETTY_BASE}/oxauth/webapps \
+    && unzip -qq /tmp/oxauth.war -d ${JETTY_BASE}/oxauth/webapps/oxauth \
+    && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/oxauth --add-to-start=deploy,http,logging,jsp,servlets,ext,http-forwarded \
     && rm -f /tmp/oxauth.war
 
 ENV JYTHON_VERSION 2.7.0
@@ -42,39 +54,31 @@ ENV JYTHON_DOWNLOAD_URL http://central.maven.org/maven2/org/python/jython-standa
 # Install Jython
 RUN wget -q ${JYTHON_DOWNLOAD_URL} -O /tmp/jython.jar \
     && unzip -q /tmp/jython.jar -d /opt/jython \
-    && ln -sf /opt/jython/Lib /opt/tomcat/webapps/oxauth/WEB-INF/lib/Lib \
     && rm -f /tmp/jython.jar
 
 # Directory for certificates
 RUN mkdir -p /etc/certs
 
 # Directory for scripts, e.g. duo_web.py
-RUN mkdir -p /opt/tomcat/conf/python
+RUN mkdir -p /etc/gluu/conf/python
 
-# Directory for custom oxAuth context
-RUN mkdir -p /opt/tomcat/conf/Catalina/localhost
-
-# Directory for custom files
-RUN mkdir -p /var/gluu/webapps/oxauth \
-    && mkdir -p /var/gluu/webapps/oxauth/pages \
-    && mkdir -p /var/gluu/webapps/oxauth/resources \
-    && mkdir -p /var/gluu/webapps/oxauth/libs
+# Directory for custom pages and resources
+RUN mkdir -p ${JETTY_BASE}/oxauth/pages
 
 # Copy static templates
-COPY duo_web.py /opt/tomcat/conf/python
-COPY cert_creds.json /etc/certs
+COPY duo_web.py /etc/gluu/conf/python
 COPY duo_creds.json /etc/certs
 COPY gplus_client_secrets.json /etc/certs
 COPY super_gluu_creds.json /etc/certs
-COPY setenv.sh /opt/tomcat/bin
+COPY cert_creds.json /etc/certs
+COPY otp_configuration.json /etc/certs
+COPY oxauth_web_resources.xml ${JETTY_BASE}/oxauth/webapps
 
-RUN mkdir -p /opt/tomcat/endorsed
-RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk16/1.46/bcprov-jdk16-1.46.jar -O /opt/tomcat/endorsed/bcprov-jdk16-1.46.jar
+RUN mkdir -p ${JETTY_USER_HOME_LIB}
+RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk16/1.46/bcprov-jdk16-1.46.jar -O ${JETTY_USER_HOME_LIB}/bcprov-jdk16-1.46.jar
 
-# Ports required by tomcat
-EXPOSE 8009
-EXPOSE 8005
+# Ports required by jetty
+EXPOSE 8080
 
 # Ports required by Apache
-EXPOSE 80
 EXPOSE 443
