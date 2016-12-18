@@ -1,4 +1,4 @@
-FROM gluubase
+FROM gluufederation/base
 
 MAINTAINER Isman <isman@gluu.org>
 
