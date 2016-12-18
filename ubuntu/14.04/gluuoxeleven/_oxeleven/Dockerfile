@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y \
 RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
 
 ENV JETTY_VERSION 9.3.12.v20160915
-ENV JETTY_TGZ_URL https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.3.12.v20160915/jetty-distribution-${JETTY_VERSION}.tar.gz
+ENV JETTY_TGZ_URL https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/${JETTY_VERSION}/jetty-distribution-${JETTY_VERSION}.tar.gz
 
 # Install jetty
 RUN wget -q ${JETTY_TGZ_URL} -O /tmp/jetty.tar.gz \
