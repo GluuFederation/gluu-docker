@@ -45,11 +45,7 @@ RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
 ENV JETTY_VERSION 9.3.12.v20160915
 ENV JETTY_TGZ_URL https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/${JETTY_VERSION}/jetty-distribution-${JETTY_VERSION}.tar.gz
 ENV JETTY_HOME /opt/jetty
-
-# This is where we put our ox app
 ENV JETTY_BASE /opt/gluu/jetty
-
-# Endorsed lib required for running the app should be put under this directory
 ENV JETTY_USER_HOME_LIB /home/jetty/lib
 
 # Install jetty
@@ -92,24 +88,10 @@ RUN wget -q ${OXIDP_DOWNLOAD_URL} -O /tmp/idp.war \
 # Directory for certificates
 RUN mkdir -p /etc/certs
 
-# # Copy static templates
-# COPY idp.xml /opt/tomcat/conf/Catalina/localhost
-# COPY idp-metadata.xml /opt/idp/metadata
-# COPY attribute-resolver.xml /opt/idp/conf
-# COPY relying-party.xml /opt/idp/conf
-# COPY attribute-filter.xml /opt/idp/conf
-# COPY internal.xml /opt/idp/conf
-# COPY service.xml /opt/idp/conf
-# COPY logging.xml /opt/idp/conf
-# COPY handler.xml /opt/idp/conf
-
-# # Libs for oxIdp
-# RUN mkdir -p /tmp/idp \
-#     && unzip -q /opt/idp/war/idp.war -d /tmp/idp \
-#     && cp /tmp/idp/WEB-INF/lib/* /opt/idp/lib \
-#     && rm -rf /tmp/idp
-# RUN wget -q https://github.com/GluuFederation/community-edition-setup/raw/master/static/idp/lib/jsp-api-2.1.jar -P /opt/idp/lib
-# RUN wget -q https://github.com/GluuFederation/community-edition-setup/raw/master/static/idp/lib/servlet-api-2.5.jar -P /opt/idp/lib
+# Copy static templates
+COPY saml-nameid.properties /opt/shibboleth-idp/conf
+COPY services.properties /opt/shibboleth-idp/conf
+COPY password-authn-config.xml /opt/shibboleth-idp/conf/authn/password-authn-config.xml
 
 # # twemproxy port
 # EXPOSE 22122
