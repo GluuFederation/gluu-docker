@@ -30,11 +30,7 @@ RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
 ENV JETTY_VERSION 9.3.12.v20160915
 ENV JETTY_TGZ_URL https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/${JETTY_VERSION}/jetty-distribution-${JETTY_VERSION}.tar.gz
 ENV JETTY_HOME /opt/jetty
-
-# This is where we put our ox app
 ENV JETTY_BASE /opt/gluu/jetty
-
-# Endorsed lib required for running the app should be put under this directory
 ENV JETTY_USER_HOME_LIB /home/jetty/lib
 
 # Install jetty
@@ -101,8 +97,6 @@ RUN unzip -q ${JETTY_BASE}/identity/webapps/identity/WEB-INF/lib/oxtrust-configu
 # Copy static templates
 COPY identity_web_resources.xml ${JETTY_BASE}/identity/webapps
 COPY oxTrustLogRotationConfiguration.xml /etc/gluu
-# COPY attribute-resolver.xml.vm /opt/tomcat/conf/shibboleth2/idp
-# COPY index.html /opt/tomcat/webapps/ROOT
 
 # Ports required by jetty
 EXPOSE 8080
