@@ -8,25 +8,10 @@ RUN groupadd -r jetty && useradd -r -g jetty jetty
 # Ubuntu packages
 # ===============
 
-# # Adds repo for twemproxy
-# RUN echo 'deb http://ppa.launchpad.net/twemproxy/stable/ubuntu trusty main' >> /etc/apt/sources.list.d/twemproxy.list \
-#     && echo 'deb-src http://ppa.launchpad.net/twemproxy/stable/ubuntu trusty main' >> /etc/apt/sources.list.d/twemproxy.list \
-#     && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F9DFF4ACC692420F
-
 # Jetty requires Java 8, hence we need to get latest OpenJDK 8 from PPA
 RUN echo "deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc/apt/sources.list.d/openjdk.list \
     && echo "deb-src http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc/apt/sources.list.d/openjdk.list \
     && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 86F44E2A
-
-# RUN apt-get update && apt-get install -y \
-#     openjdk-7-jre-headless \
-#     wget \
-#     memcached \
-#     twemproxy \
-#     apache2 \
-#     unzip \
-#     && apt-get clean \
-#     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && apt-get install -y \
     openjdk-8-jre-headless \
@@ -92,12 +77,6 @@ RUN mkdir -p /etc/certs
 COPY saml-nameid.properties /opt/shibboleth-idp/conf
 COPY services.properties /opt/shibboleth-idp/conf
 COPY password-authn-config.xml /opt/shibboleth-idp/conf/authn/password-authn-config.xml
-
-# # twemproxy port
-# EXPOSE 22122
-
-# # memcached port
-# EXPOSE 11211
 
 # Ports required by jetty
 EXPOSE 8080
