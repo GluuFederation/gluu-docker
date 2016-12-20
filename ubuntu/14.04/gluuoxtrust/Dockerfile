@@ -27,7 +27,7 @@ RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
 # Jetty
 # =====
 
-ENV JETTY_VERSION 9.3.12.v20160915
+ENV JETTY_VERSION 9.3.14.v20161028
 ENV JETTY_TGZ_URL https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/${JETTY_VERSION}/jetty-distribution-${JETTY_VERSION}.tar.gz
 ENV JETTY_HOME /opt/jetty
 ENV JETTY_BASE /opt/gluu/jetty
