@@ -4,7 +4,7 @@
     <Set name="contextPath">/oxauth/ext/resources</Set>
     <Set name="handler">
         <New class="org.eclipse.jetty.server.handler.ResourceHandler">
-            <Set name="resourceBase">/opt/gluu/jetty/oxauth/pages</Set>
+            <Set name="resourceBase">/opt/gluu/oxauth/custom/static</Set>
             <Set name="directoriesListed">false</Set>
         </New>
     </Set>
