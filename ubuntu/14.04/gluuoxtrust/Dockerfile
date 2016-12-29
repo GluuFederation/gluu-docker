@@ -56,7 +56,7 @@ RUN wget -q ${JYTHON_DOWNLOAD_URL} -O /tmp/jython.jar \
 # =======
 
 ENV OX_VERSION 3.0.0-SNAPSHOT
-ENV OX_BUILD_DATE 2016-12-17
+ENV OX_BUILD_DATE 2016-12-29
 ENV OXTRUST_DOWNLOAD_URL https://ox.gluu.org/maven/org/xdi/oxtrust-server/${OX_VERSION}/oxtrust-server-${OX_VERSION}.war
 
 # the LABEL defined before downloading ox war/jar files to make sure
@@ -88,8 +88,8 @@ RUN mkdir -p /etc/gluu
 # Directory required by oxTrust
 RUN mkdir -p /var/ox/photos /var/ox/identity/removed /var/ox/identity/cr-snapshots
 
-# Directory for custom pages and resources
-RUN mkdir -p ${JETTY_BASE}/identity/pages
+# Directory for custom pages and static files
+RUN mkdir -p ${JETTY_BASE}/identity/custom/pages ${JETTY_BASE}/identity/custom/static
 
 # Unpack Shib config
 RUN unzip -q ${JETTY_BASE}/identity/webapps/identity/WEB-INF/lib/oxtrust-configuration-${OX_VERSION}.jar shibboleth3/* -d /opt/gluu/jetty/identity/conf
