@@ -56,7 +56,7 @@ RUN wget -q ${JYTHON_DOWNLOAD_URL} -O /tmp/jython.jar \
 # =======
 
 ENV OX_VERSION 3.0.0-SNAPSHOT
-ENV OX_BUILD_DATE 2016-12-29
+ENV OX_BUILD_DATE 2016-12-31
 ENV OXTRUST_DOWNLOAD_URL https://ox.gluu.org/maven/org/xdi/oxtrust-server/${OX_VERSION}/oxtrust-server-${OX_VERSION}.war
 
 # the LABEL defined before downloading ox war/jar files to make sure
@@ -83,7 +83,7 @@ RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk16/1.46/b
 RUN mkdir -p /etc/certs
 
 # Directory for custom config
-RUN mkdir -p /etc/gluu
+RUN mkdir -p /etc/gluu/conf
 
 # Directory required by oxTrust
 RUN mkdir -p /var/ox/photos /var/ox/identity/removed /var/ox/identity/cr-snapshots
