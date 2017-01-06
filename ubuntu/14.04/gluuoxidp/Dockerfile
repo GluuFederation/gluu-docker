@@ -67,7 +67,7 @@ RUN mkdir -p /opt/shibboleth-idp/metadata \
 RUN wget -q ${OXIDP_DOWNLOAD_URL} -O /tmp/idp.war \
     && mkdir -p ${JETTY_BASE}/idp/webapps \
     && unzip -qq /tmp/idp.war -d ${JETTY_BASE}/idp/webapps/idp \
-    && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/idp --add-to-start=deploy,http,logging,jsp,ext,http-forwarded \
+    && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/idp --add-to-start=deploy,http,logging,jsp,http-forwarded \
     && rm -f /tmp/idp.war
 
 # Directory for certificates
