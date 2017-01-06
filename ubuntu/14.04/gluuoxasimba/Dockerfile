@@ -1,30 +1,50 @@
-FROM gluubase
+FROM gluufederation/base
 
 MAINTAINER Shouro <shouro@gluu.org>
 
-RUN groupadd -r tomcat && useradd -r -g tomcat tomcat
+RUN groupadd -r jetty && useradd -r -g jetty jetty
 
-# We need to install JDK to have jar executable which is required for
-# customizing and re-building asimba.war
+# ===============
+# Ubuntu packages
+# ===============
+
+# Jetty requires Java 8, hence we need to get latest OpenJDK 8 from PPA
+RUN echo "deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc/apt/sources.list.d/openjdk.list \
+    && echo "deb-src http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc/apt/sources.list.d/openjdk.list \
+    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 86F44E2A
+
 RUN apt-get update && apt-get install -y \
-    openjdk-7-jdk \
-    wget \
-    unzip \
+    openjdk-8-jre-headless \
     apache2 \
+    unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ENV TOMCAT_VERSION 7.0.65
-ENV TOMCAT_DOWNLOAD_URL http://archive.apache.org/dist/tomcat/tomcat-7/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz
+# workaround for bug on ubuntu 14.04 with openjdk-8
+RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
 
-# Install Tomcat
-RUN wget -q ${TOMCAT_DOWNLOAD_URL} -O /tmp/tomcat.tar.gz \
-    && tar -xzf /tmp/tomcat.tar.gz -C /opt \
-    && mv /opt/apache-tomcat-${TOMCAT_VERSION} /opt/tomcat \
-    && rm -f /tmp/tomcat.tar.gz
+# =====
+# Jetty
+# =====
 
-ENV OX_VERSION 2.4.4.sp1
-ENV OX_BUILD_DATE 2016-10-12
+ENV JETTY_VERSION 9.3.14.v20161028
+ENV JETTY_TGZ_URL https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/${JETTY_VERSION}/jetty-distribution-${JETTY_VERSION}.tar.gz
+ENV JETTY_HOME /opt/jetty
+ENV JETTY_BASE /opt/gluu/jetty
+ENV JETTY_USER_HOME_LIB /home/jetty/lib
+
+# Install jetty
+RUN wget -q ${JETTY_TGZ_URL} -O /tmp/jetty.tar.gz \
+    && tar -xzf /tmp/jetty.tar.gz -C /opt \
+    && mv /opt/jetty-distribution-${JETTY_VERSION} ${JETTY_HOME} \
+    && rm -rf /tmp/jetty.tar.gz
+
+# ========
+# oxAsimba
+# ========
+
+ENV OX_VERSION 3.0.0-SNAPSHOT
+ENV OX_BUILD_DATE 2016-12-09
 ENV OXASIMBA_DOWNLOAD_URL http://ox.gluu.org/maven/org/asimba/asimba-wa/${OX_VERSION}/asimba-wa-${OX_VERSION}.war
 
 # the LABEL defined before downloading ox war/jar files to make sure
@@ -35,17 +55,19 @@ LABEL vendor="Gluu Federation" \
 
 # Install oxAsimba
 RUN wget -q ${OXASIMBA_DOWNLOAD_URL} -O /tmp/oxasimba.war \
-    && cp /tmp/oxasimba.war /opt/tomcat/webapps \
+    && mkdir -p ${JETTY_BASE}/asimba/webapps \
+    && unzip -qq /tmp/oxasimba.war -d ${JETTY_BASE}/asimba/webapps/asimba \
+    && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/asimba --add-to-start=deploy,http,logging,jsp,http-forwarded \
     && rm -f /tmp/oxasimba.war
 
+RUN mkdir -p /etc/gluu/conf
 RUN mkdir -p /etc/certs
-RUN mkdir -p /tmp/asimba
-RUN mkdir -p /opt/idp/metadata
 
-# Ports required by Tomcat
-EXPOSE 8009
-EXPOSE 8005
+# Copy static templates
+COPY asimba-selector.xml /etc/gluu/conf/asimba
 
-# Ports required by apache2
-EXPOSE 80
+# Ports required by jetty
+EXPOSE 8080
+
+# Ports required by Apache
 EXPOSE 443
