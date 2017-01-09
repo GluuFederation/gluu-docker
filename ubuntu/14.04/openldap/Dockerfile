@@ -4,14 +4,28 @@ MAINTAINER Shouro <shouro@gluu.org>
 
 RUN groupadd -r ldap && useradd -r -g ldap ldap
 
+# ===============
+# Ubuntu packages
+# ===============
+
+# JDK 8 repo
+RUN echo "deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc/apt/sources.list.d/openjdk.list \
+    && echo "deb-src http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc/apt/sources.list.d/openjdk.list \
+    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 86F44E2A
+
 RUN apt-get update && apt-get install -y \
-    openjdk-7-jre-headless \
+    openjdk-8-jre-headless \
     unzip \
-    wget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# ENV variables
+# workaround for bug on ubuntu 14.04 with openjdk-8-jre-headless
+RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
+
+# ======
+# OpenDJ
+# ======
+
 ENV OPENDJ_VERSION 3.0.0.gluu-SNAPSHOT
 ENV OPENDJ_BUILD_DATE 2016-04-11
 ENV OPENDJ_DOWNLOAD_URL http://ox.gluu.org/maven/org/forgerock/opendj/opendj-server-legacy/${OPENDJ_VERSION}/opendj-server-legacy-${OPENDJ_VERSION}.zip
@@ -20,8 +34,29 @@ RUN wget -q "$OPENDJ_DOWNLOAD_URL" -P /tmp \
     && unzip -qq /tmp/opendj-server-legacy-${OPENDJ_VERSION}.zip -d /opt \
     && rm -f /tmp/opendj-server-legacy-${OPENDJ_VERSION}.zip
 
+# ========
+# OpenLDAP
+# ========
+
+ENV OPENLDAP_DEB_URL https://repo.gluu.org/ubuntu/symas-openldap-gluu.amd64_2.4.44-20161020_amd64.deb
+
+RUN wget -q ${OPENLDAP_DEB_URL} -O /tmp/openldap.deb \
+    && dpkg -i /tmp/openldap.deb \
+    && rm -rf /tmp/openldap.deb
+
+RUN mkdir -p /var/log/openldap /opt/gluu/schema/openldap
+
+COPY custom.schema /opt/gluu/schema/openldap
+COPY gluu.schema /opt/gluu/schema/openldap
+COPY openldap-syslog.conf /etc/rsyslog.d
+COPY openldap_logrotate /etc/logrotate.d
+
+# =======
+# ox Libs
+# =======
+
 ENV OX_VERSION 3.0.0-SNAPSHOT
-ENV OX_BUILD_DATE 2017-01-06
+ENV OX_BUILD_DATE 2017-01-09
 
 # the LABEL defined before downloading ox war/jar files to make sure
 # it gets the latest build for specific version
