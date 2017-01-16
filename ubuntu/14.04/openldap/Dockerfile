@@ -44,7 +44,7 @@ RUN wget -q ${OPENLDAP_DEB_URL} -O /tmp/openldap.deb \
     && dpkg -i /tmp/openldap.deb \
     && rm -rf /tmp/openldap.deb
 
-RUN mkdir -p /var/log/openldap /opt/gluu/schema/openldap
+RUN mkdir -p /var/log/openldap /opt/gluu/schema/openldap /opt/gluu/data
 
 COPY custom.schema /opt/gluu/schema/openldap
 COPY gluu.schema /opt/gluu/schema/openldap
@@ -56,7 +56,7 @@ COPY openldap_logrotate /etc/logrotate.d
 # =======
 
 ENV OX_VERSION 3.0.0-SNAPSHOT
-ENV OX_BUILD_DATE 2017-01-09
+ENV OX_BUILD_DATE 2017-01-15
 
 # the LABEL defined before downloading ox war/jar files to make sure
 # it gets the latest build for specific version
@@ -89,8 +89,8 @@ RUN mkdir -p /opt/opendj/ldif
 # Copy static templates
 COPY opendj_index.json /opt/opendj
 COPY o_site.ldif /opt/opendj/ldif
-COPY 101-ox.ldif /opt/opendj/template/config/schema
-COPY 77-customAttributes.ldif /opt/opendj/template/config/schema
+# COPY 101-ox.ldif /opt/opendj/template/config/schema
+# COPY 77-customAttributes.ldif /opt/opendj/template/config/schema
 COPY 96-eduperson.ldif /opt/opendj/template/config/schema
 
 # LDAP port

@@ -44,7 +44,7 @@ RUN wget -q ${JETTY_TGZ_URL} -O /tmp/jetty.tar.gz \
 # ========
 
 ENV OX_VERSION 3.0.0-SNAPSHOT
-ENV OX_BUILD_DATE 2016-12-09
+ENV OX_BUILD_DATE 2016-12-19
 ENV OXASIMBA_DOWNLOAD_URL http://ox.gluu.org/maven/org/asimba/asimba-wa/${OX_VERSION}/asimba-wa-${OX_VERSION}.war
 
 # the LABEL defined before downloading ox war/jar files to make sure
@@ -60,7 +60,7 @@ RUN wget -q ${OXASIMBA_DOWNLOAD_URL} -O /tmp/oxasimba.war \
     && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/asimba --add-to-start=deploy,http,logging,jsp,http-forwarded \
     && rm -f /tmp/oxasimba.war
 
-RUN mkdir -p /etc/gluu/conf
+RUN mkdir -p /etc/gluu/conf/asimba
 RUN mkdir -p /etc/certs
 
 # Copy static templates
