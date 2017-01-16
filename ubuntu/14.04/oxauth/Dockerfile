@@ -56,7 +56,7 @@ RUN wget -q ${JYTHON_DOWNLOAD_URL} -O /tmp/jython.jar \
 # ======
 
 ENV OX_VERSION 3.0.0-SNAPSHOT
-ENV OX_BUILD_DATE 2017-01-06
+ENV OX_BUILD_DATE 2017-01-15
 ENV OXAUTH_DOWNLOAD_URL https://ox.gluu.org/maven/org/xdi/oxauth-server/${OX_VERSION}/oxauth-server-${OX_VERSION}.war
 
 # the LABEL defined before downloading ox war/jar files to make sure
@@ -79,13 +79,14 @@ RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk16/1.46/b
 RUN mkdir -p /etc/certs
 
 # Directory for scripts, e.g. duo_web.py
-RUN mkdir -p /etc/gluu/conf/python
+RUN mkdir -p /opt/gluu/python/libs
 
 # Directory for custom pages and static files
 RUN mkdir -p ${JETTY_BASE}/oxauth/custom/pages ${JETTY_BASE}/oxauth/custom/static
 
 # Copy static templates
-COPY duo_web.py /etc/gluu/conf/python
+COPY duo_web.py /opt/gluu/python/libs
+COPY python.txt /opt/gluu/python/libs
 COPY duo_creds.json /etc/certs
 COPY gplus_client_secrets.json /etc/certs
 COPY super_gluu_creds.json /etc/certs
