@@ -16,6 +16,7 @@ RUN mkdir -p /etc/certs
 RUN openssl dhparam -out /etc/certs/dhparams.pem 2048
 
 COPY index.html /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/conf.d
 
 LABEL vendor="Gluu Federation"
 
