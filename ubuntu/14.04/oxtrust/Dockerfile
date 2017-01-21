@@ -39,6 +39,11 @@ RUN wget -q ${JETTY_TGZ_URL} -O /tmp/jetty.tar.gz \
     && mv /opt/jetty-distribution-${JETTY_VERSION} ${JETTY_HOME} \
     && rm -rf /tmp/jetty.tar.gz
 
+RUN mv ${JETTY_HOME}/etc/webdefault.xml ${JETTY_HOME}/etc/webdefault.xml.bak
+RUN mv ${JETTY_HOME}/etc/jetty.xml ${JETTY_HOME}/etc/jetty.xml.bak
+COPY webdefault.xml ${JETTY_HOME}/etc/
+COPY jetty.xml ${JETTY_HOME}/etc/
+
 # ======
 # Jython
 # ======
@@ -56,7 +61,7 @@ RUN wget -q ${JYTHON_DOWNLOAD_URL} -O /tmp/jython.jar \
 # =======
 
 ENV OX_VERSION 3.0.0-SNAPSHOT
-ENV OX_BUILD_DATE 2017-01-15
+ENV OX_BUILD_DATE 2017-01-20
 ENV OXTRUST_DOWNLOAD_URL https://ox.gluu.org/maven/org/xdi/oxtrust-server/${OX_VERSION}/oxtrust-server-${OX_VERSION}.war
 
 # the LABEL defined before downloading ox war/jar files to make sure
