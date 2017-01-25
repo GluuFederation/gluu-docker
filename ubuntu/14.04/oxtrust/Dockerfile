@@ -15,7 +15,6 @@ RUN echo "deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc
 
 RUN apt-get update && apt-get install -y \
     openjdk-8-jre-headless \
-    apache2 \
     unzip \
     facter \
     && apt-get clean \
@@ -106,6 +105,3 @@ COPY oxTrustLogRotationConfiguration.xml /etc/gluu
 
 # Ports required by jetty
 EXPOSE 8080
-
-# Ports required by Apache
-EXPOSE 443
