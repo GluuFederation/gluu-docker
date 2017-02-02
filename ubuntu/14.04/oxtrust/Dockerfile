@@ -61,7 +61,7 @@ RUN wget -q ${JYTHON_DOWNLOAD_URL} -O /tmp/jython.jar \
 # =======
 
 ENV OX_VERSION 3.0.0-SNAPSHOT
-ENV OX_BUILD_DATE 2017-01-20
+ENV OX_BUILD_DATE 2017-02-02
 ENV OXTRUST_DOWNLOAD_URL https://ox.gluu.org/maven/org/xdi/oxtrust-server/${OX_VERSION}/oxtrust-server-${OX_VERSION}.war
 
 # the LABEL defined before downloading ox war/jar files to make sure
@@ -102,6 +102,7 @@ RUN unzip -q ${JETTY_BASE}/identity/webapps/identity/WEB-INF/lib/oxtrust-configu
 # Copy static templates
 COPY identity_web_resources.xml ${JETTY_BASE}/identity/webapps
 COPY oxTrustLogRotationConfiguration.xml /etc/gluu
+COPY jetty.supervisord.conf /etc/supervisor/conf.d
 
 # Ports required by jetty
 EXPOSE 8080
