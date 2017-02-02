@@ -13,7 +13,6 @@ RUN echo "deb http://ppa.launchpad.net/pkg-opendnssec/ppa/ubuntu trusty main" >>
 
 RUN apt-get update && apt-get install -y \
     openjdk-7-jre-headless \
-    tomcat7 \
     softhsm2 \
     unzip \
     && apt-get clean \
