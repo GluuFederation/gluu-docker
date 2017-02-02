@@ -28,9 +28,9 @@ RUN wget -q ${TOMCAT_DOWNLOAD_URL} -O /tmp/tomcat.tar.gz \
 && rm -f /tmp/tomcat.tar.gz
 
 # Install oxEleven in tomcat
-RUN wget -q ${OXELEVEN_DOWNLOAD_URL} -O /tmp/oxauth.war \
-    && unzip -qq /tmp/oxauth.war -d /opt/tomcat/webapps/oxauth \
-    && rm -f /tmp/oxauth.war
+RUN wget -q ${OXELEVEN_DOWNLOAD_URL} -O /tmp/oxeleven.war \
+    && unzip -qq /tmp/oxeleven.war -d /opt/tomcat/webapps/oxeleven \
+    && rm -f /tmp/oxeleven.war
 
 # Directory for tokens
 RUN mkdir -p  /var/lib/softhsm/tokens
