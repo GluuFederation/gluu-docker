@@ -15,7 +15,6 @@ RUN echo "deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc
 
 RUN apt-get update && apt-get install -y \
     openjdk-8-jre-headless \
-    apache2 \
     unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -80,6 +79,3 @@ COPY password-authn-config.xml /opt/shibboleth-idp/conf/authn/password-authn-con
 
 # Ports required by jetty
 EXPOSE 8080
-
-# Ports required by Apache
-EXPOSE 443
