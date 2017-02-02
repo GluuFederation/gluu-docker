@@ -2,9 +2,11 @@ FROM gluufederation/base
 
 MAINTAINER Shouro <shouro@gluu.org>
 
-ENV OXELEVEN_DOWNLOAD_URL https://ox.gluu.org/maven/org/gluu/oxeleven-server/3.0.0-SNAPSHOT/oxeleven-server-3.0.0-SNAPSHOT.war
-
 RUN groupadd -r tomcat && useradd -r -g tomcat tomcat
+
+# ===============
+# Ubuntu packages
+# ===============
 
 # SoftHSM2 repo
 RUN echo "deb http://ppa.launchpad.net/pkg-opendnssec/ppa/ubuntu trusty main" >> /etc/apt/sources.list.d/opendnssec.list \
@@ -18,6 +20,10 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# ======
+# Tomcat
+# ======
+
 ENV TOMCAT_VERSION 7.0.65
 ENV TOMCAT_DOWNLOAD_URL http://archive.apache.org/dist/tomcat/tomcat-7/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz
 
@@ -26,6 +32,14 @@ RUN wget -q ${TOMCAT_DOWNLOAD_URL} -O /tmp/tomcat.tar.gz \
     && tar -xzf /tmp/tomcat.tar.gz -C /opt \
     && mv /opt/apache-tomcat-${TOMCAT_VERSION} /opt/tomcat \
 && rm -f /tmp/tomcat.tar.gz
+
+# ========
+# oxEleven
+# ========
+
+ENV OX_VERSION 3.0.0-SNAPSHOT
+ENV OX_BUILD_DATE 2017-01-25
+ENV OXELEVEN_DOWNLOAD_URL https://ox.gluu.org/maven/org/gluu/oxeleven-server/${OX_VERSION}/oxeleven-server-${OX_VERSION}.war
 
 # Install oxEleven in tomcat
 RUN wget -q ${OXELEVEN_DOWNLOAD_URL} -O /tmp/oxeleven.war \
@@ -46,8 +60,8 @@ RUN cp /tmp/oxeleven-config.json /opt/tomcat/conf \
 COPY tomcat.supervisord.conf /etc/supervisor/conf.d
 
 LABEL vendor="Gluu Federation" \
-      org.gluu.oxeleven-server.version="3.0.0-SNAPSHOT" \
-      org.gluu.oxeleven-server.build-date="2017-01-25"
+      org.gluu.oxeleven-server.version="${OX_VERSION}" \
+      org.gluu.oxeleven-server.build-date="${OX_BUILD_DATE}"
 
 # Ports required by tomcat
 EXPOSE 8080
