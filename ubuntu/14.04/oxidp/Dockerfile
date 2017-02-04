@@ -43,7 +43,7 @@ RUN wget -q ${JETTY_TGZ_URL} -O /tmp/jetty.tar.gz \
 # ====================
 
 ENV OX_VERSION 3.0.0-SNAPSHOT
-ENV OX_BUILD_DATE 2016-11-29
+ENV OX_BUILD_DATE 2017-01-20
 ENV OXIDP_DOWNLOAD_URL https://ox.gluu.org/maven/org/xdi/oxshibbolethIdp/${OX_VERSION}/oxshibbolethIdp-${OX_VERSION}.war
 
 # the LABEL defined before downloading ox war/jar files to make sure
@@ -76,6 +76,7 @@ RUN mkdir -p /etc/certs
 COPY saml-nameid.properties /opt/shibboleth-idp/conf
 COPY services.properties /opt/shibboleth-idp/conf
 COPY password-authn-config.xml /opt/shibboleth-idp/conf/authn/password-authn-config.xml
+COPY jetty.supervisord.conf /etc/supervisor/conf.d
 
 # Ports required by jetty
 EXPOSE 8080
