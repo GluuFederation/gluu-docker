@@ -59,6 +59,9 @@ RUN cp /tmp/oxeleven-config.json /opt/tomcat/conf \
     && rm /tmp/setup_n_render.sh
 COPY tomcat.supervisord.conf /etc/supervisor/conf.d
 
+# Set openjdk 7 as default java
+RUN cd /usr/lib/jvm && ln -s java-1.7.0-openjdk-amd64 default-java
+
 LABEL vendor="Gluu Federation" \
       org.gluu.oxeleven-server.version="${OX_VERSION}" \
       org.gluu.oxeleven-server.build-date="${OX_BUILD_DATE}"

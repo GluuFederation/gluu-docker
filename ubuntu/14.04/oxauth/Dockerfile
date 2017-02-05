@@ -99,5 +99,8 @@ COPY otp_configuration.json /etc/certs
 COPY oxauth_web_resources.xml ${JETTY_BASE}/oxauth/webapps
 COPY jetty.supervisord.conf /etc/supervisor/conf.d
 
+# Set openjdk 8 as default java
+RUN cd /usr/lib/jvm && ln -s java-1.8.0-openjdk-amd64 default-java
+
 # Ports required by jetty
 EXPOSE 8080

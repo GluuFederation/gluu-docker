@@ -93,17 +93,11 @@ COPY o_site.ldif /opt/opendj/ldif
 # COPY 77-customAttributes.ldif /opt/opendj/template/config/schema
 COPY 96-eduperson.ldif /opt/opendj/template/config/schema
 
-# LDAP port
-EXPOSE 1389
+# Set openjdk 8 as default java
+RUN cd /usr/lib/jvm && ln -s java-1.8.0-openjdk-amd64 default-java
 
 # LDAPS port
 EXPOSE 1636
-
-# admin connector port
-EXPOSE 4444
-
-# JMX port
-EXPOSE 1689
 
 # replication port
 EXPOSE 8989
