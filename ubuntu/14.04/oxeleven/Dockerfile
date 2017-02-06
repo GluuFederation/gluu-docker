@@ -37,8 +37,8 @@ RUN wget -q ${TOMCAT_DOWNLOAD_URL} -O /tmp/tomcat.tar.gz \
 # oxEleven
 # ========
 
-ENV OX_VERSION 3.0.0-SNAPSHOT
-ENV OX_BUILD_DATE 2017-01-25
+ENV OX_VERSION 3.0.0
+ENV OX_BUILD_DATE 2017-02-06
 ENV OXELEVEN_DOWNLOAD_URL https://ox.gluu.org/maven/org/gluu/oxeleven-server/${OX_VERSION}/oxeleven-server-${OX_VERSION}.war
 
 # Install oxEleven in tomcat
