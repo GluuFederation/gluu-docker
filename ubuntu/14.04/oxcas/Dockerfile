@@ -42,8 +42,8 @@ RUN wget -q ${JETTY_TGZ_URL} -O /tmp/jetty.tar.gz \
 # oxCAS
 # =====
 
-ENV OX_VERSION 3.0.0-SNAPSHOT
-ENV OX_BUILD_DATE 2017-01-20
+ENV OX_VERSION 3.0.0
+ENV OX_BUILD_DATE 2017-02-06
 ENV OXCAS_DOWNLOAD_URL https://ox.gluu.org/maven/org/xdi/ox-cas-server-webapp/${OX_VERSION}/ox-cas-server-webapp-${OX_VERSION}.war
 
 # the LABEL defined before downloading ox war/jar files to make sure

@@ -42,8 +42,8 @@ RUN wget -q ${JETTY_TGZ_URL} -O /tmp/jetty.tar.gz \
 # oxAsimba
 # ========
 
-ENV OX_VERSION 3.0.0-SNAPSHOT
-ENV OX_BUILD_DATE 2017-01-30
+ENV OX_VERSION 3.0.0
+ENV OX_BUILD_DATE 2017-02-06
 ENV OXASIMBA_DOWNLOAD_URL http://ox.gluu.org/maven/org/asimba/asimba-wa/${OX_VERSION}/asimba-wa-${OX_VERSION}.war
 
 # the LABEL defined before downloading ox war/jar files to make sure

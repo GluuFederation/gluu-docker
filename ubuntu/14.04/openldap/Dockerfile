@@ -55,8 +55,8 @@ COPY openldap_logrotate /etc/logrotate.d
 # ox Libs
 # =======
 
-ENV OX_VERSION 3.0.0-SNAPSHOT
-ENV OX_BUILD_DATE 2017-01-15
+ENV OX_VERSION 3.0.0
+ENV OX_BUILD_DATE 2017-02-06
 
 # the LABEL defined before downloading ox war/jar files to make sure
 # it gets the latest build for specific version
