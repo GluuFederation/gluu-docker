@@ -59,8 +59,8 @@ RUN wget -q ${JYTHON_DOWNLOAD_URL} -O /tmp/jython.jar \
 # oxAuth
 # ======
 
-ENV OX_VERSION 3.0.0-SNAPSHOT
-ENV OX_BUILD_DATE 2017-02-02
+ENV OX_VERSION 3.0.0
+ENV OX_BUILD_DATE 2017-02-06
 ENV OXAUTH_DOWNLOAD_URL https://ox.gluu.org/maven/org/xdi/oxauth-server/${OX_VERSION}/oxauth-server-${OX_VERSION}.war
 
 # the LABEL defined before downloading ox war/jar files to make sure
@@ -98,6 +98,9 @@ COPY cert_creds.json /etc/certs
 COPY otp_configuration.json /etc/certs
 COPY oxauth_web_resources.xml ${JETTY_BASE}/oxauth/webapps
 COPY jetty.supervisord.conf /etc/supervisor/conf.d
+
+# Set openjdk 8 as default java
+RUN cd /usr/lib/jvm && ln -s java-1.8.0-openjdk-amd64 default-java
 
 # Ports required by jetty
 EXPOSE 8080

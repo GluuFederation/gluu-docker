@@ -1,39 +1,87 @@
-FROM tomcat:7
+FROM gluufederation/base
 
 MAINTAINER Shouro <shouro@gluu.org>
 
-ENV OXELINK https://ox.gluu.org/maven/org/gluu/oxeleven-server/2.4.4.sp1/oxeleven-server-2.4.4.sp1.war
+RUN groupadd -r jetty && useradd -r -g jetty jetty
 
-#RUN groupadd -r tomcat && useradd -r -g tomcat tomcat
+# ===============
+# Ubuntu packages
+# ===============
 
-RUN buildDeps=' \
-        autoconf \
-        automake \
-        build-essential \
-        libtool \
-        libssl-dev \
-        libsqlite3-dev \
-    ' \
-    && apt-get update && apt-get install -y $buildDeps git \
-    && rm -rf /var/lib/apt/lists/* \
-    && git clone https://github.com/opendnssec/SoftHSMv2.git /usr/src/SoftHSMv2 \
-    && cd /usr/src/SoftHSMv2 \
-    && sh autogen.sh \
-    && ./configure \
-    && make \
-    && make install \
-    && rm -rf /usr/src/SoftHSMv2 \
-    && apt-get purge -y --auto-remove $buildDeps \
-    && curl -L "$OXELINK" > /usr/local/tomcat/webapps/oxeleven.war
+# SoftHSM2 repo
+RUN echo "deb http://ppa.launchpad.net/pkg-opendnssec/ppa/ubuntu trusty main" >> /etc/apt/sources.list.d/opendnssec.list \
+    && echo "deb-src http://ppa.launchpad.net/pkg-opendnssec/ppa/ubuntu trusty main" >> /etc/apt/sources.list.d/opendnssec.list \
+    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 26535DB3
 
-#install gosu
-RUN curl -o /usr/local/bin/gosu -SL 'https://github.com/tianon/gosu/releases/download/1.10/gosu-amd64' && chmod +x /usr/local/bin/gosu
+# JDK 8 repo
+RUN echo "deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc/apt/sources.list.d/openjdk.list \
+    && echo "deb-src http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc/apt/sources.list.d/openjdk.list \
+    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 86F44E2A
 
-COPY oxeleven-config.json.tmpl /usr/local/tomcat/conf
-COPY docker-entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN apt-get update && apt-get install -y \
+    openjdk-8-jre-headless \
+    softhsm2 \
+    unzip \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-ENTRYPOINT ["/entrypoint.sh"]
+# workaround for bug on ubuntu 14.04 with openjdk-8-jre-headless
+RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
 
+# =====
+# Jetty
+# =====
+
+ENV JETTY_VERSION 9.3.12.v20160915
+ENV JETTY_TGZ_URL https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/${JETTY_VERSION}/jetty-distribution-${JETTY_VERSION}.tar.gz
+ENV JETTY_HOME /opt/jetty
+ENV JETTY_BASE /opt/gluu/jetty
+ENV JETTY_USER_HOME_LIB /home/jetty/lib
+
+# Install jetty
+RUN wget -q ${JETTY_TGZ_URL} -O /tmp/jetty.tar.gz \
+    && tar -xzf /tmp/jetty.tar.gz -C /opt \
+    && mv /opt/jetty-distribution-${JETTY_VERSION} /opt/jetty \
+    && rm -rf /tmp/jetty.tar.gz
+
+# ========
+# oxEleven
+# ========
+
+ENV OX_VERSION 3.0.0-SNAPSHOT
+ENV OX_BUILD_DATE 2017-01-25
+ENV OXELEVEN_DOWNLOAD_URL https://ox.gluu.org/maven/org/gluu/oxeleven-server/${OX_VERSION}/oxeleven-server-${OX_VERSION}.war
+
+# Install oxEleven in jetty
+RUN wget -q ${OXELEVEN_DOWNLOAD_URL} -O /tmp/oxeleven.war \
+    && mkdir -p ${JETTY_BASE}/oxeleven/webapps \
+    && unzip -qq /tmp/oxeleven.war -d ${JETTY_BASE}/oxeleven/webapps/oxeleven \
+    && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/oxeleven --add-to-start=deploy,http,logging,jsp \
+    && rm -f /tmp/oxeleven.war
+
+# Directory for tokens
+RUN mkdir -p  /var/lib/softhsm/tokens
+
+# Directory for certificates
+RUN mkdir -p /etc/certs
+
+# Directory for config required by oxEleven (e.g. oxeleven-config.json)
+RUN mkdir -p /etc/gluu/conf
+
+# Copy static templates
+COPY oxeleven-config.json.tmpl /tmp
+COPY setup_n_render.sh /tmp
+COPY jetty.supervisord.conf /etc/supervisor/conf.d
+
+RUN chmod +x /tmp/setup_n_render.sh
+RUN /tmp/setup_n_render.sh
+RUN cp /tmp/oxeleven-config.json /etc/gluu/conf \
+    && rm /tmp/oxeleven-config.json.tmpl \
+    && rm /tmp/setup_n_render.sh
+
+LABEL vendor="Gluu Federation" \
+      org.gluu.oxeleven-server.version="${OX_VERSION}" \
+      org.gluu.oxeleven-server.build-date="${OX_BUILD_DATE}"
+
+# Ports required by tomcat
 EXPOSE 8080
-CMD ["oxeleven", "1234"]

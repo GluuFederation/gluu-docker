@@ -55,8 +55,8 @@ COPY openldap_logrotate /etc/logrotate.d
 # ox Libs
 # =======
 
-ENV OX_VERSION 3.0.0-SNAPSHOT
-ENV OX_BUILD_DATE 2017-01-15
+ENV OX_VERSION 3.0.0
+ENV OX_BUILD_DATE 2017-02-06
 
 # the LABEL defined before downloading ox war/jar files to make sure
 # it gets the latest build for specific version
@@ -93,17 +93,11 @@ COPY o_site.ldif /opt/opendj/ldif
 # COPY 77-customAttributes.ldif /opt/opendj/template/config/schema
 COPY 96-eduperson.ldif /opt/opendj/template/config/schema
 
-# LDAP port
-EXPOSE 1389
+# Set openjdk 8 as default java
+RUN cd /usr/lib/jvm && ln -s java-1.8.0-openjdk-amd64 default-java
 
 # LDAPS port
 EXPOSE 1636
-
-# admin connector port
-EXPOSE 4444
-
-# JMX port
-EXPOSE 1689
 
 # replication port
 EXPOSE 8989
