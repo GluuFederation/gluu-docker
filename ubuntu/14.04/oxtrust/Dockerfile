@@ -2,8 +2,6 @@ FROM gluufederation/base
 
 MAINTAINER Shouro <shouro@gluu.org>
 
-RUN groupadd -r jetty && useradd -r -g jetty jetty
-
 # ===============
 # Ubuntu packages
 # ===============
