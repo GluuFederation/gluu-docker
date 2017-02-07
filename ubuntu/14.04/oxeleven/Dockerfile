@@ -2,8 +2,6 @@ FROM gluufederation/base
 
 MAINTAINER Shouro <shouro@gluu.org>
 
-RUN groupadd -r jetty && useradd -r -g jetty jetty
-
 # ===============
 # Ubuntu packages
 # ===============
@@ -48,8 +46,8 @@ RUN wget -q ${JETTY_TGZ_URL} -O /tmp/jetty.tar.gz \
 # oxEleven
 # ========
 
-ENV OX_VERSION 3.0.0-SNAPSHOT
-ENV OX_BUILD_DATE 2017-01-25
+ENV OX_VERSION 3.0.0
+ENV OX_BUILD_DATE 2017-02-06
 ENV OXELEVEN_DOWNLOAD_URL https://ox.gluu.org/maven/org/gluu/oxeleven-server/${OX_VERSION}/oxeleven-server-${OX_VERSION}.war
 
 # Install oxEleven in jetty
@@ -83,5 +81,5 @@ LABEL vendor="Gluu Federation" \
       org.gluu.oxeleven-server.version="${OX_VERSION}" \
       org.gluu.oxeleven-server.build-date="${OX_BUILD_DATE}"
 
-# Ports required by tomcat
+# Ports required by jetty
 EXPOSE 8080
