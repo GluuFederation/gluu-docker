@@ -20,11 +20,17 @@ RUN apt-get update && apt-get install -y \
     openjdk-8-jre-headless \
     softhsm2 \
     unzip \
+    curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # workaround for bug on ubuntu 14.04 with openjdk-8-jre-headless
 RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
+
+# =====
+# gosu
+# =====
+RUN curl -o /usr/local/bin/gosu -SL 'https://github.com/tianon/gosu/releases/download/1.10/gosu-amd64' && chmod +x /usr/local/bin/gosu
 
 # =====
 # Jetty
@@ -68,14 +74,12 @@ RUN mkdir -p /etc/gluu/conf
 
 # Copy static templates
 COPY oxeleven-config.json.tmpl /tmp
-COPY setup_n_render.sh /tmp
 COPY jetty.supervisord.conf /etc/supervisor/conf.d
 
-RUN chmod +x /tmp/setup_n_render.sh
-RUN /tmp/setup_n_render.sh
-RUN cp /tmp/oxeleven-config.json /etc/gluu/conf \
-    && rm /tmp/oxeleven-config.json.tmpl \
-    && rm /tmp/setup_n_render.sh
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
 
 LABEL vendor="Gluu Federation" \
       org.gluu.oxeleven-server.version="${OX_VERSION}" \
