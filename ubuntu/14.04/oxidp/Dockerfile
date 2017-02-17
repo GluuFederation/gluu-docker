@@ -43,7 +43,7 @@ RUN wget -q ${JETTY_TGZ_URL} -O /tmp/jetty.tar.gz \
 # ====================
 
 ENV OX_VERSION 3.0.0
-ENV OX_BUILD_DATE 2017-02-06
+ENV OX_BUILD_DATE 2017-02-16
 ENV OXIDP_DOWNLOAD_URL https://ox.gluu.org/maven/org/xdi/oxshibbolethIdp/${OX_VERSION}/oxshibbolethIdp-${OX_VERSION}.war
 
 # the LABEL defined before downloading ox war/jar files to make sure
