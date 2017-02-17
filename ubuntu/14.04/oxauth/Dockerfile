@@ -58,7 +58,7 @@ RUN wget -q ${JYTHON_DOWNLOAD_URL} -O /tmp/jython.jar \
 # ======
 
 ENV OX_VERSION 3.0.0
-ENV OX_BUILD_DATE 2017-02-06
+ENV OX_BUILD_DATE 2017-02-16
 ENV OXAUTH_DOWNLOAD_URL https://ox.gluu.org/maven/org/xdi/oxauth-server/${OX_VERSION}/oxauth-server-${OX_VERSION}.war
 
 # the LABEL defined before downloading ox war/jar files to make sure
