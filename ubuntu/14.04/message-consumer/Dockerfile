@@ -51,8 +51,8 @@ RUN wget -q $MESSAGE_CONSUMER_DOWNLOAD_URL -O /tmp/message-consumer.zip \
     && rm -rf /tmp/message-consumer-master /tmp/message-consumer.zip
 
 RUN mkdir -p /etc/message-consumer /var/log/message-consumer
-COPY docker-entrypoint.sh /
-RUN chmod +x /docker-entrypoint.sh
-COPY mc.supervisord.conf /etc/supervisor/conf.d
+COPY run-message-consumer.sh /
+RUN chmod +x /run-message-consumer.sh
+COPY message-consumer.supervisord.conf /etc/supervisor/conf.d
 
 EXPOSE 9339
