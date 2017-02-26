@@ -9,10 +9,11 @@ if [ "$1" = 'message-consumer' ]; then
         APP_OPTS="--spring.config.location=/etc/message-consumer/ --spring.config.name=application-gluu"
     else
         # fallback to default properties
-        APP_OPTS="--spring.profiles.active=prod-mysql"
+        APP_OPTS="--database=mysql"
     fi
 
     exec java -jar /opt/message-consumer-0.0.1-SNAPSHOT.jar $APP_OPTS
+
 fi
 
 # run everything else
