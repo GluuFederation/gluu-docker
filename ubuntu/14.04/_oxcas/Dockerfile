@@ -14,7 +14,7 @@ RUN echo "deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc
     && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 86F44E2A
 
 RUN apt-get update && apt-get install -y \
-    openjdk-8-jre-headless \
+    openjdk-8-jdk \
     unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -38,32 +38,31 @@ RUN wget -q ${JETTY_TGZ_URL} -O /tmp/jetty.tar.gz \
     && mv /opt/jetty-distribution-${JETTY_VERSION} ${JETTY_HOME} \
     && rm -rf /tmp/jetty.tar.gz
 
-# ========
-# oxAsimba
-# ========
+# =====
+# oxCAS
+# =====
 
-ENV OX_VERSION 3.0.0
-ENV OX_BUILD_DATE 2017-02-06
-ENV OXASIMBA_DOWNLOAD_URL http://ox.gluu.org/maven/org/asimba/asimba-wa/${OX_VERSION}/asimba-wa-${OX_VERSION}.war
+ENV OX_VERSION 3.0.1
+ENV OX_BUILD_DATE 2017-02-24
+ENV OXCAS_DOWNLOAD_URL https://ox.gluu.org/maven/org/xdi/ox-cas-server-webapp/${OX_VERSION}/ox-cas-server-webapp-${OX_VERSION}.war
 
 # the LABEL defined before downloading ox war/jar files to make sure
 # it gets the latest build for specific version
 LABEL vendor="Gluu Federation" \
-      org.gluu.asimba-wa.version="${OX_VERSION}" \
-      org.gluu.asimba-wa.build-date="${OX_BUILD_DATE}"
+      org.gluu.oxcas-server-webapp.version="${OX_VERSION}" \
+      org.gluu.oxcas-server-webapp.build-date="${OX_BUILD_DATE}"
 
-# Install oxAsimba
-RUN wget -q ${OXASIMBA_DOWNLOAD_URL} -O /tmp/oxasimba.war \
-    && mkdir -p ${JETTY_BASE}/asimba/webapps \
-    && unzip -qq /tmp/oxasimba.war -d ${JETTY_BASE}/asimba/webapps/asimba \
-    && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/asimba --add-to-start=deploy,http,logging,jsp,http-forwarded \
-    && rm -f /tmp/oxasimba.war
+# # Install oxCAS
+RUN wget -q ${OXCAS_DOWNLOAD_URL} -O /tmp/oxcas.war \
+    && mkdir -p ${JETTY_BASE}/cas/webapps \
+    && unzip -qq /tmp/oxcas.war -d ${JETTY_BASE}/cas/webapps/cas \
+    && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/cas --add-to-start=deploy,http,logging,jsp,http-forwarded \
+    && rm -f /tmp/oxcas.war
 
-RUN mkdir -p /etc/gluu/conf/asimba
 RUN mkdir -p /etc/certs
+RUN mkdir -p /tmp/cas
 
 # Copy static templates
-COPY asimba-selector.xml /etc/gluu/conf/asimba
 COPY jetty.supervisord.conf /etc/supervisor/conf.d
 
 # Set openjdk 8 as default java

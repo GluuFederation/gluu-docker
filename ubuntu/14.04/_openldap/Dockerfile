@@ -56,7 +56,7 @@ COPY openldap_logrotate /etc/logrotate.d
 # =======
 
 ENV OX_VERSION 3.0.0
-ENV OX_BUILD_DATE 2017-02-06
+ENV OX_BUILD_DATE 2017-02-16
 
 # the LABEL defined before downloading ox war/jar files to make sure
 # it gets the latest build for specific version
@@ -70,15 +70,26 @@ LABEL vendor="Gluu Federation" \
 
 # JAR files required to generate OpenID Connect keys
 RUN mkdir -p /opt/gluu/lib
-RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.54/bcprov-jdk15on-1.54.jar -O /opt/gluu/lib/bcprov-jdk15on-1.54.jar
-RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.54/bcpkix-jdk15on-1.54.jar -O /opt/gluu/lib/bcpkix-jdk15on-1.54.jar
-RUN wget -q http://central.maven.org/maven2/org/codehaus/jettison/jettison/1.3/jettison-1.3.jar -O /opt/gluu/lib/jettison-1.3.jar
-RUN wget -q http://central.maven.org/maven2/commons-lang/commons-lang/2.6/commons-lang-2.6.jar -O /opt/gluu/lib/commons-lang-2.6.jar
-RUN wget -q http://central.maven.org/maven2/log4j/log4j/1.2.14/log4j-1.2.14.jar -O /opt/gluu/lib/log4j-1.2.14.jar
-RUN wget -q http://central.maven.org/maven2/commons-codec/commons-codec/1.5/commons-codec-1.5.jar -O /opt/gluu/lib/commons-codec-1.5.jar
-RUN wget -q http://central.maven.org/maven2/commons-cli/commons-cli/1.2/commons-cli-1.2.jar -O /opt/gluu/lib/commons-cli-1.2.jar
-RUN wget -q https://ox.gluu.org/maven/org/xdi/oxauth-model/${OX_VERSION}/oxauth-model-${OX_VERSION}.jar -O /opt/gluu/lib/oxauth-model.jar
-RUN wget -q https://ox.gluu.org/maven/org/xdi/oxauth-server/${OX_VERSION}/oxauth-server-${OX_VERSION}.jar -O /opt/gluu/lib/oxauth-server.jar
+RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcpkix-jdk15on/1.54/bcpkix-jdk15on-1.54.jar -P /opt/gluu/lib
+RUN wget -q http://central.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.54/bcprov-jdk15on-1.54.jar -P /opt/gluu/lib
+RUN wget -q http://central.maven.org/maven2/commons-cli/commons-cli/1.3.1/commons-cli-1.3.1.jar -P /opt/gluu/lib
+RUN wget -q http://central.maven.org/maven2/commons-codec/commons-codec/1.7/commons-codec-1.7.jar -P /opt/gluu/lib
+RUN wget -q http://central.maven.org/maven2/commons-io/commons-io/2.4/commons-io-2.4.jar -P /opt/gluu/lib
+RUN wget -q http://central.maven.org/maven2/commons-lang/commons-lang/2.6/commons-lang-2.6.jar -P /opt/gluu/lib
+RUN wget -q http://central.maven.org/maven2/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar -P /opt/gluu/lib
+RUN wget -q http://central.maven.org/maven2/com/google/guava/guava/19.0/guava-19.0.jar -P /opt/gluu/lib
+RUN wget -q http://central.maven.org/maven2/org/apache/httpcomponents/httpclient/4.3.6/httpclient-4.3.6.jar -P /opt/gluu/lib
+RUN wget -q http://central.maven.org/maven2/org/apache/httpcomponents/httpcore/4.3.3/httpcore-4.3.3.jar -P /opt/gluu/lib
+RUN wget -q http://central.maven.org/maven2/org/jboss/resteasy/jaxrs-api/2.3.7.Final/jaxrs-api-2.3.7.Final.jar -P /opt/gluu/lib
+RUN wget -q http://central.maven.org/maven2/org/codehaus/jettison/jettison/1.3/jettison-1.3.jar -P /opt/gluu/lib
+RUN wget -q http://central.maven.org/maven2/org/apache/logging/log4j/log4j-1.2-api/2.7/log4j-1.2-api-2.7.jar -P /opt/gluu/lib
+RUN wget -q http://central.maven.org/maven2/org/apache/logging/log4j/log4j-api/2.7/log4j-api-2.7.jar -P /opt/gluu/lib
+RUN wget -q http://central.maven.org/maven2/org/apache/logging/log4j/log4j-core/2.7/log4j-core-2.7.jar -P /opt/gluu/lib
+RUN wget -q http://central.maven.org/maven2/org/jboss/resteasy/resteasy-jaxrs/2.3.7.Final/resteasy-jaxrs-2.3.7.Final.jar -P /opt/gluu/lib
+RUN wget -q https://ox.gluu.org/maven/org/xdi/oxauth-client/${OX_VERSION}/oxauth-client-${OX_VERSION}.jar -P /opt/gluu/lib
+RUN wget -q https://ox.gluu.org/maven/org/xdi/oxauth-model/${OX_VERSION}/oxauth-model-${OX_VERSION}.jar -P /opt/gluu/lib
+RUN wget -q https://ox.gluu.org/maven/org/gluu/oxeleven-client/${OX_VERSION}/oxeleven-client-${OX_VERSION}.jar -P /opt/gluu/lib
+RUN wget -q https://ox.gluu.org/maven/org/gluu/oxeleven-model/${OX_VERSION}/oxeleven-model-${OX_VERSION}.jar -P /opt/gluu/lib
 
 # Directory for certificates
 RUN mkdir -p /etc/certs

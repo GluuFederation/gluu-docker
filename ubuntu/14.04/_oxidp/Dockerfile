@@ -14,7 +14,7 @@ RUN echo "deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc
     && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 86F44E2A
 
 RUN apt-get update && apt-get install -y \
-    openjdk-8-jdk \
+    openjdk-8-jre-headless \
     unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -38,31 +38,44 @@ RUN wget -q ${JETTY_TGZ_URL} -O /tmp/jetty.tar.gz \
     && mv /opt/jetty-distribution-${JETTY_VERSION} ${JETTY_HOME} \
     && rm -rf /tmp/jetty.tar.gz
 
-# =====
-# oxCAS
-# =====
+# ====================
+# oxShibboleth (oxIdp)
+# ====================
 
-ENV OX_VERSION 3.0.0
-ENV OX_BUILD_DATE 2017-02-06
-ENV OXCAS_DOWNLOAD_URL https://ox.gluu.org/maven/org/xdi/ox-cas-server-webapp/${OX_VERSION}/ox-cas-server-webapp-${OX_VERSION}.war
+ENV OX_VERSION 3.0.1
+ENV OX_BUILD_DATE 2017-02-24
+ENV OXIDP_DOWNLOAD_URL https://ox.gluu.org/maven/org/xdi/oxshibbolethIdp/${OX_VERSION}/oxshibbolethIdp-${OX_VERSION}.war
 
 # the LABEL defined before downloading ox war/jar files to make sure
 # it gets the latest build for specific version
 LABEL vendor="Gluu Federation" \
-      org.gluu.oxcas-server-webapp.version="${OX_VERSION}" \
-      org.gluu.oxcas-server-webapp.build-date="${OX_BUILD_DATE}"
+      org.gluu.oxidp.version="${OX_VERSION}" \
+      org.gluu.oxidp.build-date="${OX_BUILD_DATE}"
 
-# # Install oxCAS
-RUN wget -q ${OXCAS_DOWNLOAD_URL} -O /tmp/oxcas.war \
-    && mkdir -p ${JETTY_BASE}/cas/webapps \
-    && unzip -qq /tmp/oxcas.war -d ${JETTY_BASE}/cas/webapps/cas \
-    && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/cas --add-to-start=deploy,http,logging,jsp,http-forwarded \
-    && rm -f /tmp/oxcas.war
+# RUN mkdir -p /opt/idp/war /opt/idp/sp /opt/idp/metadata /opt/idp/logs /opt/idp/lib /opt/idp/conf /opt/idp/ssl /opt/idp/temp_metadata \
+    # && mkdir -p /opt/tomcat/conf/shibboleth2/idp /opt/tomcat/conf/Catalina/localhost
 
+# Creates directories for oxIdp setup
+RUN mkdir -p /opt/shibboleth-idp/metadata \
+    /opt/shibboleth-idp/logs \
+    /opt/shibboleth-idp/lib \
+    /opt/shibboleth-idp/conf/authn \
+    /opt/shibboleth-idp/credentials
+
+# Install oxIDP
+RUN wget -q ${OXIDP_DOWNLOAD_URL} -O /tmp/idp.war \
+    && mkdir -p ${JETTY_BASE}/idp/webapps \
+    && unzip -qq /tmp/idp.war -d ${JETTY_BASE}/idp/webapps/idp \
+    && java -jar ${JETTY_HOME}/start.jar jetty.home=${JETTY_HOME} jetty.base=${JETTY_BASE}/idp --add-to-start=deploy,http,logging,jsp,http-forwarded \
+    && rm -f /tmp/idp.war
+
+# Directory for certificates
 RUN mkdir -p /etc/certs
-RUN mkdir -p /tmp/cas
 
 # Copy static templates
+COPY saml-nameid.properties /opt/shibboleth-idp/conf
+COPY services.properties /opt/shibboleth-idp/conf
+COPY password-authn-config.xml /opt/shibboleth-idp/conf/authn/password-authn-config.xml
 COPY jetty.supervisord.conf /etc/supervisor/conf.d
 
 # Set openjdk 8 as default java
