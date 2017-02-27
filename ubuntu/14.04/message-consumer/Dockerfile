@@ -20,16 +20,17 @@ RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
 ENV MAVEN_VERSION 3.3.9
 ENV MAVEN_DOWNLOAD_URL http://www-us.apache.org/dist/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
 
-RUN wget $MAVEN_DOWNLOAD_URL -P /tmp \
+RUN wget -q $MAVEN_DOWNLOAD_URL -P /tmp \
     && tar xf /tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz -C /opt \
     && rm -rf /tmp/apache-maven-$MAVEN_VERSION-bin.tar.gz
 
 ENV PATH /opt/apache-maven-$MAVEN_VERSION/bin:$PATH
 
+# temporary download location and versioning system as we don't have prebuild JAR file at the moment
 ENV MESSAGE_CONSUMER_DOWNLOAD_URL https://github.com/GluuFederation/message-consumer/archive/master.zip
-ENV LAST_REV_SHA 6f391aa582c52badc8a8ceb76efbe1178f83a175
+ENV LAST_REV_SHA 67d72ce5159524ce2c9bcb2c023db6f9ac710b7f
 
-RUN wget $MESSAGE_CONSUMER_DOWNLOAD_URL -O /tmp/message-consumer.zip \
+RUN wget -q $MESSAGE_CONSUMER_DOWNLOAD_URL -O /tmp/message-consumer.zip \
     && unzip /tmp/message-consumer.zip -d /tmp \
     && mvn -Pprod clean package -f /tmp/message-consumer-master/pom.xml -Dmaven.test.skip=true \
     && mv /tmp/message-consumer-master/target/message-consumer-0.0.1-SNAPSHOT.jar /opt \
@@ -37,6 +38,7 @@ RUN wget $MESSAGE_CONSUMER_DOWNLOAD_URL -O /tmp/message-consumer.zip \
 
 RUN mkdir -p /etc/message-consumer
 
+# run message-consumer that loads config file at /etc/message-consumer/prod-mysql.properties
 CMD ["java", "-jar", "/opt/message-consumer-0.0.1-SNAPSHOT.jar", "--spring.config.location=/etc/message-consumer/", "--spring.config.name=prod-mysql", "--database=mysql"]
 
 EXPOSE 9339
