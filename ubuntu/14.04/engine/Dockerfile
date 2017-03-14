@@ -41,7 +41,7 @@ ENV PYTHONPATH="/usr/local/lib/python2.7/dist-packages:/usr/lib/python2.7/dist-p
 
 WORKDIR /app
 
-RUN pip install -r requirements.txt --ignore-installed six && pip install -U docker-py && python setup.py develop
+RUN pip install -r requirements.txt --ignore-installed six && pip install -U docker-py dataset && python setup.py develop
 
 ENTRYPOINT ["gunicorn", "-c", "python:gluuengine.gsettings", "wsgi:app"]
 
