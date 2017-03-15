@@ -27,7 +27,7 @@ RUN curl -sL "$OXLICENSE_URL" > /usr/share/oxlicense-validator/oxlicense-validat
 
 RUN mkdir -p /var/log/gluuengine /var/lib/gluuengine /app
 
-ENV GELINK https://github.com/GluuFederation/gluu-engine/archive/0.6.3.tar.gz
+ENV GELINK https://github.com/GluuFederation/gluu-engine/archive/0.6.4.tar.gz
 
 RUN curl -sL "$GELINK" > /tmp/ge.tar.gz \
     && tar -zxf /tmp/ge.tar.gz --strip-components=1 -C /app \
@@ -41,7 +41,7 @@ ENV PYTHONPATH="/usr/local/lib/python2.7/dist-packages:/usr/lib/python2.7/dist-p
 
 WORKDIR /app
 
-RUN pip install -r requirements.txt --ignore-installed six && pip install -U docker-py dataset && python setup.py develop
+RUN pip install -r requirements.txt --ignore-installed six && pip install -U docker-py && python setup.py develop
 
 ENTRYPOINT ["gunicorn", "-c", "python:gluuengine.gsettings", "wsgi:app"]
 
