@@ -52,8 +52,8 @@ RUN wget -q ${JETTY_TGZ_URL} -O /tmp/jetty.tar.gz \
 # oxEleven
 # ========
 
-ENV OX_VERSION 3.0.1
-ENV OX_BUILD_DATE 2017-02-24
+ENV OX_VERSION 3.1.0-SNAPSHOT
+ENV OX_BUILD_DATE 2017-03-29
 ENV OXELEVEN_DOWNLOAD_URL https://ox.gluu.org/maven/org/gluu/oxeleven-server/${OX_VERSION}/oxeleven-server-${OX_VERSION}.war
 
 # Install oxEleven in jetty
@@ -87,3 +87,5 @@ LABEL vendor="Gluu Federation" \
 
 # Ports required by jetty
 EXPOSE 8080
+
+#TO RUN: docker run -d --name=ox11test --env OXUUID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx -p 8190:8080 ox11

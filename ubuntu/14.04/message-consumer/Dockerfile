@@ -8,7 +8,7 @@ RUN echo "deb http://ppa.launchpad.net/openjdk-r/ppa/ubuntu trusty main" >> /etc
     && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 86F44E2A
 
 RUN apt-get update && apt-get install -y \
-    openjdk-8-jdk \
+    openjdk-8-jdk-headless \
     wget \
     unzip \
     && apt-get clean \
@@ -39,6 +39,7 @@ RUN wget -q $MESSAGE_CONSUMER_DOWNLOAD_URL -O /tmp/message-consumer.zip \
 RUN mkdir -p /etc/message-consumer
 
 # run message-consumer that loads config file at /etc/message-consumer/prod-mysql.properties
-CMD ["java", "-jar", "/opt/message-consumer-0.0.1-SNAPSHOT.jar", "--spring.config.location=/etc/message-consumer/", "--spring.config.name=prod-mysql", "--database=mysql"]
+#CMD ["java", "-jar", "/opt/message-consumer-0.0.1-SNAPSHOT.jar", "--spring.config.location=/etc/message-consumer/", "--spring.config.name=prod-mysql", "--database=mysql"]
+CMD ["java", "-jar", "/opt/message-consumer-0.0.1-SNAPSHOT.jar", "--spring.config.location=/etc/message-consumer/prod-mysql.properties", "--database=mysql"]
 
 EXPOSE 9339
