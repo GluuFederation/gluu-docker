@@ -38,7 +38,8 @@ RUN wget -q $MESSAGE_CONSUMER_DOWNLOAD_URL -O /tmp/message-consumer.zip \
 
 RUN mkdir -p /etc/message-consumer
 
-# run message-consumer that loads config file at /etc/message-consumer/prod-mysql.properties
+# run message-consumer that loads custom config file at /etc/message-consumer/prod.properties;
+# the custom config file can be mapped using volume
 CMD ["java", "-jar", "/opt/message-consumer-0.0.1-SNAPSHOT.jar", "--spring.config.location=/etc/message-consumer/", "--spring.config.name=prod", "--database=mysql"]
 
 EXPOSE 9339
