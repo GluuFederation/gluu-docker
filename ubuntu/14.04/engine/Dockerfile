@@ -27,7 +27,7 @@ RUN curl -sL "$OXLICENSE_URL" > /usr/share/oxlicense-validator/oxlicense-validat
 
 RUN mkdir -p /var/log/gluuengine /var/lib/gluuengine /app
 
-ENV GELINK https://github.com/GluuFederation/gluu-engine/archive/0.6.4.tar.gz
+ENV GELINK https://github.com/GluuFederation/gluu-engine/archive/0.7.0-beta2.tar.gz
 
 RUN curl -sL "$GELINK" > /tmp/ge.tar.gz \
     && tar -zxf /tmp/ge.tar.gz --strip-components=1 -C /app \
@@ -41,11 +41,7 @@ ENV PYTHONPATH="/usr/local/lib/python2.7/dist-packages:/usr/lib/python2.7/dist-p
 
 WORKDIR /app
 
-# TODO: remove 2 lines below after gluuengine has been released
-RUN curl -sL https://github.com/GluuFederation/gluu-engine/raw/ce-3/requirements.txt > requirements.txt
-RUN curl -sL https://github.com/GluuFederation/gluu-engine/raw/ce-3/setup.py > setup.py
-
-RUN pip install -r requirements.txt --ignore-installed six
+RUN pip install -r requirements.txt --ignore-installed six --no-cache-dir
 RUN python setup.py develop
 
 ENTRYPOINT ["gunicorn", "-c", "python:gluuengine.gsettings", "wsgi:app"]
