@@ -19,5 +19,5 @@
 4.  Deploy nginx, oxAuth, and oxTrust containers:
 
     ```
-    HOST_IP=$(ip route get 1 | awk '{print $NF;exit}') docker-compose nginx oxauth oxtrust
+    HOST_IP=$(ip route get 1 | awk '{print $NF;exit}') docker-compose up nginx oxauth oxtrust
     ```
