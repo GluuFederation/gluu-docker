@@ -5,10 +5,10 @@ set -e
 CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' singlehost_consul_1`
 GLUU_KV_HOST=${GLUU_KV_HOST:-$CONSUL_IP}
 GLUU_KV_PORT=${GLUU_KV_PORT:-8500}
-GLUU_LDAP_TYPE=openldap
+GLUU_LDAP_TYPE=opendj
 
 docker run --rm \
-    --network singlehost-default \
+    --network singlehost_default \
     gluufederation/config-init:3.1.2_dev \
     --kv-host "${GLUU_KV_HOST}" \
     --kv-port "${GLUU_KV_PORT}" \
