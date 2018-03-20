@@ -10,6 +10,8 @@
     sh init-config.sh
     ```
 
+    This will prompts for various config.
+
 3.  Deploy LDAP container:
 
     ```
@@ -19,5 +21,5 @@
 4.  Deploy nginx, oxAuth, and oxTrust containers:
 
     ```
-    HOST_IP=$(ip route get 1 | awk '{print $NF;exit}') docker-compose up nginx oxauth oxtrust
+    DOMAIN=<hostname-used-in-step2> HOST_IP=<host-ip-addr> docker-compose up nginx oxauth oxtrust
     ```
