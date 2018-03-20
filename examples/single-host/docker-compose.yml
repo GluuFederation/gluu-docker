@@ -41,4 +41,4 @@ services:
       - GLUU_LDAP_URL=ldap:1636
     extra_hosts:
       # TODO: dont hardcode
-      - "singlehost.gluu.local:192.168.100.2"
+      - "singlehost.gluu.local:${HOST_IP}"
