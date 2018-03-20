@@ -22,7 +22,10 @@ read -p "Enter Email: " email
 read -p "Enter Organization: " orgName
 # adminPw
 read -p "Enter Admin Password: " adminPw
-echo "Deploying Gluu Docker Edition!"
+echo
+echo "================================"
+echo "Loading Configuration for Gluu Docker Edition!"
+echo "================================"
 
 docker run --rm \
     --network root_tulip \
