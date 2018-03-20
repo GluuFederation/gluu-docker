@@ -8,10 +8,10 @@ services:
     environment:
       - CONSUL_BIND_INTERFACE=eth0
       - CONSUL_CLIENT_INTERFACE=eth0
+    container_name: consul
 
   nginx:
     image: gluufederation/nginx:3.1.2_dev
-    hostname: singlehost.gluu.local
     environment:
       - GLUU_KV_HOST=consul
       - GLUU_OXAUTH_BACKEND=oxauth:8080
@@ -19,20 +19,23 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    container_name: nginx
 
   ldap:
     image: gluufederation/opendj:3.1.2_dev
     environment:
       - GLUU_KV_HOST=consul
       - GLUU_LDAP_INIT=true
-      - GLUU_LDAP_INIT_HOST=singlehost_ldap_1
+      - GLUU_LDAP_INIT_HOST=ldap
       - GLUU_LDAP_INIT_PORT=1636
+    container_name: ldap
 
   oxauth:
     image: gluufederation/oxauth:3.1.2_dev
     environment:
       - GLUU_KV_HOST=consul
       - GLUU_LDAP_URL=ldap:1636
+    container_name: oxauth
 
   oxtrust:
     image: gluufederation/oxtrust:3.1.2_dev
@@ -40,5 +43,5 @@ services:
       - GLUU_KV_HOST=consul
       - GLUU_LDAP_URL=ldap:1636
     extra_hosts:
-      # TODO: dont hardcode
-      - "singlehost.gluu.local:${HOST_IP}"
+      - "${DOMAIN}:${HOST_IP}"
+    container_name: oxtrust

@@ -23,12 +23,12 @@ read -p "Enter Organization: " orgName
 # adminPw
 read -p "Enter Admin Password: " adminPw
 echo
-echo "================================"
+echo "=============================================="
 echo "Loading Configuration for Gluu Docker Edition!"
-echo "================================"
+echo "=============================================="
 
 docker run --rm \
-    --network root_tulip \
+    --network singlehost_default \
     gluufederation/config-init:3.1.2_dev \
     --kv-host "${GLUU_KV_HOST}" \
     --kv-port "${GLUU_KV_PORT}" \
