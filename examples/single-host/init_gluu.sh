@@ -1,9 +1,9 @@
 #!/bin/bash
 
 set -e
-
 ######################################################################
-
+FUNCTIONS
+######################################################################
 loadConfig () {
 CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
 configLoc=$1
@@ -16,10 +16,9 @@ docker run   --rm \
             gluufederation/config-init:3.1.2_dev \
             load \
             --kv-host ${CONSUL_IP} 
-
 loadedEcho Configuration
 }
-
+######################################################################
 dumpConfig () {
 CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
 GLUU_KV_HOST=${GLUU_KV_HOST:-$CONSUL_IP}
@@ -38,18 +37,16 @@ docker run   --rm \
     gluufederation/config-init:3.1.2_dev \
     dump \
     --kv-host "${GLUU_KV_HOST}" > /dev/null 2>&1
-
 echo "=============================================="
 echo "Configuration saved to ${config_json}/config.json"
 echo "=============================================="
 }
-
+######################################################################
 generateConfig () {
 loadingEcho "New Gluu Docker Edition Configuration.."
 
 echo "This may take a moment.."
 echo
-
 CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
 GLUU_KV_HOST=${GLUU_KV_HOST:-$CONSUL_IP}
 GLUU_LDAP_TYPE=opendj
@@ -67,10 +64,9 @@ docker run --rm \
     --country-code $countryCode \
     --state $state \
     --city $city 
-
 loadedEcho Configuration
 }
-
+######################################################################
 loadLdap () { 
 loadingEcho OpenDJ
 
@@ -86,7 +82,6 @@ LDAP_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{e
 ldapCheckPort="docker exec -it ldap nc -vz ${LDAP_IP} 1636"
 ldapCheckLog="docker logs ldap 2>&1"
 ldapSuccess="The Directory Server has started successfully"
-
 while true; do
 if [[ $(eval $ldapCheckPort) = *"open"* ]] && [[ $(eval $ldapCheckLog | grep "${ldapSuccess}") = *"${ldapSuccess}"* ]]
     then
@@ -97,10 +92,9 @@ if [[ $(eval $ldapCheckPort) = *"open"* ]] && [[ $(eval $ldapCheckLog | grep "${
         sleep 10
     fi
 done
-
 loadedEcho OpenDJ
 }
-
+######################################################################
 loadGluu () {
 loadingEcho "Gluu Server Docker Edition.."
 
@@ -114,7 +108,7 @@ checkOxTrustStatus
 
 loaded "Gluu Server Docker Edition"
 }
-
+######################################################################
 loadConsul () {
 loadingEcho consul
 
@@ -129,10 +123,9 @@ while true; do
         sleep 8
     fi
 done
-
 loadedEcho consul
 }
-
+######################################################################
 checkConsulStatus () {
 CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
 GLUU_KV_HOST=${GLUU_KV_HOST:-$CONSUL_IP}
@@ -146,7 +139,7 @@ else
     return 1
 fi
 }
-
+######################################################################
 checkOxAuthStatus () {
 domain=$1
 
@@ -162,10 +155,9 @@ else
   sleep 10
 fi
 done
-
 loadedEcho oxAuth
 }
-
+######################################################################
 checkOxTrustStatus () {
 domain=$1
 
@@ -181,10 +173,9 @@ else
   sleep 2
 fi
 done
-
 loadedEcho oxAuth
 }
-
+######################################################################
 loadingEcho () {
     echo
     echo "=============================================="
@@ -192,7 +183,7 @@ loadingEcho () {
     echo "=============================================="
     echo
 }
-
+######################################################################
 loadedEcho () {
     echo
     echo "=============================================="
@@ -201,6 +192,8 @@ loadedEcho () {
     echo
 }
 
+######################################################################
+/FUNCTIONS
 ######################################################################
 
 # Ask user if they want to load up previous configuration.
