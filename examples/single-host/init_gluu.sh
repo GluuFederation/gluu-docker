@@ -2,83 +2,63 @@
 
 set -e
 
-# Input parameters for Configuration to run.
+######################################################################
 
-echo "=============================================="
-echo
-echo "Please input the following parameters:"
-echo
-read -p "Enter Domain:                 " domain
-read -p "Enter Country Code:                " countryCode
-read -p "Enter State:                  " state
-read -p "Enter City:                   " city
-read -p "Enter Email:                  " email
-read -p "Enter Organization:           " orgName
-read -p "Enter Admin/LDAP Password:         " adminPw
-echo
-echo "=============================================="
-echo
+loadConfig () {
+CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
+configLoc=$1
 
-read -p "Continue with the above settings? [Y/n]" choice
+loadingEcho Configuration
 
-case "$choice" in 
-  y|Y ) ;;
-  n|N ) exit 1 ;;
-  * )   ;;
-esac
-echo
-echo "=============================================="
-echo "Starting consul.."
-echo "=============================================="
-echo
+docker run   --rm \
+            --network container:consul \
+            -v ${configLoc}:/opt/config-init/db/ \
+            gluufederation/config-init:3.1.2_dev \
+            load \
+            --kv-host ${CONSUL_IP} 
 
-docker-compose up -d consul > /dev/null 2>&1
+loadedEcho Configuration
+}
 
+dumpConfig () {
 CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
 GLUU_KV_HOST=${GLUU_KV_HOST:-$CONSUL_IP}
-GLUU_KV_PORT=${GLUU_KV_PORT:-8500}
-GLUU_LDAP_TYPE=opendj
-
-# This URL will return the ip address and "leader", which in our case is an indicator that consul has successfully started.
-
-url="http://$CONSUL_IP:8500/v1/status/leader"
-status="curl -s ${url}"
-
-while true; do
-if [[ $(eval $status) = *"$CONSUL_IP"* ]]
-then
-  break
-else
-  echo "..."
-  sleep 8
-fi
-done
+config_json=$PWD/config/
 
 echo "=============================================="
-echo "consul has finished starting"
+echo "Saving configuration to disk.."
 echo "=============================================="
+echo
+echo "You can use this saved configuration later to reupload your configuration "
+echo "to a fresh/empty consul instance."
 
-echo 
+docker run   --rm \
+    --network container:consul \
+    -v $config_json/:/opt/config-init/db/ \
+    gluufederation/config-init:3.1.2_dev \
+    dump \
+    --kv-host "${GLUU_KV_HOST}" > /dev/null 2>&1
+
 echo "=============================================="
-echo "Loading Gluu Docker Edition Configuration.."
+echo "Configuration saved to ${config_json}/config.json"
 echo "=============================================="
+}
+
+generateConfig () {
+loadingEcho "New Gluu Docker Edition Configuration.."
+
 echo "This may take a moment.."
 echo
 
-# Docker-compose automatically builds a default network, if not assigned. With the following command, this will assign that same network default
-# name, which is just the current directory + _default. printf '%s\n' "${PWD##*/}" will automatically give the current directory.
-
-# Prompt the user here if they want to use a custom network.
-# If yes, prompt the user for the network name and use that version of docker run
-# Else, run the default compose network naming convention. They would have had to identify that custom network in their docker-compose file
-
-net=$(printf '%s\n' "${PWD##*/}")
+CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
+GLUU_KV_HOST=${GLUU_KV_HOST:-$CONSUL_IP}
+GLUU_LDAP_TYPE=opendj
 
 docker run --rm \
-    --network "${net//-}_default" \
+    --network container:consul \
     gluufederation/config-init:3.1.2_dev \
+    generate \
     --kv-host "${GLUU_KV_HOST}" \
-    --kv-port "${GLUU_KV_PORT}" \
     --ldap-type "${GLUU_LDAP_TYPE}" \
     --domain $domain \
     --admin-pw $adminPw \
@@ -86,66 +66,91 @@ docker run --rm \
     --email $email \
     --country-code $countryCode \
     --state $state \
-    --city $city \
-    --save 
+    --city $city 
 
-echo "=============================================="
-echo "Configuration Loaded!"
-echo "=============================================="
-echo
+loadedEcho Configuration
+}
 
-DOMAIN=$domain 
-HOST_IP=$(ip route get 1 | awk '{print $NF;exit}')
+loadLdap () { 
+loadingEcho OpenDJ
 
-echo "=============================================="
-echo "Starting OpenDJ.."
-echo "=============================================="
 docker-compose up -d ldap > /dev/null 2>&1
+
 echo
 echo "Waiting for OpenDJ to finish starting. This can take a couple minutes.."
 
 # Here I check that the port is active, but also check the docker logs to show me that the server is fully ready to start.
 # This is because the installation process of OpenDJ starts and stops several times.
-# Need to find a better way to minimize the output
 
 LDAP_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ldap`
 ldapCheckPort="docker exec -it ldap nc -vz ${LDAP_IP} 1636"
 ldapCheckLog="docker logs ldap 2>&1"
 ldapSuccess="The Directory Server has started successfully"
 
-
 while true; do
 if [[ $(eval $ldapCheckPort) = *"open"* ]] && [[ $(eval $ldapCheckLog | grep "${ldapSuccess}") = *"${ldapSuccess}"* ]]
-then
-  echo $(eval $ldapCheckPort)
-  break
-else
-  echo "..."
-  sleep 10
-fi
+    then
+        echo $(eval $ldapCheckPort)
+        break
+    else
+        echo "..."
+        sleep 10
+    fi
 done
 
-echo
-echo "=============================================="
-echo "OpenDJ started successfully!"
-echo "=============================================="
-echo
+loadedEcho OpenDJ
+}
 
-echo "=============================================="
-echo "Starting Gluu Server Docker Edition.."
-echo "=============================================="
-echo
+loadGluu () {
+loadingEcho "Gluu Server Docker Edition.."
 
 startServices="DOMAIN=$domain HOST_IP=$(ip route get 1 | awk '{print $NF;exit}') docker-compose up -d nginx oxauth oxtrust > /dev/null 2>&1"
 
 eval $startServices
 
-echo "=============================================="
-echo "Starting oxAuth.."
-echo "=============================================="
+checkOxAuthStatus
 
-# cURL and only get the HTTP response code. Good for standalone instance or health checks.
-# curl -m 2 -skL -o /dev/null -w "%{http_code}" https://dev.dock.com/oxauth/ 
+checkOxTrustStatus
+
+loaded "Gluu Server Docker Edition"
+}
+
+loadConsul () {
+loadingEcho consul
+
+docker-compose up -d consul > /dev/null 2>&1
+
+while true; do
+    if [[ checkConsulStatus -eq 0 ]]
+    then
+        break
+    else
+        echo "..."
+        sleep 8
+    fi
+done
+
+loadedEcho consul
+}
+
+checkConsulStatus () {
+CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
+GLUU_KV_HOST=${GLUU_KV_HOST:-$CONSUL_IP}
+url="http://$CONSUL_IP:8500/v1/status/leader"
+status="curl -s ${url}"
+
+if [[ $(eval $status) = *"$CONSUL_IP"* ]]
+then
+    return 0
+else
+    return 1
+fi
+}
+
+checkOxAuthStatus () {
+domain=$1
+
+loadingEcho oxAuth
 
 oxAuthCheck="curl -m 2 -skL -o /dev/null -w '%{http_code}' https://${domain}/oxauth/"
 while true; do
@@ -158,15 +163,13 @@ else
 fi
 done
 
-echo
-echo "=============================================="
-echo "oxAuth started successfully!"
-echo "=============================================="
-echo
+loadedEcho oxAuth
+}
 
-echo "=============================================="
-echo "Starting oxTrust.."
-echo "=============================================="
+checkOxTrustStatus () {
+domain=$1
+
+loadingEcho oxTrust
 
 while true; do
 oxTrustCheck="curl -m 2 -skL -o /dev/null -w '%{http_code}' https://${domain}/identity/"
@@ -179,11 +182,92 @@ else
 fi
 done
 
-echo
+loadedEcho oxAuth
+}
+
+loadingEcho () {
+    echo
+    echo "=============================================="
+    echo "Loading ${1}.."
+    echo "=============================================="
+    echo
+}
+
+loadedEcho () {
+    echo
+    echo "=============================================="
+    echo "${1} Successfully Loaded!"
+    echo "=============================================="
+    echo
+}
+
+######################################################################
+
+# Ask user if they want to load up previous configuration.
+# If yes, take no information and prompt directory path of config.json.
+# Store location as "configLoc"
+
 echo "=============================================="
-echo "oxTrust started successfully!"
-echo "=============================================="
 echo
+read -p "Do you want to load a previously saved Gluu Server Docker Edition Configuration? [N/y]" choiceConfig
+
+if [[ $choiceConfig = "y" ]] 
+then
+    if [[ checkConsulStatus = true ]]
+    then
+
+        read -p "Please identify the directory path of your config.json. Do not include the filename. [/path/to/]" configLoc
+
+        loadConfig $configLoc
+        
+    else
+        
+        loadConsul
+
+        read -p "Please identify the directory path of your config.json. Do not include the filename.[/path/to/]" configLoc
+
+        loadConfig $configLoc
+
+    fi
+else
+
+    echo "=============================================="
+    echo
+    echo "Please input the following parameters:"
+    echo
+    read -p "Enter Domain:                 " domain
+    read -p "Enter Country Code:           " countryCode
+    read -p "Enter State:                  " state
+    read -p "Enter City:                   " city
+    read -p "Enter Email:                  " email
+    read -p "Enter Organization:           " orgName
+    read -p "Enter Admin/LDAP Password:    " adminPw
+
+    case "$adminPW" in 
+        * ) ;;
+        "") echo "Cannot be empty"; exit 1;
+    esac
+
+    echo
+    echo "=============================================="
+    echo
+
+    read -p "Continue with the above settings? [Y/n]" choiceCont
+
+    case "$choiceCont" in 
+        y|Y ) ;;
+        n|N ) exit 1 ;;
+        * )   ;;
+    esac
+
+    loadConsul
+    generateConfig
+    dumpConfig
+
+fi
+
+loadLdap
+loadGluu
 
 echo "=============================================="
 echo "Gluu Server Docker Edition is Ready! Please navigate to ${domain}"
