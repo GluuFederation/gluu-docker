@@ -1,188 +1,188 @@
 #!/bin/bash
 
 set -e
+
+CONFIG_DIR=$PWD/volumes/config-init/db
+
 ######################################################################
 #FUNCTIONS
 ######################################################################
 loadConfig () {
-CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
-configLoc=$1
+    CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
 
-loadingEcho Configuration
+    loadingEcho Configuration
 
-docker run   --rm \
-    --network container:consul \
-    -v ${configLoc}:/opt/config-init/db/ \
-    gluufederation/config-init:3.1.2_dev \
-    load \
-    --kv-host ${CONSUL_IP}
+    docker run   --rm \
+        --network container:consul \
+        -v $CONFIG_DIR:/opt/config-init/db/ \
+        gluufederation/config-init:3.1.2_dev \
+        load \
+        --kv-host ${CONSUL_IP}
 
-loadedEcho Configuration
+    loadedEcho Configuration
 }
 ######################################################################
 dumpConfig () {
-CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
-GLUU_KV_HOST=${GLUU_KV_HOST:-$CONSUL_IP}
-config_json=$PWD/config/
+    CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
+    GLUU_KV_HOST=${GLUU_KV_HOST:-$CONSUL_IP}
 
-echo "=============================================="
-echo "Saving configuration to disk.."
-echo "=============================================="
-echo
-echo "You can use this saved configuration later to reupload your configuration "
-echo "to a fresh/empty consul instance."
+    echo "=============================================="
+    echo "Saving configuration to disk.."
+    echo "=============================================="
+    echo
+    echo "You can use this saved configuration later to reupload your configuration "
+    echo "to a fresh/empty consul instance."
 
-docker run   --rm \
-    --network container:consul \
-    -v $config_json/:/opt/config-init/db/ \
-    gluufederation/config-init:3.1.2_dev \
-    dump \
-    --kv-host "${GLUU_KV_HOST}" > /dev/null 2>&1
+    docker run   --rm \
+        --network container:consul \
+        -v $CONFIG_DIR/:/opt/config-init/db/ \
+        gluufederation/config-init:3.1.2_dev \
+        dump \
+        --kv-host "${GLUU_KV_HOST}" > /dev/null 2>&1
 
-echo "=============================================="
-echo "Configuration saved to ${config_json}/config.json"
-echo "=============================================="
+    echo "=============================================="
+    echo "Configuration saved to ${CONFIG_DIR}/config.json"
+    echo "=============================================="
 }
 ######################################################################
 generateConfig () {
-loadingEcho "New Gluu Docker Edition Configuration.."
+    loadingEcho "New Gluu Docker Edition Configuration.."
 
-echo "This may take a moment.."
-echo
+    echo "This may take a moment.."
+    echo
 
-CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
-GLUU_KV_HOST=${GLUU_KV_HOST:-$CONSUL_IP}
-GLUU_LDAP_TYPE=opendj
+    CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
+    GLUU_KV_HOST=${GLUU_KV_HOST:-$CONSUL_IP}
+    GLUU_LDAP_TYPE=opendj
 
-docker run --rm \
-    --network container:consul \
-    gluufederation/config-init:3.1.2_dev \
-    generate \
-    --kv-host "${GLUU_KV_HOST}" \
-    --ldap-type "${GLUU_LDAP_TYPE}" \
-    --domain $domain \
-    --admin-pw $adminPw \
-    --org-name "$orgName" \
-    --email $email \
-    --country-code $countryCode \
-    --state $state \
-    --city $city
+    docker run --rm \
+        --network container:consul \
+        gluufederation/config-init:3.1.2_dev \
+        generate \
+        --kv-host "${GLUU_KV_HOST}" \
+        --ldap-type "${GLUU_LDAP_TYPE}" \
+        --domain $domain \
+        --admin-pw $adminPw \
+        --org-name "$orgName" \
+        --email $email \
+        --country-code $countryCode \
+        --state $state \
+        --city $city
 
-loadedEcho Configuration
+    loadedEcho Configuration
 }
 ######################################################################
 loadLdap () {
-loadingEcho OpenDJ
+    loadingEcho OpenDJ
 
-docker-compose up -d ldap > /dev/null 2>&1
+    docker-compose up -d ldap > /dev/null 2>&1
 
-echo
-echo "Waiting for OpenDJ to finish starting."
-echo "This can take a couple minutes if it's the first time configuring.."
+    echo
+    echo "Waiting for OpenDJ to finish starting."
+    echo "This can take a couple minutes if it's the first time configuring.."
 
-# Here I check that the port is active, but also check the docker logs to show me that the server is fully ready to start.
-# This is because the installation process of OpenDJ starts and stops several times.
+    # Here I check that the port is active, but also check the docker logs to show me that the server is fully ready to start.
+    # This is because the installation process of OpenDJ starts and stops several times.
 
-LDAP_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ldap`
-ldapCheckPort="docker exec -it ldap nc -vz ${LDAP_IP} 1636"
-ldapCheckLog="docker logs ldap 2>&1"
-ldapSuccess="The Directory Server has started successfully"
+    LDAP_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ldap`
+    ldapCheckPort="docker exec -it ldap nc -vz ${LDAP_IP} 1636"
+    ldapCheckLog="docker logs ldap 2>&1"
+    ldapSuccess="The Directory Server has started successfully"
 
-while true; do
-if [[ $(eval $ldapCheckPort) = *"open"* ]] && [[ $(eval $ldapCheckLog | grep "${ldapSuccess}") = *"${ldapSuccess}"* ]]
-    then
-        echo $(eval $ldapCheckPort)
-        break
-    else
-        echo "..."
-        sleep 10
-    fi
-done
+    while true; do
+    if [[ $(eval $ldapCheckPort) = *"open"* ]] && [[ $(eval $ldapCheckLog | grep "${ldapSuccess}") = *"${ldapSuccess}"* ]]
+        then
+            echo $(eval $ldapCheckPort)
+            break
+        else
+            echo "..."
+            sleep 10
+        fi
+    done
 
-loadedEcho OpenDJ
+    loadedEcho OpenDJ
 }
 ######################################################################
 loadGluu () {
-domain=$1
-loadingEcho "Gluu Server Docker Edition.."
+    domain=$1
+    loadingEcho "Gluu Server Docker Edition.."
 
-startServices="DOMAIN=$domain HOST_IP=$(ip route get 1 | awk '{print $NF;exit}') docker-compose up -d nginx oxauth oxtrust > /dev/null 2>&1"
-eval $startServices
+    startServices="DOMAIN=$domain HOST_IP=$(ip route get 1 | awk '{print $NF;exit}') docker-compose up -d nginx oxauth oxtrust > /dev/null 2>&1"
+    eval $startServices
 
-checkOxAuthStatus $domain
-checkOxTrustStatus $domain
+    checkOxAuthStatus $domain
+    checkOxTrustStatus $domain
 
-loadedEcho "Gluu Server Docker Edition"
+    loadedEcho "Gluu Server Docker Edition"
 }
 ######################################################################
 loadConsul () {
-loadingEcho consul
+    loadingEcho consul
 
-docker-compose up -d consul > /dev/null 2>&1
+    docker-compose up -d consul > /dev/null 2>&1
 
-while true; do
-    if [[ checkConsulStatus -eq 0 ]]
-    then
-        break
-    else
-        echo "..."
-        sleep 8
-    fi
-done
+    while true; do
+        if [[ checkConsulStatus -eq 0 ]]
+        then
+            break
+        else
+            echo "..."
+            sleep 8
+        fi
+    done
 
-loadedEcho consul
+    loadedEcho consul
 }
 ######################################################################
 checkConsulStatus () {
-CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
-GLUU_KV_HOST=${GLUU_KV_HOST:-$CONSUL_IP}
-url="http://$CONSUL_IP:8500/v1/status/leader"
-status="curl -s ${url}"
+    CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
+    GLUU_KV_HOST=${GLUU_KV_HOST:-$CONSUL_IP}
+    url="http://$CONSUL_IP:8500/v1/status/leader"
+    status="curl -s ${url}"
 
-if [[ $(eval $status) = *"$CONSUL_IP"* ]]
-then
-    return 0
-else
-    return 1
-fi
+    if [[ $(eval $status) = *"$CONSUL_IP"* ]]
+    then
+        return 0
+    else
+        return 1
+    fi
 }
 ######################################################################
 checkOxAuthStatus () {
+    domain=$1
+    loadingEcho oxAuth
 
-domain=$1
-loadingEcho oxAuth
+    oxAuthCheck="curl -m 2 -skL -o /dev/null -w '%{http_code}' https://${domain}/oxauth/"
+    while true; do
+    if [[ $(eval $oxAuthCheck) = *"200"* ]]
+    then
+    break
+    else
+    echo "..."
+    sleep 10
+    fi
+    done
 
-oxAuthCheck="curl -m 2 -skL -o /dev/null -w '%{http_code}' https://${domain}/oxauth/"
-while true; do
-if [[ $(eval $oxAuthCheck) = *"200"* ]]
-then
-  break
-else
-  echo "..."
-  sleep 10
-fi
-done
-
-loadedEcho oxAuth
+    loadedEcho oxAuth
 }
 ######################################################################
 checkOxTrustStatus () {
-domain=$1
+    domain=$1
 
-loadingEcho oxTrust
+    loadingEcho oxTrust
 
-while true; do
-oxTrustCheck="curl -m 2 -skL -o /dev/null -w '%{http_code}' https://${domain}/identity/"
-if [[ $(eval $oxTrustCheck) = *"200"* ]]
-then
-  break
-else
-  echo "..."
-  sleep 2
-fi
-done
+    while true; do
+    oxTrustCheck="curl -m 2 -skL -o /dev/null -w '%{http_code}' https://${domain}/identity/"
+    if [[ $(eval $oxTrustCheck) = *"200"* ]]
+    then
+    break
+    else
+    echo "..."
+    sleep 2
+    fi
+    done
 
-loadedEcho oxTrust
+    loadedEcho oxTrust
 }
 ######################################################################
 loadingEcho () {
@@ -203,30 +203,23 @@ loadedEcho () {
 ######################################################################
 #/FUNCTIONS
 ######################################################################
-echo "=============================================="
-echo
-read -p "Do you want to load a previously saved Gluu Server Docker Edition Configuration? [N/y]" choiceConfig
+if [[ -f $CONFIG_DIR/config.json ]]; then
+    echo "=============================================="
+    echo
+    read -p "Do you want to load a previously saved Gluu Server Docker Edition Configuration? [N/y]" choiceConfig
+fi
 
 if [[ $choiceConfig = "y" ]]
 then
     if [[ checkConsulStatus = true ]]
     then
-
-        read -p "Please identify the directory path of your config.json. Do not include the filename. [/path/to/]" configLoc
-
-        loadConfig $configLoc
-
+        loadConfig
     else
-
         loadConsul
-
-        read -p "Please identify the directory path of your config.json. Do not include the filename.[/path/to/]" configLoc
-
-        loadConfig $configLoc
-
+        sleep 2
+        loadConfig
     fi
 else
-
     echo "=============================================="
     echo
     echo "Please input the following parameters:"
@@ -259,12 +252,11 @@ else
     loadConsul
     generateConfig
     dumpConfig
-
 fi
 
 if [ -z "$domain" ]
 then
-    domain=$(cat $configLoc/config.json |  awk ' /'hostname'/ {print $2} ' | sed 's/[",]//g')
+    domain=$(cat $CONFIG_DIR/config.json |  awk ' /'hostname'/ {print $2} ' | sed 's/[",]//g')
 fi
 
 loadLdap
