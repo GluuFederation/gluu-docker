@@ -30,6 +30,7 @@ echo "=============================================="
 docker run --rm \
     --network singlehost_default \
     gluufederation/config-init:3.1.2_dev \
+    generate \
     --kv-host "${GLUU_KV_HOST}" \
     --kv-port "${GLUU_KV_PORT}" \
     --ldap-type "${GLUU_LDAP_TYPE}" \
@@ -39,6 +40,4 @@ docker run --rm \
     --email $email \
     --country-code $countryCode \
     --state $state \
-    --city $city \
-    --save \
-    --view
+    --city $city
