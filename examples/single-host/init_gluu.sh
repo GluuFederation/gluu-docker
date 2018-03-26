@@ -264,7 +264,7 @@ fi
 
 if [ -z "$domain" ]
 then
-  domain=$(cat $configLoc/config.json | awk ' /'hostname'/ {print $2} ' | sed 's/"//g' | sed 's/,//g')
+  domain=$(cat $configLoc/config.json |  awk ' /'hostname'/ {print $2} ' | sed 's/[",]//g'
 fi
 
 loadLdap
