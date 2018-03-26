@@ -2,7 +2,7 @@
 
 set -e
 ######################################################################
-FUNCTIONS
+#FUNCTIONS
 ######################################################################
 loadConfig () {
 CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
@@ -11,11 +11,12 @@ configLoc=$1
 loadingEcho Configuration
 
 docker run   --rm \
-            --network container:consul \
-            -v ${configLoc}:/opt/config-init/db/ \
-            gluufederation/config-init:3.1.2_dev \
-            load \
-            --kv-host ${CONSUL_IP} 
+    --network container:consul \
+    -v ${configLoc}:/opt/config-init/db/ \
+    gluufederation/config-init:3.1.2_dev \
+    load \
+    --kv-host ${CONSUL_IP}
+
 loadedEcho Configuration
 }
 ######################################################################
@@ -37,6 +38,7 @@ docker run   --rm \
     gluufederation/config-init:3.1.2_dev \
     dump \
     --kv-host "${GLUU_KV_HOST}" > /dev/null 2>&1
+
 echo "=============================================="
 echo "Configuration saved to ${config_json}/config.json"
 echo "=============================================="
@@ -47,6 +49,7 @@ loadingEcho "New Gluu Docker Edition Configuration.."
 
 echo "This may take a moment.."
 echo
+
 CONSUL_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul`
 GLUU_KV_HOST=${GLUU_KV_HOST:-$CONSUL_IP}
 GLUU_LDAP_TYPE=opendj
@@ -63,17 +66,19 @@ docker run --rm \
     --email $email \
     --country-code $countryCode \
     --state $state \
-    --city $city 
+    --city $city
+
 loadedEcho Configuration
 }
 ######################################################################
-loadLdap () { 
+loadLdap () {
 loadingEcho OpenDJ
 
 docker-compose up -d ldap > /dev/null 2>&1
 
 echo
-echo "Waiting for OpenDJ to finish starting. This can take a couple minutes.."
+echo "Waiting for OpenDJ to finish starting."
+echo "This can take a couple minutes if it's the first time configuring.."
 
 # Here I check that the port is active, but also check the docker logs to show me that the server is fully ready to start.
 # This is because the installation process of OpenDJ starts and stops several times.
@@ -82,6 +87,7 @@ LDAP_IP=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{e
 ldapCheckPort="docker exec -it ldap nc -vz ${LDAP_IP} 1636"
 ldapCheckLog="docker logs ldap 2>&1"
 ldapSuccess="The Directory Server has started successfully"
+
 while true; do
 if [[ $(eval $ldapCheckPort) = *"open"* ]] && [[ $(eval $ldapCheckLog | grep "${ldapSuccess}") = *"${ldapSuccess}"* ]]
     then
@@ -92,21 +98,21 @@ if [[ $(eval $ldapCheckPort) = *"open"* ]] && [[ $(eval $ldapCheckLog | grep "${
         sleep 10
     fi
 done
+
 loadedEcho OpenDJ
 }
 ######################################################################
 loadGluu () {
+domain=$1
 loadingEcho "Gluu Server Docker Edition.."
 
 startServices="DOMAIN=$domain HOST_IP=$(ip route get 1 | awk '{print $NF;exit}') docker-compose up -d nginx oxauth oxtrust > /dev/null 2>&1"
-
 eval $startServices
 
-checkOxAuthStatus
+checkOxAuthStatus $domain
+checkOxTrustStatus $domain
 
-checkOxTrustStatus
-
-loaded "Gluu Server Docker Edition"
+loadedEcho "Gluu Server Docker Edition"
 }
 ######################################################################
 loadConsul () {
@@ -123,6 +129,7 @@ while true; do
         sleep 8
     fi
 done
+
 loadedEcho consul
 }
 ######################################################################
@@ -141,8 +148,8 @@ fi
 }
 ######################################################################
 checkOxAuthStatus () {
-domain=$1
 
+domain=$1
 loadingEcho oxAuth
 
 oxAuthCheck="curl -m 2 -skL -o /dev/null -w '%{http_code}' https://${domain}/oxauth/"
@@ -155,6 +162,7 @@ else
   sleep 10
 fi
 done
+
 loadedEcho oxAuth
 }
 ######################################################################
@@ -173,7 +181,8 @@ else
   sleep 2
 fi
 done
-loadedEcho oxAuth
+
+loadedEcho oxTrust
 }
 ######################################################################
 loadingEcho () {
@@ -191,20 +200,14 @@ loadedEcho () {
     echo "=============================================="
     echo
 }
-
 ######################################################################
-/FUNCTIONS
+#/FUNCTIONS
 ######################################################################
-
-# Ask user if they want to load up previous configuration.
-# If yes, take no information and prompt directory path of config.json.
-# Store location as "configLoc"
-
 echo "=============================================="
 echo
 read -p "Do you want to load a previously saved Gluu Server Docker Edition Configuration? [N/y]" choiceConfig
 
-if [[ $choiceConfig = "y" ]] 
+if [[ $choiceConfig = "y" ]]
 then
     if [[ checkConsulStatus = true ]]
     then
@@ -212,9 +215,9 @@ then
         read -p "Please identify the directory path of your config.json. Do not include the filename. [/path/to/]" configLoc
 
         loadConfig $configLoc
-        
+
     else
-        
+
         loadConsul
 
         read -p "Please identify the directory path of your config.json. Do not include the filename.[/path/to/]" configLoc
@@ -236,7 +239,7 @@ else
     read -p "Enter Organization:           " orgName
     read -p "Enter Admin/LDAP Password:    " adminPw
 
-    case "$adminPW" in 
+    case "$adminPW" in
         * ) ;;
         "") echo "Cannot be empty"; exit 1;
     esac
@@ -247,7 +250,7 @@ else
 
     read -p "Continue with the above settings? [Y/n]" choiceCont
 
-    case "$choiceCont" in 
+    case "$choiceCont" in
         y|Y ) ;;
         n|N ) exit 1 ;;
         * )   ;;
@@ -259,8 +262,13 @@ else
 
 fi
 
+if [ -z "$domain" ]
+then
+  read -p "What is the hostname in the configuration?  " domain
+fi
+
 loadLdap
-loadGluu
+loadGluu $domain
 
 echo "=============================================="
 echo "Gluu Server Docker Edition is Ready! Please navigate to ${domain}"
