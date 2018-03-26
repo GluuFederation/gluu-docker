@@ -32,7 +32,7 @@ Images are hosted at Docker Hub:
 
 [Single Host](./examples/single-host/)
 
-- Please note that `docker-compose up` on this `docker-compose.yaml` does not work due to the nature of docker-compose and how it doesn't wait for containers to truly "finish" starting/exiting.
+- Please note that `docker-compose up` on this `docker-compose.yaml` does not work due to the nature of docker-compose and how it doesn't wait for containers to truly "finish" starting/exiting. There are required steps necessary.
 
 Swarm - In Progress
 
