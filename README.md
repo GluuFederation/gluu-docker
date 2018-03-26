@@ -1,4 +1,4 @@
-# gluu-docker
+# Gluu Server Docker Edition
 
 Currently in development.
 
@@ -27,3 +27,13 @@ Images are hosted at Docker Hub:
 - [oxtrust](https://hub.docker.com/r/gluufederation/oxtrust)
 - [nginx](https://hub.docker.com/r/gluufederation/nginx)
 - [key-rotation](https://hub.docker.com/r/gluufederation/config-init/key-rotation)
+
+## Examples
+
+[Single Host](./examples/single-host/)
+
+- Please note that `docker-compose up` on this `docker-compose.yaml` does not work due to the nature of docker-compose and how it doesn't wait for containers to truly "finish" starting/exiting.
+
+Swarm - In Progress
+
+Kubernetes - TBD
