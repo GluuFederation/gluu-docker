@@ -1,25 +1,7 @@
-1.  Deploy Consul container:
+This in an example of running Gluu Server Docker edition in single-host setup.
 
-    ```
-    docker-compose up consul
-    ```
+Run the following command to deploy required containers:
 
-2.  Initialize cluster-wide config:
-
-    ```
-    sh init-config.sh
-    ```
-
-    This will prompts for various config.
-
-3.  Deploy LDAP container:
-
-    ```
-    docker-compose up ldap
-    ```
-
-4.  Deploy nginx, oxAuth, and oxTrust containers:
-
-    ```
-    DOMAIN=<hostname-used-in-step2> HOST_IP=<host-ip-addr> docker-compose up nginx oxauth oxtrust
-    ```
+```
+bash init_gluu.sh
+```
