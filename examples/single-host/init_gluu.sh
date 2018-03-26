@@ -264,7 +264,7 @@ fi
 
 if [ -z "$domain" ]
 then
-  read -p "What is the hostname in the configuration?  " domain
+  domain=$(cat $configLoc/config.json | awk ' /'hostname'/ {print $2} ' | sed 's/"//g' | sed 's/,//g')
 fi
 
 loadLdap
