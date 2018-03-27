@@ -141,10 +141,10 @@ checkConsulStatus () {
     status="curl -s ${url}"
 
     if [[ $(eval $status) = *"$CONSUL_IP"* ]]
-    then
-        return 0
-    else
-        return 1
+        then
+            return 0
+        else
+            return 1
     fi
 }
 ######################################################################
@@ -154,13 +154,13 @@ checkOxAuthStatus () {
 
     oxAuthCheck="curl -m 2 -skL -o /dev/null -w '%{http_code}' https://${domain}/oxauth/"
     while true; do
-    if [[ $(eval $oxAuthCheck) = *"200"* ]]
-    then
-    break
-    else
-    echo "..."
-    sleep 10
-    fi
+        if [ $(eval $oxAuthCheck) == "200" ]
+            then
+                break
+            else
+                echo "..."
+                sleep 10
+        fi
     done
 
     loadedEcho oxAuth
@@ -173,12 +173,12 @@ checkOxTrustStatus () {
 
     while true; do
     oxTrustCheck="curl -m 2 -skL -o /dev/null -w '%{http_code}' https://${domain}/identity/"
-    if [[ $(eval $oxTrustCheck) = *"200"* ]]
-    then
-    break
-    else
-    echo "..."
-    sleep 2
+    if  [ $(eval $oxTrustCheck) == "200" ]
+        then
+            break
+        else
+            echo "..."
+            sleep 2
     fi
     done
 
