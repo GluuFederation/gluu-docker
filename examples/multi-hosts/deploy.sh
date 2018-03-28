@@ -20,13 +20,8 @@ node_up() {
 load_manager() {
     if [[ -z $(docker-machine ls --filter name=manager-1 -q) ]]; then
         echo "[I] Creating manager-1 node as Swarm manager"
-
         docker-machine create \
-            --driver=digitalocean \
-            --digitalocean-access-token=$DO_TOKEN \
-            --digitalocean-region=sgp1 \
-            --digitalocean-private-networking="true" \
-            --digitalocean-size=4gb \
+            --driver virtualbox \
             manager-1
 
         echo "[I] Initializing Swarm"
@@ -42,11 +37,7 @@ load_worker() {
     if [[ -z $(docker-machine ls --filter name=worker-1 -q) ]]; then
         echo "[I] Creating worker-1 node as Swarm worker"
         docker-machine create \
-            --driver=digitalocean \
-            --digitalocean-access-token=$DO_TOKEN \
-            --digitalocean-region=sgp1 \
-            --digitalocean-private-networking="true" \
-            --digitalocean-size=4gb \
+            --driver virtualbox \
             worker-1
 
         echo "[I] Joining Swarm"
@@ -72,7 +63,6 @@ create_network() {
 
 deploy_consul() {
     # @TODO: DONT expose client to public
-    echo "[I] Deploying consul stack"
     eval $(docker-machine env manager-1)
 
     if [[ -z $(docker service ls --filter name=consul_server -q) ]]; then
@@ -147,19 +137,15 @@ bootstrap_config() {
 
         if [[ -f $saved_config ]]; then
             echo "[I] Found saved configuration in local disk"
-            read -p "Do you want to load previously saved configuration? [y/n]" load_config
-
-            if [[ $load_config = "y" ]]; then
-                echo "[I] Loading previously saved configuration"
-                docker-machine scp $saved_config manager-1:/root/config.json
-                docker run \
-                    --rm \
-                    --network gluu \
-                    -v /root/config.json:/opt/config-init/db/config.json \
-                    gluufederation/config-init:3.1.2_dev \
-                    load \
-                    --kv-host $(docker-machine ip manager-1)
-            fi
+            echo "[I] Loading previously saved configuration"
+            docker-machine scp $saved_config manager-1:/root/config.json
+            docker run \
+                --rm \
+                --network gluu \
+                -v /root/config.json:/opt/config-init/db/config.json \
+                gluufederation/config-init:3.1.2_dev \
+                load \
+                --kv-host $(docker-machine ip manager-1)
         else
             echo "[I] Please input the following parameters"
             read -p "Enter Domain:                 " domain
@@ -211,6 +197,105 @@ bootstrap_config() {
     eval $(docker-machine env -u)
 }
 
+deploy_ldap() {
+    eval $(docker-machine env manager-1)
+
+    if [[ -z $(docker service ls --filter name=ldap_init -q) ]]; then
+        docker-machine ssh manager-1 mkdir -p /root/opendj/db /root/opendj/logs /root/opendj/config /root/opendj/flag
+        echo "[I] Deploying ldap_init to manager-1 node."
+        docker service create \
+            --name=ldap_init \
+            --env=GLUU_LDAP_INIT=true \
+            --env=GLUU_LDAP_INIT_HOST="{{.Service.Name}}" \
+            --env=GLUU_KV_HOST=consul_server \
+            --network=gluu \
+            --replicas=1 \
+            --constraint=node.role==manager \
+            --update-parallelism=1 \
+            --update-failure-action=rollback \
+            --update-delay=30s \
+            --restart-window=120s \
+            --mount=type=bind,src=/root/opendj/db,target=/opt/opendj/db \
+            --mount=type=bind,src=/root/opendj/config,target=/opt/opendj/config \
+            --mount=type=bind,src=/root/opendj/logs,target=/opt/opendj/logs \
+            --mount=type=bind,src=/root/opendj/flag,target=/flag \
+            gluufederation/opendj:3.1.2_dev
+    else
+        echo "[I] ldap_init is running"
+    fi
+    eval $(docker-machine env -u)
+}
+
+deploy_oxauth() {
+    eval $(docker-machine env manager-1)
+
+    if [[ -z $(docker service ls --filter name=oxauth -q) ]]; then
+        echo "[I] Deploying oxauth."
+        docker service create \
+            --name=oxauth \
+            --env=GLUU_LDAP_URL=ldap_init:1636 \
+            --env=GLUU_KV_HOST=consul_server \
+            --network=gluu \
+            --replicas=1 \
+            --update-parallelism=1 \
+            --update-failure-action=rollback \
+            --update-delay=30s \
+            --restart-window=120s \
+            gluufederation/oxauth:3.1.2_dev
+    else
+        echo "[I] oxauth is running"
+    fi
+    eval $(docker-machine env -u)
+}
+
+deploy_oxtrust() {
+    eval $(docker-machine env manager-1)
+    domain=$(docker-machine ssh manager-1 curl 0.0.0.0:8500/v1/kv/gluu/config/hostname?raw -s)
+    if [[ -z $(docker service ls --filter name=oxtrust -q) ]]; then
+        echo "[I] Deploying oxtrust."
+        docker service create \
+            --name=oxtrust \
+            --env=GLUU_LDAP_URL=ldap_init:1636 \
+            --env=GLUU_KV_HOST=consul_server \
+            --network=gluu \
+            --replicas=1 \
+            --update-parallelism=1 \
+            --update-failure-action=rollback \
+            --update-delay=30s \
+            --restart-window=120s \
+            --host=$domain:$(docker-machine ip manager-1) \
+            gluufederation/oxtrust:3.1.2_dev
+    else
+        echo "[I] oxtrust is running"
+    fi
+    eval $(docker-machine env -u)
+}
+
+deploy_nginx() {
+    eval $(docker-machine env manager-1)
+
+    if [[ -z $(docker service ls --filter name=nginx -q) ]]; then
+        echo "[I] Deploying nginx"
+        docker service create \
+            --name=nginx \
+            --env=GLUU_KV_HOST=consul_server \
+            --env=GLUU_OXAUTH_BACKEND=oxauth:8080 \
+            --env=GLUU_OXTRUST_BACKEND=oxtrust:8080 \
+            --publish=mode=host,target=80,published=80 \
+            --publish=mode=host,target=443,published=443 \
+            --network=gluu \
+            --mode=global \
+            --update-parallelism=1 \
+            --update-failure-action=rollback \
+            --update-delay=30s \
+            --restart-window=120s \
+            gluufederation/nginx:3.1.2_dev
+    else
+        echo "[I] nginx is running"
+    fi
+    eval $(docker-machine env -u)
+}
+
 setup() {
     echo "[I] Setup the cluster"
     load_manager
@@ -218,6 +303,10 @@ setup() {
     create_network
     deploy_consul
     bootstrap_config
+    deploy_ldap
+    deploy_oxauth
+    deploy_nginx
+    deploy_oxtrust
 }
 
 teardown() {
@@ -245,18 +334,6 @@ main() {
 
     case $1 in
         "up")
-            DO_TOKEN_FILE=$PWD/volumes/digitalocean-access-token
-
-            if [[ ! -f $DO_TOKEN_FILE ]]; then
-                echo "[E] Requires DigitalOcean token saved in $DO_TOKEN_FILE file"
-                exit 1
-            fi
-
-            DO_TOKEN=$(cat $DO_TOKEN_FILE)
-            if [[ -z $DO_TOKEN ]]; then
-                echo "[E] DigitalOcean token cannot be empty"
-                exit 1
-            fi
             setup
             ;;
         "down")
