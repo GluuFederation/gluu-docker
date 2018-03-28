@@ -132,23 +132,82 @@ deploy_consul() {
     eval $(docker-machine env -u)
 }
 
-gen_config() {
-    echo "[I] Generating cluster-wide configuration"
+bootstrap_config() {
+    echo "[I] Prepare cluster-wide configuration"
+
+    # naive check to test whether config is in Consul
+    domain=$(docker-machine ssh manager-1 curl 0.0.0.0:8500/v1/kv/gluu/config/hostname?raw -s)
+
+    saved_config=$PWD/volumes/config.json
+
     eval $(docker-machine env manager-1)
-    docker run \
-        --rm \
-        --network gluu \
-        gluufederation/config-init:3.1.2_dev \
-        generate \
-        --admin-pw secret \
-        --email 'support@gluu.local' \
-        --domain multihost.gluu.local \
-        --org-name Gluu \
-        --country-code ID \
-        --state 'West Java' \
-        --city Majalengka \
-        --kv-host $(docker-machine ip manager-1) \
-        --ldap-type opendj
+
+    if [[ -z $domain ]]; then
+        echo "[W] Unable to find configuration in Consul"
+
+        if [[ -f $saved_config ]]; then
+            echo "[I] Found saved configuration in local disk"
+            read -p "Do you want to load previously saved configuration? [y/n]" load_config
+
+            if [[ $load_config = "y" ]]; then
+                echo "[I] Loading previously saved configuration"
+                docker-machine scp $saved_config manager-1:/root/config.json
+                docker run \
+                    --rm \
+                    --network gluu \
+                    -v /root/config.json:/opt/config-init/db/config.json \
+                    gluufederation/config-init:3.1.2_dev \
+                    load \
+                    --kv-host $(docker-machine ip manager-1)
+            fi
+        else
+            echo "[I] Please input the following parameters"
+            read -p "Enter Domain:                 " domain
+            read -p "Enter Country Code:           " countryCode
+            read -p "Enter State:                  " state
+            read -p "Enter City:                   " city
+            read -p "Enter Email:                  " email
+            read -p "Enter Organization:           " orgName
+            read -p "Enter Admin/LDAP Password:    " adminPw
+
+            case "$adminPW" in
+                * ) ;;
+                "") echo "Password cannot be empty"; exit 1;
+            esac
+
+            read -p "Continue with the above settings? [Y/n]" choiceCont
+
+            case "$choiceCont" in
+                y|Y ) ;;
+                n|N ) exit 1 ;;
+                * )   ;;
+            esac
+
+            echo "[I] Generating configuration for the first time; this may take a moment"
+            docker run \
+                --rm \
+                --network gluu \
+                gluufederation/config-init:3.1.2_dev \
+                generate \
+                --admin-pw secret \
+                --email $email \
+                --domain $domain \
+                --org-name "$orgName" \
+                --country-code $countryCode \
+                --state $state \
+                --city $city \
+                --kv-host $(docker-machine ip manager-1) \
+                --ldap-type opendj
+
+            echo "[I] Saving configuration to local disk for later use"
+            docker run \
+                --rm \
+                --network gluu \
+                gluufederation/config-init:3.1.2_dev \
+                dump \
+                --kv-host $(docker-machine ip manager-1) > $saved_config
+        fi
+    fi
     eval $(docker-machine env -u)
 }
 
@@ -158,7 +217,7 @@ setup() {
     load_worker
     create_network
     deploy_consul
-    # gen_config
+    bootstrap_config
 }
 
 teardown() {
