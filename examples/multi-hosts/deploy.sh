@@ -64,12 +64,14 @@ create_network() {
     eval $(docker-machine env manager-1)
     net=$(docker network ls -f name=gluu --format '{{ .Name }}')
     if [[ -z $net ]]; then
-        docker network create -d overlay gluu
+        echo "[I] Creating network for swarm"
+        docker network create -d overlay --attachable gluu
     fi
     eval $(docker-machine env -u)
 }
 
 deploy_consul() {
+    # @TODO: DONT expose client to public
     echo "[I] Deploying consul stack"
     eval $(docker-machine env manager-1)
 
@@ -130,12 +132,33 @@ deploy_consul() {
     eval $(docker-machine env -u)
 }
 
+gen_config() {
+    echo "[I] Generating cluster-wide configuration"
+    eval $(docker-machine env manager-1)
+    docker run \
+        --rm \
+        --network gluu \
+        gluufederation/config-init:3.1.2_dev \
+        generate \
+        --admin-pw secret \
+        --email 'support@gluu.local' \
+        --domain multihost.gluu.local \
+        --org-name Gluu \
+        --country-code ID \
+        --state 'West Java' \
+        --city Majalengka \
+        --kv-host $(docker-machine ip manager-1) \
+        --ldap-type opendj
+    eval $(docker-machine env -u)
+}
+
 setup() {
     echo "[I] Setup the cluster"
     load_manager
     load_worker
     create_network
     deploy_consul
+    # gen_config
 }
 
 teardown() {
@@ -162,7 +185,7 @@ main() {
     fi
 
     case $1 in
-        "setup")
+        "up")
             DO_TOKEN=$(cat $HOME/.do-token)
 
             if [[ -z $DO_TOKEN ]]; then
@@ -171,11 +194,11 @@ main() {
             fi
             setup
             ;;
-        "teardown")
+        "down")
             teardown
             ;;
         *)
-            echo "[E] Incorrect usage; please run 'setup' or 'teardown' sub-command"
+            echo "[E] Incorrect usage; please run 'up' or 'down' sub-command"
             exit 1
             ;;
     esac
