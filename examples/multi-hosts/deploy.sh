@@ -2,25 +2,6 @@
 
 set -e
 
-DO_TOKEN=$(cat $HOME/.do-token)
-
-if [[ -z $DO_TOKEN ]]; then
-    echo "[E] Requires DigitalOcean token saved in ${HOME}/.do-token file."
-    exit 1
-fi
-
-# checks docker engine
-if [[ -z $(which docker) ]]; then
-    echo "[E] Please install docker (https://docs.docker.com/install/) first."
-    exit 1
-fi
-
-# checks docker-machine
-if [[ -z $(which docker-machine) ]]; then
-    echo "[E] Please install docker-machine (https://docs.docker.com/machine/install-machine/) first."
-    exit 1
-fi
-
 node_up() {
     node=$1
     status=$(docker-machine ls --filter "name=${node}" --format '{{ .State }}')
@@ -92,7 +73,7 @@ deploy_consul() {
     echo "[I] Deploying consul stack"
     eval $(docker-machine env manager-1)
 
-    if [[ -z $(docker service ls --filter name=consul_server) ]]; then
+    if [[ -z $(docker service ls --filter name=consul_server -q) ]]; then
         echo "[I] Deploying consul_server to manager-1 node."
         docker service create \
             --name=consul_server \
@@ -120,7 +101,7 @@ deploy_consul() {
         echo "[I] consul_server is running"
     fi
 
-    if [[ -z $(docker service ls --filter name=consul_agent) ]]; then
+    if [[ -z $(docker service ls --filter name=consul_agent -q) ]]; then
         echo "[I] Deploying consul_agent to worker-1 node."
         docker service create \
             --name=consul_agent \
@@ -149,7 +130,55 @@ deploy_consul() {
     eval $(docker-machine env -u)
 }
 
-load_manager
-load_worker
-create_network
-deploy_consul
+setup() {
+    echo "[I] Setup the cluster"
+    load_manager
+    load_worker
+    create_network
+    deploy_consul
+}
+
+teardown() {
+    echo "[I] Teardown the cluster"
+
+    for node in manager-1 worker-1; do
+        if [[ ! -z $(docker-machine ls --filter name=$node -q) ]]; then
+            docker-machine rm $node
+        fi
+    done
+}
+
+main() {
+    # checks docker engine
+    if [[ -z $(which docker) ]]; then
+        echo "[E] Please install docker (https://docs.docker.com/install/) first."
+        exit 1
+    fi
+
+    # checks docker-machine
+    if [[ -z $(which docker-machine) ]]; then
+        echo "[E] Please install docker-machine (https://docs.docker.com/machine/install-machine/) first."
+        exit 1
+    fi
+
+    case $1 in
+        "setup")
+            DO_TOKEN=$(cat $HOME/.do-token)
+
+            if [[ -z $DO_TOKEN ]]; then
+                echo "[E] Requires DigitalOcean token saved in ${HOME}/.do-token file."
+                exit 1
+            fi
+            setup
+            ;;
+        "teardown")
+            teardown
+            ;;
+        *)
+            echo "[E] Incorrect usage; please run 'setup' or 'teardown' sub-command"
+            exit 1
+            ;;
+    esac
+}
+
+main $@
