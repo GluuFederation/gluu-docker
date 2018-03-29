@@ -28,6 +28,7 @@ services:
       - GLUU_LDAP_INIT=true
       - GLUU_LDAP_INIT_HOST=ldap
       - GLUU_LDAP_INIT_PORT=1636
+      - GLUU_LDAP_ADDR_INTERFACE=eth0
     container_name: ldap
     volumes:
       - ./volumes/opendj/config:/opt/opendj/config
