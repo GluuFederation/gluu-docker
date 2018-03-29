@@ -21,7 +21,11 @@ load_manager() {
     if [[ -z $(docker-machine ls --filter name=manager-1 -q) ]]; then
         echo "[I] Creating manager-1 node as Swarm manager"
         docker-machine create \
-            --driver virtualbox \
+            --driver=digitalocean \
+            --digitalocean-access-token=$DO_TOKEN \
+            --digitalocean-region=sgp1 \
+            --digitalocean-private-networking="true" \
+            --digitalocean-size=4gb \
             manager-1
 
         echo "[I] Initializing Swarm"
@@ -37,7 +41,11 @@ load_worker() {
     if [[ -z $(docker-machine ls --filter name=worker-1 -q) ]]; then
         echo "[I] Creating worker-1 node as Swarm worker"
         docker-machine create \
-            --driver virtualbox \
+            --driver=digitalocean \
+            --digitalocean-access-token=$DO_TOKEN \
+            --digitalocean-region=sgp1 \
+            --digitalocean-private-networking="true" \
+            --digitalocean-size=4gb \
             worker-1
 
         echo "[I] Joining Swarm"
@@ -207,6 +215,7 @@ deploy_ldap() {
             --name=ldap_init \
             --env=GLUU_LDAP_INIT=true \
             --env=GLUU_LDAP_INIT_HOST="{{.Service.Name}}" \
+            --env=GLUU_LDAP_ADDR_INTERFACE=eth0 \
             --env=GLUU_KV_HOST=consul_server \
             --network=gluu \
             --replicas=1 \
@@ -223,6 +232,31 @@ deploy_ldap() {
     else
         echo "[I] ldap_init is running"
     fi
+
+    if [[ -z $(docker service ls --filter name=ldap_peer -q) ]]; then
+        docker-machine ssh worker-1 mkdir -p /root/opendj/db /root/opendj/logs /root/opendj/config /root/opendj/flag
+        echo "[I] Deploying ldap_peer to worker-1 node."
+        docker service create \
+            --name=ldap_peer \
+            --env=GLUU_LDAP_INIT=false \
+            --env=GLUU_LDAP_ADDR_INTERFACE=eth0 \
+            --env=GLUU_KV_HOST=consul_server \
+            --network=gluu \
+            --replicas=1 \
+            --constraint=node.role==worker \
+            --update-parallelism=1 \
+            --update-failure-action=rollback \
+            --update-delay=30s \
+            --restart-window=120s \
+            --mount=type=bind,src=/root/opendj/db,target=/opt/opendj/db \
+            --mount=type=bind,src=/root/opendj/config,target=/opt/opendj/config \
+            --mount=type=bind,src=/root/opendj/logs,target=/opt/opendj/logs \
+            --mount=type=bind,src=/root/opendj/flag,target=/flag \
+            gluufederation/opendj:3.1.2_dev
+    else
+        echo "[I] ldap_peer is running"
+    fi
+
     eval $(docker-machine env -u)
 }
 
@@ -233,10 +267,10 @@ deploy_oxauth() {
         echo "[I] Deploying oxauth."
         docker service create \
             --name=oxauth \
-            --env=GLUU_LDAP_URL=ldap_init:1636 \
+            --env=GLUU_LDAP_URL=ldap_init:1636,ldap_peer:1636 \
             --env=GLUU_KV_HOST=consul_server \
             --network=gluu \
-            --replicas=1 \
+            --replicas=2 \
             --update-parallelism=1 \
             --update-failure-action=rollback \
             --update-delay=30s \
@@ -255,7 +289,7 @@ deploy_oxtrust() {
         echo "[I] Deploying oxtrust."
         docker service create \
             --name=oxtrust \
-            --env=GLUU_LDAP_URL=ldap_init:1636 \
+            --env=GLUU_LDAP_URL=ldap_init:1636,ldap_peer:1636 \
             --env=GLUU_KV_HOST=consul_server \
             --network=gluu \
             --replicas=1 \
@@ -305,18 +339,36 @@ setup() {
     bootstrap_config
     deploy_ldap
     deploy_oxauth
-    deploy_nginx
     deploy_oxtrust
+    deploy_nginx
 }
 
 teardown() {
     echo "[I] Teardown the cluster"
 
+    if [[ ! -z $(docker-machine ls --filter name=manager-1 -q) ]]; then
+        eval $(docker-machine env manager-1)
+        for service in consul_server consul_agent ldap_init ldap_peer oxauth nginx oxtrust; do
+            if [[ ! -z $(docker service ls --filter name=$service -q) ]]; then
+                echo "[I] Removing $service service"
+                docker service rm $service
+            fi
+        done
+        eval $(docker-machine env -u)
+    fi
+
     for node in manager-1 worker-1; do
         if [[ ! -z $(docker-machine ls --filter name=$node -q) ]]; then
-            docker-machine rm $node
+            read -p "Do you want to destroy $node node? [y/n]   " del_choice
+            if [[ $del_choice = "y" ]]; then
+                echo "[I] Removing $node node"
+                docker-machine ssh $node rm -rf /root/opendj
+                docker-machine rm $node
+            fi
         fi
     done
+
+    rm -f $PWD/volumes/config.json
 }
 
 main() {
@@ -334,6 +386,18 @@ main() {
 
     case $1 in
         "up")
+            DO_TOKEN_FILE=$PWD/volumes/digitalocean-access-token
+
+            if [[ ! -f $DO_TOKEN_FILE ]]; then
+                echo "[E] Requires DigitalOcean token saved in $DO_TOKEN_FILE file"
+                exit 1
+            fi
+
+            DO_TOKEN=$(cat $DO_TOKEN_FILE)
+            if [[ -z $DO_TOKEN ]]; then
+                echo "[E] DigitalOcean token cannot be empty"
+                exit 1
+            fi
             setup
             ;;
         "down")
