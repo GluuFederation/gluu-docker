@@ -1,0 +1,51 @@
+version: "3.3"
+
+networks:
+  gluu:
+    external: true
+
+services:
+  oxauth:
+    image: gluufederation/oxauth:3.1.2_dev
+    environment:
+      - GLUU_LDAP_URL=ldap.server:1636
+      - GLUU_KV_HOST=consul.server
+    networks:
+      gluu:
+        aliases:
+          - oxauth.server
+    deploy:
+      replicas: 2
+      endpoint_mode: dnsrr
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+
+  oxtrust:
+    image: gluufederation/oxtrust:3.1.2_dev
+    environment:
+      - GLUU_LDAP_URL=ldap.server:1636
+      - GLUU_KV_HOST=consul.server
+    networks:
+      gluu:
+        aliases:
+          - oxtrust.server
+    deploy:
+      replicas: 1
+      endpoint_mode: dnsrr
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints:
+          - node.role == manager

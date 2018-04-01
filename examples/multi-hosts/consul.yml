@@ -1,0 +1,80 @@
+version: "3.3"
+
+networks:
+  gluu:
+    external: true
+
+services:
+  consul_server:
+    image: consul
+    hostname: "{{.Node.ID}}-{{.Service.Name}}"
+    command: "agent -server -ui -retry-join consul.server -client 0.0.0.0"
+    environment:
+      - CONSUL_BIND_INTERFACE=eth0
+      - 'CONSUL_LOCAL_CONFIG={
+          "leave_on_terminate": true,
+          "skip_leave_on_interrupt": true,
+          "autopilot": {
+            "cleanup_dead_servers": true
+          },
+          "disable_update_check": true,
+          "bootstrap_expect": 2
+        }'
+    networks:
+      gluu:
+        aliases:
+          - consul.server
+    ports:
+      - target: 8500
+        published: 8500
+        mode: host
+    deploy:
+      mode: global
+      endpoint_mode: dnsrr
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints:
+          - node.role == manager
+
+  consul_agent:
+    image: consul
+    command: "agent -server -retry-join consul.server"
+    hostname: "{{.Node.ID}}-{{.Service.Name}}"
+    environment:
+      - CONSUL_BIND_INTERFACE=eth0
+      - CONSUL_CLIENT_INTERFACE=eth0
+      - 'CONSUL_LOCAL_CONFIG={
+          "leave_on_terminate": true,
+          "skip_leave_on_interrupt" : false,
+          "disable_update_check": true,
+          "bootstrap_expect": 2
+        }'
+    networks:
+      gluu:
+        aliases:
+          - consul.server
+    ports:
+      - target: 8500
+        published: 8500
+        mode: host
+    deploy:
+      mode: global
+      endpoint_mode: dnsrr
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints:
+          - node.role == worker
