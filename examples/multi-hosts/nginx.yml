@@ -8,9 +8,13 @@ services:
   nginx:
     image: gluufederation/nginx:3.1.2_dev
     environment:
-      - GLUU_OXAUTH_BACKEND=oxauth.server:8080
-      - GLUU_OXTRUST_BACKEND=oxtrust.server:8080
+      - GLUU_OXAUTH_BACKEND=traefik:80
+      - GLUU_OXAUTH_HOST_HEADER=oxauth.gluu
+      - GLUU_OXTRUST_BACKEND=traefik:80
+      - GLUU_OXTRUST_HOST_HEADER=oxtrust.gluu
       - GLUU_KV_HOST=consul.server
+      - GLUU_RESOLVER_ADDR=127.0.0.11
+      - GLUU_OX_PROXY_MODE=true
     networks:
       gluu:
         aliases:

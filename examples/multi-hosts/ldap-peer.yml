@@ -5,15 +5,12 @@ networks:
     external: true
 
 services:
-  ldap_init:
+  ldap_peer:
     image: gluufederation/opendj:3.1.2_dev
     environment:
-      - GLUU_LDAP_INIT=true
-      - GLUU_LDAP_INIT_HOST=ldap.server
+      - GLUU_LDAP_INIT=false
       - GLUU_LDAP_ADDR_INTERFACE=eth0
       - GLUU_KV_HOST=consul.server
-      - GLUU_CACHE_TYPE=REDIS
-      - GLUU_REDIS_URL=redis.server:6379
     networks:
       gluu:
         aliases:
@@ -31,4 +28,4 @@ services:
         window: 120s
       placement:
         constraints:
-          - node.role == manager
+          - node.role == worker
