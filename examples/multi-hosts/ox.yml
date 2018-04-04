@@ -15,8 +15,8 @@ services:
         aliases:
           - oxauth.server
     deploy:
-      replicas: 2
       endpoint_mode: dnsrr
+      replicas: 1
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -25,6 +25,10 @@ services:
         condition: any
         delay: 5s
         window: 120s
+      labels:
+        - "traefik.port=8080"
+        - "traefik.backend=oxauth"
+        - "traefik.frontend.rule=Host:oxauth.gluu"
 
   oxtrust:
     image: gluufederation/oxtrust:3.1.2_dev
@@ -36,8 +40,8 @@ services:
         aliases:
           - oxtrust.server
     deploy:
-      replicas: 1
       endpoint_mode: dnsrr
+      replicas: 1
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -48,4 +52,8 @@ services:
         window: 120s
       placement:
         constraints:
-          - node.role == manager
+          - node.role == worker
+      labels:
+        - "traefik.port=8080"
+        - "traefik.backend=oxtrust"
+        - "traefik.frontend.rule=Host:oxtrust.gluu"

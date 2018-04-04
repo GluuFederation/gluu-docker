@@ -170,15 +170,21 @@ deploy_stack() {
     eval $(docker-machine env manager-1)
     # if [[ -z $(docker stack ls --format '{{ .Name }}' | grep -i gluu) ]]; then
         docker stack deploy -c consul.yml gluu
+
         docker stack deploy -c cache.yml gluu
         # @TODO: wait for consul
         bootstrap_config
+
         # @TODO: wait for consul
-        docker stack deploy -c ldap.yml gluu
-        # @TODO: wait for consul and ldap
-        domain=$(docker-machine ssh manager-1 curl 0.0.0.0:8500/v1/kv/gluu/config/hostname?raw -s)
-        docker stack deploy -c ox.yml gluu
-        DOMAIN=$domain docker stack deploy -c nginx.yml gluu
+        # docker stack deploy -c proxy.yml gluu
+
+        # @TODO: wait for consul
+        # docker stack deploy -c ldap.yml gluu
+
+        # # @TODO: wait for consul and ldap
+        # docker stack deploy -c ox.yml gluu
+        # domain=$(docker-machine ssh manager-1 curl 0.0.0.0:8500/v1/kv/gluu/config/hostname?raw -s)
+        # DOMAIN=$domain docker stack deploy -c nginx.yml gluu
     # fi
     eval $(docker-machine env -u)
 }
