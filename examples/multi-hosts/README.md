@@ -200,30 +200,30 @@ LDAP services are divided into 2 roles:
 
 ### 5 - Deploy Proxy for oxAuth and oxTrust
 
-    In context of having multiple oxAuth/oxTrust instances, we need a proxy to load-balance them.
-    In this example, we choose to use [Traefik](https://docs.traefik.io/) as it has richer load-balance
-    algorithms (include sticky cookie) compared to builtin load-balancer in Docker Swarm.
+In context of having multiple oxAuth/oxTrust instances, we need a proxy to load-balance them.
+In this example, we choose to use [Traefik](https://docs.traefik.io/) as it has richer load-balance
+algorithms (include sticky cookie) compared to builtin load-balancer in Docker Swarm.
 
-    To achieve HA/cluster setup in Traefik, we utilize Consul KV to store initial config and Docker Swarm
-    backend. This setup is loosely based on [example](https://docs.traefik.io/user-guide/cluster-docker-consul/)
-    found at official Traefik doc.
+To achieve HA/cluster setup in Traefik, we utilize Consul KV to store initial config and Docker Swarm
+backend. This setup is loosely based on [example](https://docs.traefik.io/user-guide/cluster-docker-consul/)
+found at official Traefik doc.
 
-    There are 2 `traefik` services; one for migrating config to Consul KV and one for the actual proxy.
-    To run the first `traefik` service:
+There are 2 `traefik` services; one for migrating config to Consul KV and one for the actual proxy.
+To run the first `traefik` service:
 
-        eval $(docker-machine env manager-1)
-        docker stack deploy -c proxy-init.yml gluu
-        eval $(docker-machine env -u)
+    eval $(docker-machine env manager-1)
+    docker stack deploy -c proxy-init.yml gluu
+    eval $(docker-machine env -u)
 
-    Wait for few seconds and then check whether config have been migrated to Consul KV successfuly:
+Wait for few seconds and then check whether config have been migrated to Consul KV successfuly:
 
-        docker-machine ssh manager-1 'curl 0.0.0.0:8500/v1/kv/traefik/debug?raw -s'
+    docker-machine ssh manager-1 'curl 0.0.0.0:8500/v1/kv/traefik/debug?raw -s'
 
-    If the command returns non-empty output, we can deploy the second `traefik` service:
+If the command returns non-empty output, we can deploy the second `traefik` service:
 
-        eval $(docker-machine env manager-1)
-        docker stack deploy -c proxy.yml gluu
-        eval $(docker-machine env -u)
+    eval $(docker-machine env manager-1)
+    docker stack deploy -c proxy.yml gluu
+    eval $(docker-machine env -u)
 
 ### 6 - Deploy oxAuth, oxTrust, and nginx
 
