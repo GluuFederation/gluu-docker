@@ -83,135 +83,21 @@ create_network() {
     if [[ -z $net ]]; then
         echo "[I] Creating network for swarm"
         docker network create -d overlay --attachable gluu
+    else
+        echo "[I] $net network is available"
     fi
-    eval $(docker-machine env -u)
-}
-
-bootstrap_config() {
-    echo "[I] Prepare cluster-wide configuration"
-
-    # naive check to test whether config is in Consul
-    domain=$(docker-machine ssh manager-1 curl 0.0.0.0:8500/v1/kv/gluu/config/hostname?raw -s)
-
-    saved_config=$PWD/volumes/config.json
-
-    if [[ -z $domain ]]; then
-        echo "[W] Unable to find configuration in Consul"
-
-        if [[ -f $saved_config ]]; then
-            read -p "[I] Load previously saved configuration? [y/n]" load_choice
-            if [[ $load_choice = "y" ]]; then
-                docker-machine scp $saved_config manager-1:/root/config.json
-                docker run \
-                    --rm \
-                    --network gluu \
-                    -v /root/config.json:/opt/config-init/db/config.json \
-                    gluufederation/config-init:3.1.2_dev \
-                    load \
-                    --kv-host $(docker-machine ip manager-1)
-            fi
-        else
-            generate_config
-        fi
-    fi
-}
-
-generate_config() {
-    saved_config=$PWD/volumes/config.json
-
-    echo "[I] Please input the following parameters"
-    read -p "Enter Domain:                 " domain
-    read -p "Enter Country Code:           " countryCode
-    read -p "Enter State:                  " state
-    read -p "Enter City:                   " city
-    read -p "Enter Email:                  " email
-    read -p "Enter Organization:           " orgName
-    read -p "Enter Admin/LDAP Password:    " adminPw
-
-    case "$adminPW" in
-        * ) ;;
-        "") echo "Password cannot be empty"; exit 1;
-    esac
-
-    read -p "Continue with the above settings? [Y/n]" choiceCont
-
-    case "$choiceCont" in
-        y|Y ) ;;
-        n|N ) exit 1 ;;
-        * )   ;;
-    esac
-
-    echo "[I] Generating configuration for the first time; this may take a moment"
-    docker run \
-        --rm \
-        --network gluu \
-        gluufederation/config-init:3.1.2_dev \
-        generate \
-        --admin-pw secret \
-        --email $email \
-        --domain $domain \
-        --org-name "$orgName" \
-        --country-code $countryCode \
-        --state $state \
-        --city $city \
-        --kv-host $(docker-machine ip manager-1) \
-        --ldap-type opendj
-
-    echo "[I] Saving configuration to local disk for later use"
-    docker run \
-        --rm \
-        --network gluu \
-        gluufederation/config-init:3.1.2_dev \
-        dump \
-        --kv-host $(docker-machine ip manager-1) > $saved_config
-}
-
-deploy_stack() {
-    eval $(docker-machine env manager-1)
-    # if [[ -z $(docker stack ls --format '{{ .Name }}' | grep -i gluu) ]]; then
-        docker stack deploy -c consul.yml gluu
-
-        docker stack deploy -c cache.yml gluu
-        # @TODO: wait for consul
-        bootstrap_config
-
-        # @TODO: wait for consul
-        # docker stack deploy -c proxy.yml gluu
-
-        # @TODO: wait for consul
-        # docker stack deploy -c ldap.yml gluu
-
-        # # @TODO: wait for consul and ldap
-        # docker stack deploy -c ox.yml gluu
-        # domain=$(docker-machine ssh manager-1 curl 0.0.0.0:8500/v1/kv/gluu/config/hostname?raw -s)
-        # DOMAIN=$domain docker stack deploy -c nginx.yml gluu
-    # fi
     eval $(docker-machine env -u)
 }
 
 setup() {
-    echo "[I] Setup the cluster"
+    echo "[I] Setup the cluster nodes"
     load_manager $1
     load_worker $1
     create_network
-    deploy_stack
 }
 
 teardown() {
-    echo "[I] Teardown the cluster"
-
-    if [[ ! -z $(docker-machine ls --filter name=manager-1 -q) ]]; then
-        eval $(docker-machine env manager-1)
-        if [[ ! -z $(docker stack ls --format '{{ .Name }}' | grep -i gluu) ]]; then
-            read -p "Do you want to remove gluu stack? [y/n] " rm_choice
-
-            if [[ $rm_choice = "y"  ]]; then
-                echo "[I] Removing gluu stack"
-                docker stack rm gluu
-            fi
-        fi
-        eval $(docker-machine env -u)
-    fi
+    echo "[I] Teardown the cluster nodes"
 
     for node in manager-1 worker-1; do
         if [[ ! -z $(docker-machine ls --filter name=$node -q) ]]; then
@@ -219,8 +105,6 @@ teardown() {
             docker-machine rm $node
         fi
     done
-
-    rm -f $PWD/volumes/config.json
 }
 
 main() {
@@ -254,8 +138,16 @@ main() {
                         exit 1
                     fi
                     ;;
+                virtualbox)
+                    # checks virtualbox
+                    if [[ -z $(which virtualbox) ]]; then
+                        echo "[E] Please install virtualbox (https://www.virtualbox.org/wiki/Downloads) first."
+                        exit 1
+                    fi
+                    ;;
                 *)
-                    driver=virtualbox
+                    echo "[E] Unsupported driver (please choose either virtualbox or digitalocean)."
+                    exit 1
                     ;;
             esac
             setup $driver
