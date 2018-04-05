@@ -1,0 +1,45 @@
+version: "3.3"
+
+networks:
+  gluu:
+    external: true
+
+services:
+  traefik_init:
+    image: traefik
+    command:
+      - "storeconfig"
+      - "--api"
+      - "--entrypoints=Name:http Address::80"
+      - "--entrypoints=Name:https Address::443 TLS"
+      - "--defaultentrypoints=http,https"
+      - "--acme"
+      - "--acme.storage=traefik/acme/account"
+      - "--acme.entryPoint=https"
+      - "--acme.httpChallenge.entryPoint=http"
+      - "--acme.OnHostRule=true"
+      - "--acme.onDemand=false"
+      - "--acme.email=foobar@example.com"
+      - "--docker"
+      - "--docker.swarmmode"
+      - "--docker.domain=gluu"
+      - "--docker.watch"
+      - "--consul"
+      - "--consul.endpoint=consul.server:8500"
+      - "--consul.prefix=traefik"
+    networks:
+      - gluu
+    deploy:
+      endpoint_mode: dnsrr
+      mode: global
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        window: 120s
+      placement:
+        constraints:
+          - node.role == manager
