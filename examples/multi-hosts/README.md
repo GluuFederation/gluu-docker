@@ -235,4 +235,4 @@ Run the following commands to deploy oxAuth and oxTrust:
 
 ## Known Issues
 
-1. Sometime LDAP replication failed on replicating `o=gluu` using `virtualbox` node driver. Need to investigate!
+1. Sometime LDAP replication failed on replicating `o=gluu` using `virtualbox` node driver.
