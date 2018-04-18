@@ -21,11 +21,6 @@ load_manager() {
     if [[ -z $(docker-machine ls --filter name=manager-1 -q) ]]; then
         echo "[I] Creating manager-1 node as Swarm manager"
         case $1 in
-            virtualbox)
-                docker-machine create \
-                    --driver virtualbox \
-                    manager-1
-                ;;
             digitalocean)
                 docker-machine create \
                     --driver=digitalocean \
@@ -50,11 +45,6 @@ load_worker() {
     if [[ -z $(docker-machine ls --filter name=worker-1 -q) ]]; then
         echo "[I] Creating worker-1 node as Swarm worker"
         case $1 in
-            virtualbox)
-                docker-machine create \
-                    --driver virtualbox \
-                    worker-1
-                ;;
             digitalocean)
                 docker-machine create \
                     --driver=digitalocean \
@@ -181,15 +171,8 @@ main() {
                         exit 1
                     fi
                     ;;
-                virtualbox)
-                    # checks virtualbox
-                    if [[ -z $(which virtualbox) ]]; then
-                        echo "[E] Please install virtualbox (https://www.virtualbox.org/wiki/Downloads) first."
-                        exit 1
-                    fi
-                    ;;
                 *)
-                    echo "[E] Unsupported driver (please choose either virtualbox or digitalocean)."
+                    echo "[E] Unsupported driver (please use digitalocean)."
                     exit 1
                     ;;
             esac
