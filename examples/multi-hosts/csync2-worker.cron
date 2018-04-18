@@ -1,0 +1,1 @@
+2-59/2 * * * *    root    /usr/sbin/csync2 -N worker-1.gluu -xv 2>/var/log/csync2.log

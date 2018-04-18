@@ -83,10 +83,53 @@ create_network() {
     if [[ -z $net ]]; then
         echo "[I] Creating network for swarm"
         docker network create -d overlay --attachable gluu
+        csync2_repl
     else
         echo "[I] $net network is available"
     fi
     eval $(docker-machine env -u)
+}
+
+csync2_repl() {
+    echo "[I] Installing and configuring csync2 in manager-1 node"
+    docker-machine ssh manager-1 apt-get install -y csync2
+    echo $(docker-machine ip manager-1) manager-1.gluu > volumes/manager-1.gluu
+    echo $(docker-machine ip worker-1) worker-1.gluu > volumes/worker-1.gluu
+    docker-machine scp volumes/manager-1.gluu manager-1:/etc/
+    docker-machine scp volumes/worker-1.gluu manager-1:/etc/
+    docker-machine scp extra-hosts.sh manager-1:/root/
+    docker-machine ssh manager-1 bash /root/extra-hosts.sh
+    docker-machine scp csync2.cfg manager-1:/etc/
+    docker-machine ssh manager-1 mkdir -p /opt/shared-shibboleth-idp
+    docker-machine ssh manager-1 csync2 -k /etc/csync2.key
+    docker-machine ssh manager-1 openssl genrsa -out /etc/csync2_ssl_key.pem 1024
+    docker-machine ssh manager-1 openssl req -batch -new -key /etc/csync2_ssl_key.pem -out /etc/csync2_ssl_cert.csr
+    docker-machine ssh manager-1 openssl x509 -req -days 3600 -in /etc/csync2_ssl_cert.csr -signkey /etc/csync2_ssl_key.pem -out /etc/csync2_ssl_cert.pem
+    docker-machine scp manager-1:/etc/csync2.key volumes/
+    docker-machine scp manager-1:/etc/csync2_ssl_key.pem volumes/
+    docker-machine scp manager-1:/etc/csync2_ssl_cert.pem volumes/
+    docker-machine scp manager-1:/etc/csync2_ssl_cert.csr volumes/
+    docker-machine scp inetd-manager.conf manager-1:/etc/inetd.conf
+    docker-machine ssh manager-1 /etc/init.d/openbsd-inetd restart
+    docker-machine scp csync2-manager.cron manager-1:/etc/cron.d/csync2
+    docker-machine ssh manager-1 service cron reload
+
+    echo "[I] Installing and configuring csync2 in worker-1 node"
+    docker-machine ssh worker-1 apt-get install -y csync2
+    docker-machine scp volumes/manager-1.gluu worker-1:/etc/
+    docker-machine scp volumes/worker-1.gluu worker-1:/etc/
+    docker-machine scp extra-hosts.sh worker-1:/root/
+    docker-machine ssh worker-1 bash /root/extra-hosts.sh
+    docker-machine scp csync2.cfg worker-1:/etc/
+    docker-machine ssh worker-1 mkdir -p /opt/shared-shibboleth-idp
+    docker-machine scp volumes/csync2.key worker-1:/etc/
+    docker-machine scp volumes/csync2_ssl_key.pem worker-1:/etc/
+    docker-machine scp volumes/csync2_ssl_cert.pem worker-1:/etc/
+    docker-machine scp volumes/csync2_ssl_cert.csr worker-1:/etc/
+    docker-machine scp inetd-worker.conf worker-1:/etc/inetd.conf
+    docker-machine ssh worker-1 /etc/init.d/openbsd-inetd restart
+    docker-machine scp csync2-worker.cron worker-1:/etc/cron.d/csync2
+    docker-machine ssh worker-1 service cron reload
 }
 
 setup() {
