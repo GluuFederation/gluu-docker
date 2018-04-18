@@ -6,7 +6,6 @@ This is an example on how to deploy Gluu Server Docker Edition on multi-hosts se
 
 - [Docker](https://docs.docker.com/install/)
 - [Docker Machine](https://docs.docker.com/machine/install-machine/)
-- [Virtualbox](https://www.virtualbox.org/wiki/Downloads); required only if nodes are provisioned using VirtualBox VM
 - [DigitalOcean access token](https://www.digitalocean.com/community/tutorials/how-to-use-the-digitalocean-api-v2); required only if nodes are provisioned using DigitalOcean droplet
 
 ## Provisioning Cluster Nodes
@@ -17,7 +16,7 @@ Nodes are divided into 2 roles:
 - worker
 
 These nodes are created/destroyed using `docker-machine`.
-Nodes can be placed inside VirtualBox VM or DigitalOcean droplet.
+Nodes are deployed as DigitalOcean droplets.
 
 Refer to https://docs.docker.com/engine/swarm/key-concepts/#nodes for an overview of each role.
 
@@ -27,14 +26,10 @@ To setup nodes, execute the command below:
 
     ./nodes.sh up $driver
 
-where `$driver` value can be `virtualbox` or `digitalocean`.
+where `$driver` value is `digitalocean`.
 __Note__, for `digitalocean` driver, we need to create a file contains DigitalOcean access token:
 
     echo $DO_TOKEN > $PWD/volumes/digital-access-token
-
-To setup nodes in `virtualbox` VM:
-
-    ./nodes.sh up virtualbox
 
 For `digitalocean` droplet:
 

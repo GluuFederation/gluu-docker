@@ -155,27 +155,19 @@ main() {
 
     case $1 in
         "up")
-            driver=$2
-            case $driver in
-                digitalocean)
-                    DO_TOKEN_FILE=$PWD/volumes/digitalocean-access-token
+            driver=digitalocean
+            DO_TOKEN_FILE=$PWD/volumes/digitalocean-access-token
 
-                    if [[ ! -f $DO_TOKEN_FILE ]]; then
-                        echo "[E] Requires DigitalOcean token saved in $DO_TOKEN_FILE file"
-                        exit 1
-                    fi
+            if [[ ! -f $DO_TOKEN_FILE ]]; then
+                echo "[E] Requires DigitalOcean token saved in $DO_TOKEN_FILE file"
+                exit 1
+            fi
 
-                    DO_TOKEN=$(cat $DO_TOKEN_FILE)
-                    if [[ -z $DO_TOKEN ]]; then
-                        echo "[E] DigitalOcean token cannot be empty"
-                        exit 1
-                    fi
-                    ;;
-                *)
-                    echo "[E] Unsupported driver (please use digitalocean)."
-                    exit 1
-                    ;;
-            esac
+            DO_TOKEN=$(cat $DO_TOKEN_FILE)
+            if [[ -z $DO_TOKEN ]]; then
+                echo "[E] DigitalOcean token cannot be empty"
+                exit 1
+            fi
             setup $driver
             ;;
         "down")
