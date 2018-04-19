@@ -52,11 +52,45 @@ services:
         window: 120s
       placement:
         constraints:
-          - node.role == worker
+          - node.role == master
       labels:
         - "traefik.port=8080"
         - "traefik.backend=oxtrust"
         - "traefik.frontend.rule=Host:oxtrust.gluu"
+    volumes:
+      - /opt/shared-shibboleth-idp:/opt/shared-shibboleth-idp
+
+  oxshibboleth:
+    image: gluufederation/oxshibboleth:3.1.2_dev
+    environment:
+      - GLUU_LDAP_URL=ldap.server:1636
+      - GLUU_KV_HOST=consul.server
+    networks:
+      gluu:
+        aliases:
+          - oxshibboleth.server
+    deploy:
+      endpoint_mode: dnsrr
+      replicas: 1
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints:
+          - node.role == worker
+      labels:
+        - "traefik.port=8080"
+        - "traefik.backend=oxshibboleth"
+        - "traefik.frontend.rule=Host:oxshibboleth.gluu"
+    volumes:
+      - /opt/shared-shibboleth-idp:/opt/shared-shibboleth-idp
+    extra_hosts:
+      - "${SP_DOMAIN}:${SP_IP}"
 
   nginx:
     image: gluufederation/nginx:3.1.2_dev
@@ -65,6 +99,8 @@ services:
       - GLUU_OXAUTH_HOST_HEADER=oxauth.gluu
       - GLUU_OXTRUST_BACKEND=traefik:80
       - GLUU_OXTRUST_HOST_HEADER=oxtrust.gluu
+      - GLUU_OXSHIBBOLETH_BACKEND=traefik:80
+      - GLUU_OXSHIBBOLETH_HOST_HEADER=oxshibboleth.gluu
       - GLUU_KV_HOST=consul.server
       - GLUU_RESOLVER_ADDR=127.0.0.11
       - GLUU_OX_PROXY_MODE=true
