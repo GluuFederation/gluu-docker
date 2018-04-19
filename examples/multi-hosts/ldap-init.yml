@@ -14,6 +14,7 @@ services:
       - GLUU_KV_HOST=consul.server
       - GLUU_CACHE_TYPE=REDIS
       - GLUU_REDIS_URL=redis.server:6379
+      - GLUU_OXTRUST_CONFIG_GENERATION=true
     networks:
       gluu:
         aliases:
