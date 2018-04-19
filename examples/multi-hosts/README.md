@@ -188,11 +188,28 @@ LDAP services are divided into 2 roles:
 
     The process will also take some time, but it's safe to proceed to deploy next services.
 
+### 5 - Deploy oxAuth, oxTrust, oxShibboleth, and nginx
 
-### 5 - Deploy oxAuth, oxTrust, oxShibboleth, oxPassport, and nginx
-
-Run the following commands to deploy oxAuth, oxTrust, oxShibboleth, oxPassport, and nginx:
+Run the following commands to deploy oxAuth, oxTrust, oxShibboleth, and nginx:
 
     eval $(docker-machine env manager-1)
     DOMAIN=$(docker-machine ssh manager-1 curl 0.0.0.0:8500/v1/kv/gluu/config/hostname?raw -s) docker stack deploy -c web.yml gluu
+    eval $(docker-machine env -u)
+
+### 6 - Deploy oxPassport
+
+Before deploying oxPassport, we need to enable Passport support by doing steps below:
+
+1. Login to oxTrust GUI.
+2. Click *Configuration > Organization Configuration* sidebar menu.
+3. On *System Configuration* tab, make sure *Passport Support* is enabled, then click *Update* button.
+4. Click *Configuration > Manage Custom Scripts* sidebar menu.
+5. On *Person Authentication* tab, make sure `passport_social` script is enabled, then click the *Update* button.
+6. On *UMA RPT Policies* tab, make sure `uma_rpt_policy` and `uma_client_authz_rpt_policy` scripts are enabled, then click the *Update* button.
+
+Afterwards, run the following commands to deploy oxPassport and update nginx to reload its configuration:
+
+    eval $(docker-machine env manager-1)
+    docker stack deploy -c passport.yml gluu
+    docker service update --env-add GLUU_OXPASSPORT_BACKEND=oxpassport.server:8090 gluu_nginx
     eval $(docker-machine env -u)

@@ -89,36 +89,6 @@ services:
         - "traefik.frontend.rule=Host:oxshibboleth.gluu"
     volumes:
       - /opt/shared-shibboleth-idp:/opt/shared-shibboleth-idp
-    extra_hosts:
-      - "${SP_DOMAIN}:${SP_IP}"
-
-  oxpassport:
-    image: gluufederation/oxpassport:3.1.2_dev
-    environment:
-      - GLUU_KV_HOST=consul.server
-      - GLUU_LDAP_URL=ldap.server:1636
-    networks:
-      gluu:
-        aliases:
-          - oxpassport.server
-    deploy:
-      endpoint_mode: dnsrr
-      replicas: 1
-      update_config:
-        parallelism: 1
-        failure_action: rollback
-        delay: 30s
-      restart_policy:
-        condition: any
-        delay: 5s
-        window: 120s
-      placement:
-        constraints:
-          - node.role == worker
-      labels:
-        - "traefik.port=8080"
-        - "traefik.backend=oxpassport"
-        - "traefik.frontend.rule=Host:oxpassport.gluu"
 
   nginx:
     image: gluufederation/nginx:3.1.2_dev
@@ -127,7 +97,7 @@ services:
       - GLUU_OXAUTH_BACKEND=oxauth.server:8080
       - GLUU_OXTRUST_BACKEND=oxtrust.server:8080
       - GLUU_OXSHIBBOLETH_BACKEND=oxshibboleth.server:8080
-      - GLUU_OXPASSPORT_BACKEND=oxpassport.server:8080
+      # - GLUU_OXPASSPORT_BACKEND=oxpassport.server:8090
       # - GLUU_OXAUTH_BACKEND=traefik:80
       # - GLUU_OXAUTH_HOST_HEADER=oxauth.gluu
       # - GLUU_OXTRUST_BACKEND=traefik:80
