@@ -188,45 +188,11 @@ LDAP services are divided into 2 roles:
 
     The process will also take some time, but it's safe to proceed to deploy next services.
 
-### 5 - Deploy Proxy for oxAuth and oxTrust
 
-In context of having multiple oxAuth/oxTrust instances, we need a proxy to load-balance them.
-In this example, we choose to use [Traefik](https://docs.traefik.io/) as it has richer load-balance
-algorithms (include sticky cookie) compared to builtin load-balancer in Docker Swarm.
+### 5 - Deploy oxAuth, oxTrust, oxShibboleth, oxPassport, and nginx
 
-To achieve HA/cluster setup in Traefik, we utilize Consul KV to store initial config and Docker Swarm
-backend. This setup is loosely based on [example](https://docs.traefik.io/user-guide/cluster-docker-consul/)
-found at official Traefik doc.
-
-There are 2 `traefik` services; one for migrating config to Consul KV and one for the actual proxy.
-To run the first `traefik` service:
-
-    eval $(docker-machine env manager-1)
-    docker stack deploy -c proxy-init.yml gluu
-    eval $(docker-machine env -u)
-
-Wait for few seconds and then check whether config have been migrated to Consul KV successfuly:
-
-    docker-machine ssh manager-1 'curl 0.0.0.0:8500/v1/kv/traefik/debug?raw -s'
-
-If the command returns non-empty output, we can deploy the second `traefik` service:
-
-    eval $(docker-machine env manager-1)
-    docker stack deploy -c proxy.yml gluu
-    eval $(docker-machine env -u)
-
-### 6 - Deploy oxAuth, oxTrust, and nginx
-
-Run the following commands to deploy oxAuth and oxTrust:
+Run the following commands to deploy oxAuth, oxTrust, oxShibboleth, oxPassport, and nginx:
 
     eval $(docker-machine env manager-1)
     DOMAIN=$(docker-machine ssh manager-1 curl 0.0.0.0:8500/v1/kv/gluu/config/hostname?raw -s) docker stack deploy -c web.yml gluu
-    eval $(docker-machine env -u)
-
-### 7 - Deploy oxShibboleth and oxPassport
-
-Run the following commands to deploy oxShibboleth and oxPassport (replace the value of `SP_DOMAIN` and `SP_IP`):
-
-    eval $(docker-machine env manager-1)
-    SP_DOMAIN=shib-sp.example.com SP_IP=10.10.1.1 docker stack deploy -c misc.yml gluu
     eval $(docker-machine env -u)

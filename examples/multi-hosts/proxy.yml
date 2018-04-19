@@ -6,7 +6,7 @@ networks:
 
 services:
   traefik:
-    image: traefik
+    image: traefik:1.5
     command:
       - "--consul"
       - "--consul.endpoint=consul.server:8500"
