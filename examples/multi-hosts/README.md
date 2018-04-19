@@ -22,18 +22,13 @@ Refer to https://docs.docker.com/engine/swarm/key-concepts/#nodes for an overvie
 
 ### Setup Nodes
 
-To setup nodes, execute the command below:
-
-    ./nodes.sh up $driver
-
-where `$driver` value is `digitalocean`.
-__Note__, for `digitalocean` driver, we need to create a file contains DigitalOcean access token:
+__Note__, we need to create a file contains DigitalOcean access token:
 
     echo $DO_TOKEN > $PWD/volumes/digital-access-token
 
-For `digitalocean` droplet:
+To setup nodes, execute the command below:
 
-    ./nodes.sh up digitalocean
+    ./nodes.sh up
 
 This command will create `manager-1` and `worker-1` nodes and setup the Swarm cluster.
 
@@ -228,6 +223,10 @@ Run the following commands to deploy oxAuth and oxTrust:
     DOMAIN=$(docker-machine ssh manager-1 curl 0.0.0.0:8500/v1/kv/gluu/config/hostname?raw -s) docker stack deploy -c web.yml gluu
     eval $(docker-machine env -u)
 
-## Known Issues
+### 7 - Deploy oxShibboleth and oxPassport
 
-1. Sometime LDAP replication failed on replicating `o=gluu` using `virtualbox` node driver.
+Run the following commands to deploy oxShibboleth and oxPassport (replace the value of `SP_DOMAIN` and `SP_IP`):
+
+    eval $(docker-machine env manager-1)
+    SP_DOMAIN=shib-sp.example.com SP_IP=10.10.1.1 docker stack deploy -c misc.yml gluu
+    eval $(docker-machine env -u)
