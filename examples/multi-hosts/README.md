@@ -119,11 +119,7 @@ To deploy the service:
 
     # connect to remote docker engine in manager-1 node
     eval $(docker-machine env manager-1)
-
     docker stack deploy -c consul.yml gluu
-
-    # disconnect from remote docker engine in manager-1 node
-    eval $(docker-machine env -u)
 
 Once the processes completed, we need to check whether a `consul` leader has been established or not, using this command:
 
@@ -151,9 +147,7 @@ In this case, we're using Redis.
 
 Run the following command to deploy cache service:
 
-    eval $(docker-machine env manager-1)
     docker stack deploy -c cache.yml gluu
-    eval $(docker-machine env -u)
 
 ### 4 - Deploy LDAP
 
@@ -163,9 +157,7 @@ LDAP services are divided into 2 roles:
 
     Run this command to deploy the service:
 
-        eval $(docker-machine env manager-1)
         docker stack deploy -c ldap-init.yml gluu
-        eval $(docker-machine env -u)
 
     The process of initializing data will take some time.
 
@@ -182,9 +174,7 @@ LDAP services are divided into 2 roles:
 
     then we can proceed to deploy the next LDAP service:
 
-        eval $(docker-machine env manager-1)
         docker stack deploy -c ldap-peer.yml gluu
-        eval $(docker-machine env -u)
 
     The process will also take some time, but it's safe to proceed to deploy next services.
 
@@ -192,9 +182,7 @@ LDAP services are divided into 2 roles:
 
 Run the following commands to deploy oxAuth, oxTrust, oxShibboleth, and nginx:
 
-    eval $(docker-machine env manager-1)
     DOMAIN=$(docker-machine ssh manager-1 curl 0.0.0.0:8500/v1/kv/gluu/config/hostname?raw -s) docker stack deploy -c web.yml gluu
-    eval $(docker-machine env -u)
 
 ### 6 - Deploy oxPassport
 
@@ -209,7 +197,7 @@ Before deploying oxPassport, we need to enable Passport support by doing steps b
 
 Afterwards, run the following commands to deploy oxPassport and update nginx to reload its configuration:
 
-    eval $(docker-machine env manager-1)
     docker stack deploy -c passport.yml gluu
     docker service update --env-add GLUU_OXPASSPORT_BACKEND=oxpassport.server:8090 gluu_nginx
+    # disconnect from remote docker engine in manager-1 node
     eval $(docker-machine env -u)
