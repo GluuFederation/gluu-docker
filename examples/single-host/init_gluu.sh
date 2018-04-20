@@ -107,7 +107,7 @@ loadGluu () {
     domain=$1
     loadingEcho "Gluu Server Docker Edition.."
 
-    startServices="DOMAIN=$domain HOST_IP=$(ip route get 1 | awk '{print $NF;exit}') docker-compose up -d nginx oxauth oxtrust > /dev/null 2>&1"
+    startServices="DOMAIN=$domain HOST_IP=$(ip route get 1 | awk '{print $NF;exit}') docker-compose up -d nginx oxauth oxtrust oxshibboleth oxpassport > /dev/null 2>&1"
     eval $startServices
 
     checkOxAuthStatus $domain

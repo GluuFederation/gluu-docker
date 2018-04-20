@@ -1,4 +1,4 @@
-version: "3"
+version: "3.3"
 
 services:
   consul:
@@ -16,10 +16,17 @@ services:
       - GLUU_KV_HOST=consul
       - GLUU_OXAUTH_BACKEND=oxauth:8080
       - GLUU_OXTRUST_BACKEND=oxtrust:8080
+      - GLUU_OXSHIBBOLETH_BACKEND=oxshibboleth:8080
+      - GLUU_OXPASSPORT_BACKEND=oxpassport:8090
     ports:
       - "80:80"
       - "443:443"
     container_name: nginx
+    depends_on:
+      - oxauth
+      - oxtrust
+      - oxshibboleth
+      - oxpassport
 
   ldap:
     image: gluufederation/opendj:3.1.2_dev
@@ -29,6 +36,7 @@ services:
       - GLUU_LDAP_INIT_HOST=ldap
       - GLUU_LDAP_INIT_PORT=1636
       - GLUU_LDAP_ADDR_INTERFACE=eth0
+      - GLUU_OXTRUST_CONFIG_GENERATION=true
     container_name: ldap
     volumes:
       - ./volumes/opendj/config:/opt/opendj/config
@@ -62,3 +70,26 @@ services:
       - ./volumes/oxtrust/custom/static:/opt/gluu/jetty/identity/custom/static
       - ./volumes/oxtrust/lib/ext:/opt/gluu/jetty/identity/lib/ext
       - ./volumes/oxtrust/logs:/opt/gluu/jetty/identity/logs
+      - ./volumes/shared-shibboleth-idp:/opt/shared-shibboleth-idp
+
+  oxshibboleth:
+    image: gluufederation/oxshibboleth:3.1.2_dev
+    environment:
+      - GLUU_KV_HOST=consul
+      - GLUU_LDAP_URL=ldap:1636
+    container_name: oxshibboleth
+    volumes:
+      - ./volumes/shared-shibboleth-idp:/opt/shared-shibboleth-idp
+
+  oxpassport:
+    image: gluufederation/oxpassport:3.1.2_dev
+    environment:
+      - GLUU_KV_HOST=consul
+      - GLUU_LDAP_URL=ldap:1636
+      - GLUU_FOO=foo
+    extra_hosts:
+      - "${DOMAIN}:${HOST_IP}"
+    container_name: oxpassport
+    depends_on:
+      - oxauth
+      - oxtrust
