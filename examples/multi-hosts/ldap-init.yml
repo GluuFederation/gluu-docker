@@ -33,3 +33,8 @@ services:
       placement:
         constraints:
           - node.role == manager
+    volumes:
+      - /flag:/flag
+      - /opt/opendj/config:/opt/opendj/config
+      - /opt/opendj/ldif:/opt/opendj/ldif
+      - /opt/opendj/db:/opt/opendj/db
