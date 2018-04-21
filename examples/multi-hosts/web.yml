@@ -90,24 +90,72 @@ services:
     volumes:
       - /opt/shared-shibboleth-idp:/opt/shared-shibboleth-idp
 
+  oxpassport:
+    image: gluufederation/oxpassport:3.1.2_dev
+    environment:
+      - GLUU_KV_HOST=consul.server
+      - GLUU_LDAP_URL=ldap.server:1636
+    networks:
+      gluu:
+        aliases:
+          - oxpassport.server
+    deploy:
+      endpoint_mode: dnsrr
+      replicas: 1
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints:
+          - node.role == worker
+      labels:
+        - "traefik.port=8090"
+        - "traefik.backend=oxpassport"
+        - "traefik.frontend.rule=Host:oxpassport.gluu"
+
   nginx:
     image: gluufederation/nginx:3.1.2_dev
     environment:
       - GLUU_KV_HOST=consul.server
+
+      # ====================================================
+      # uncomment lines below to use upstream block in nginx
+      # ====================================================
+      # - GLUU_OXAUTH_BACKEND=oxauth.server:8080
+      # - GLUU_OXTRUST_BACKEND=oxtrust.server:8080
+      # - GLUU_OXSHIBBOLETH_BACKEND=oxshibboleth.server:8080
+      # - GLUU_OXPASSPORT_BACKEND=oxpassport.server:8090
+
+      # ==========================================================
+      # the following lines are used when resolver mode is enabled
+      # note we're using traefik to proxy ox apps
+      # ==========================================================
+      # - GLUU_OXAUTH_BACKEND=traefik
+      # - GLUU_OXAUTH_HOST_HEADER=oxauth.gluu:8080
+      # - GLUU_OXTRUST_BACKEND=traefik
+      # - GLUU_OXTRUST_HOST_HEADER=oxtrust.gluu:8080
+      # - GLUU_OXSHIBBOLETH_BACKEND=traefik
+      # - GLUU_OXSHIBBOLETH_HOST_HEADER=oxshibboleth.gluu:8080
+      # - GLUU_OXPASSPORT_BACKEND=traefik
+      # - GLUU_OXPASSPORT_HOST_HEADER=oxpassport.gluu:8090
+      # - GLUU_PROXY_MODE=resolver
+      # - GLUU_RESOLVER_ADDR=127.0.0.11
+
+      # ==========================================================
+      # the following lines are used when resolver mode is enabled
+      # note we're using native swarm routing to proxy ox apps
+      # ==========================================================
       - GLUU_OXAUTH_BACKEND=oxauth.server:8080
       - GLUU_OXTRUST_BACKEND=oxtrust.server:8080
       - GLUU_OXSHIBBOLETH_BACKEND=oxshibboleth.server:8080
-      # - GLUU_OXPASSPORT_BACKEND=oxpassport.server:8090
-      # - GLUU_OXAUTH_BACKEND=traefik:80
-      # - GLUU_OXAUTH_HOST_HEADER=oxauth.gluu
-      # - GLUU_OXTRUST_BACKEND=traefik:80
-      # - GLUU_OXTRUST_HOST_HEADER=oxtrust.gluu
-      # - GLUU_OXSHIBBOLETH_BACKEND=traefik:80
-      # - GLUU_OXSHIBBOLETH_HOST_HEADER=oxshibboleth.gluu
-      # - GLUU_OXPASSPORT_BACKEND=traefik:80
-      # - GLUU_OXPASSPORT_HOST_HEADER=oxpassport.gluu
-      # - GLUU_OX_PROXY_MODE=true
-      # - GLUU_RESOLVER_ADDR=127.0.0.11
+      - GLUU_OXPASSPORT_BACKEND=oxpassport.server:8090
+      - GLUU_PROXY_MODE=resolver
+      - GLUU_RESOLVER_ADDR=127.0.0.11
     networks:
       gluu:
         aliases:

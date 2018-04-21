@@ -101,9 +101,10 @@ In this example, the following services are used to deploy Gluu stack:
 - Consul for storing cluster-wide configuration
 - Redis for cache storage (required for oxAuth session)
 - OpenDJ for LDAP storage
-- Traefik for oxAuth and oxTrust proxy
 - oxAuth, the OpenID Connect Provider (OP) & UMA Authorization Server (AS)
 - oxTrust for managing authentication, authorization and users
+- oxShibboleth
+- oxPassport
 - NGINX for public-facing web app
 
 ### 1 - Deploying Consul
@@ -184,9 +185,9 @@ Run the following commands to deploy oxAuth, oxTrust, oxShibboleth, and nginx:
 
     DOMAIN=$(docker-machine ssh manager-1 curl 0.0.0.0:8500/v1/kv/gluu/config/hostname?raw -s) docker stack deploy -c web.yml gluu
 
-### 6 - Deploy oxPassport
+### 6 - Enabling oxPassport
 
-Before deploying oxPassport, we need to enable Passport support by doing steps below:
+Enable Passport support by doing steps below:
 
 1. Login to oxTrust GUI.
 2. Click *Configuration > Organization Configuration* sidebar menu.
@@ -195,9 +196,11 @@ Before deploying oxPassport, we need to enable Passport support by doing steps b
 5. On *Person Authentication* tab, make sure `passport_social` script is enabled, then click the *Update* button.
 6. On *UMA RPT Policies* tab, make sure `uma_rpt_policy` and `uma_client_authz_rpt_policy` scripts are enabled, then click the *Update* button.
 
-Afterwards, run the following commands to deploy oxPassport and update nginx to reload its configuration:
+Afterwards, run the following commands to deploy restart oxPassport:
 
-    docker stack deploy -c passport.yml gluu
-    docker service update --env-add GLUU_OXPASSPORT_BACKEND=oxpassport.server:8090 gluu_nginx
+    # this will force gluu_oxpassport to reload all of its containers
+    # in order to load strategies properly
+    docker service update --force gluu_oxpassport
+
     # disconnect from remote docker engine in manager-1 node
     eval $(docker-machine env -u)

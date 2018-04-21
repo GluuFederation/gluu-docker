@@ -29,3 +29,7 @@ services:
       placement:
         constraints:
           - node.role == worker
+    volumes:
+      - /opt/opendj/config:/opt/opendj/config
+      - /opt/opendj/ldif:/opt/opendj/ldif
+      - /opt/opendj/db:/opt/opendj/db
