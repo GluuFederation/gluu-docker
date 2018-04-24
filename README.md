@@ -13,6 +13,8 @@ Repositories for supported images are shown below (Under 3.1.2 branch):
 - [oxtrust](http://github.com/GluuFederation/docker-oxtrust)
 - [nginx](http://github.com/GluuFederation/docker-nginx)
 - [key-rotation](https://github.com/GluuFederation/docker-key-rotation)
+- [oxshibboleth](https://github.com/GluuFederation/docker-oxshibboleth)
+- [oxpassport](https://github.com/GluuFederation/docker-oxPassport)
 
 ## Image Repositories
 
@@ -26,7 +28,9 @@ Images are hosted at Docker Hub:
 - [oxauth](https://hub.docker.com/r/gluufederation/oxauth)
 - [oxtrust](https://hub.docker.com/r/gluufederation/oxtrust)
 - [nginx](https://hub.docker.com/r/gluufederation/nginx)
-- [key-rotation](https://hub.docker.com/r/gluufederation/config-init/key-rotation)
+- [key-rotation](https://hub.docker.com/r/gluufederation/key-rotation)
+- [oxshibboleth](https://hub.docker.com/r/gluufederation/oxshibboleth)
+- [oxpassport](https://hub.docker.com/r/gluufederation/oxpassport)
 
 ## Examples
 
