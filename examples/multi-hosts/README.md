@@ -12,8 +12,8 @@ This is an example on how to deploy Gluu Server Docker Edition on multi-hosts se
 
 Nodes are divided into 2 roles:
 
-- manager
-- worker
+- `manager-1` as a Swarm manager
+- `worker-1` as a Swarm worker
 
 These nodes are created/destroyed using `docker-machine`.
 Nodes are deployed as DigitalOcean droplets.
@@ -179,6 +179,9 @@ LDAP containers are divided into 2 roles:
         ./ldap-peer.sh
 
     The process will also take some time, but it's safe to proceed to deploy next services/containers.
+
+__NOTE__: OpenDJ containers are not deployed as service task because each of these containers require a reachable unique address for establishing replication.
+Due to how Docker service works, there's no guarantee that the address will still be unique after restart, hence OpenDJ containers are deployed via plain `docker run` command.
 
 ### 5 - Deploy oxAuth, oxTrust, oxShibboleth, and nginx
 
