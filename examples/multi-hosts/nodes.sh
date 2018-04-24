@@ -37,7 +37,7 @@ load_manager() {
         docker swarm init --advertise-addr $(docker-machine ip manager-1)
         eval $(docker-machine env -u)
         # required for ldap_init service
-        docker-machine ssh manager-1 mkdir -p /flag /opt/opendj/config /opt/opendj/db /opt/opendj/ldif
+        docker-machine ssh manager-1 mkdir -p /flag /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs
     else
         node_up manager-1
     fi
@@ -65,7 +65,7 @@ load_worker() {
         eval $(docker-machine env -u)
         rm /tmp/join-token-worker
         # required for ldap_peer service
-        docker-machine ssh worker-1 mkdir -p /opt/opendj/config /opt/opendj/db /opt/opendj/ldif
+        docker-machine ssh worker-1 mkdir -p /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs
     else
         node_up worker-1
     fi
