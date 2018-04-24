@@ -96,16 +96,17 @@ A service manages a specific image tasks (create/destroy/scale/etc).
 
 Refer to https://docs.docker.com/engine/swarm/key-concepts/#services-and-tasks for an overview of Swarm service.
 
-In this example, the following services are used to deploy Gluu stack:
+In this example, the following services/containers are used to deploy Gluu stack:
 
-- Consul for storing cluster-wide configuration
-- Redis for cache storage (required for oxAuth session)
-- OpenDJ for LDAP storage
-- oxAuth, the OpenID Connect Provider (OP) & UMA Authorization Server (AS)
-- oxTrust for managing authentication, authorization and users
-- oxShibboleth
-- oxPassport
-- NGINX for public-facing web app
+- Consul service
+- config-init container
+- Redis as caching service
+- OpenDJ container
+- oxAuth service
+- oxTrust service
+- oxShibboleth service
+- oxPassport service
+- NGINX service
 
 ### 1 - Deploying Consul
 
@@ -152,13 +153,13 @@ Run the following command to deploy cache service:
 
 ### 4 - Deploy LDAP
 
-LDAP services are divided into 2 roles:
+LDAP containers are divided into 2 roles:
 
 1.  LDAP that has initial data.
 
-    Run this command to deploy the service:
+    Run this command to deploy the container:
 
-        docker stack deploy -c ldap-init.yml gluu
+        ./ldap-init.sh
 
     The process of initializing data will take some time.
 
@@ -173,11 +174,11 @@ LDAP services are divided into 2 roles:
 
         [05/Apr/2018:19:59:27 +0000] category=CORE severity=NOTICE msgID=org.opends.messages.core.135 msg=The Directory Server has started successfully
 
-    then we can proceed to deploy the next LDAP service:
+    then we can proceed to deploy the next LDAP container:
 
-        docker stack deploy -c ldap-peer.yml gluu
+        ./ldap-peer.sh
 
-    The process will also take some time, but it's safe to proceed to deploy next services.
+    The process will also take some time, but it's safe to proceed to deploy next services/containers.
 
 ### 5 - Deploy oxAuth, oxTrust, oxShibboleth, and nginx
 
