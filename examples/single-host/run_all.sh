@@ -2,8 +2,6 @@
 
 set -e
 
-mkdir -p $PWD/volumes
-
 CONFIG_DIR=$PWD/volumes/config-init/db
 HOST_IP=$(ip route get 1 | awk '{print $NF;exit}')
 GLUU_VERSION=3.1.2_dev
@@ -16,6 +14,8 @@ ORG_NAME=""
 COUNTRY_CODE=""
 STATE=""
 CITY=""
+
+mkdir -p $CONFIG_DIR
 
 # deploy service defined in docker-compose.yml
 load_services() {
