@@ -6,10 +6,7 @@ This in an example of running Gluu Server Docker edition on a single VM.
 
 1) Follow the [Docker installation instructions](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) or use the [convenience installation script](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-convenience-script)
 
-1) Docker-compose
-
-        curl -L https://github.com/docker/compose/releases/download/1.20.1/docker-compose-`uname -s`-`uname -m` -o /usr/bin/docker-compose
-        chmod +x /usr/bin/docker-compose
+1) [Docker-compose](https://docs.docker.com/compose/install/#install-compose)
     
 1) `init_gluu.sh` setup file and docker-compose.yaml
 
