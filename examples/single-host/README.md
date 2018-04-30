@@ -8,18 +8,18 @@ This in an example of running Gluu Server Docker edition on a single VM.
 
 1) [Docker-compose](https://docs.docker.com/compose/install/#install-compose)
     
-1) `init_gluu.sh` setup file and docker-compose.yaml
+1) `run_all.sh` setup file and docker-compose.yaml
 
         mkdir docker-gluu-server
         cd docker-gluu-server
-        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/master/examples/single-host/init_gluu.sh
+        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/master/examples/single-host/run_all.sh
         wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/master/examples/single-host/docker-compose.yml
         chmod +x init_gluu.sh
 
 Run the following command inside the `/path/to/docker-gluu-server/` directory and follow the prompts:
 
 ```
-./init_gluu.sh
+./run_all.sh
 ```
 
 
@@ -56,4 +56,6 @@ FAQ:
     
     Next is our OpenDJ container. OpenDJ will install and configure itself inside the container as well as create volumes inside of the current directory as `/volumes/` for necessary persistent data, like db, schema, etc..
     
-    After that oxAuth, then oxTrust, which relies on the `/.well-known/openid-configuration/` to properly set it's own configuration. These containers can be restarted at any time from that point on.
+    After that oxAuth, NGINX, then oxTrust, which relies on the `/.well-known/openid-configuration/` to properly set it's own configuration. These containers can be restarted at any time from that point on.
+    
+    Currently all of the images
