@@ -56,7 +56,7 @@ prepare_config() {
         read -p "Enter Organization:           " ORG_NAME
         read -p "Enter Admin/LDAP Password:    " ADMIN_PW
 
-        case "$adminPW" in
+        case "$ADMIN_PW" in
             * ) ;;
             "") echo "Password cannot be empty"; exit 1;
         esac
