@@ -1,6 +1,7 @@
 #!/bin/bash
 
-NODE_ID=$(docker node inspect worker-1 --format '{{.ID}}')
+# NODE_ID=$(docker node inspect worker-1 --format '{{.ID}}')
+NODE_ID=worker-1
 
 docker-machine ssh worker-1 \
     docker run \
@@ -13,6 +14,7 @@ docker-machine ssh worker-1 \
     -v /opt/opendj/config:/opt/opendj/config \
     -v /opt/opendj/ldif:/opt/opendj/ldif \
     -v /opt/opendj/logs:/opt/opendj/logs \
+    --hostname ldap.$NODE_ID \
     --name gluu_ldap_peer.$NODE_ID \
     --network-alias ldap.server \
     --network-alias ldap.$NODE_ID \
