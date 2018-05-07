@@ -22,6 +22,13 @@ Run the following command inside the `/path/to/docker-gluu-server/` directory an
 ./run_all.sh
 ```
 
+The startup process takes roughly 5-10 minutes depending. The longest is usually OpenDJ. You can keep track of that process by using the following command:
+
+```
+docker logs -f ldap
+```
+
+The same for all the other services after as well.
 
 FAQ:
 
