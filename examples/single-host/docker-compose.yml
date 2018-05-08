@@ -27,7 +27,6 @@ services:
       - oxtrust
       - oxshibboleth
       - oxpassport
-    command: ["/opt/scripts/wait-for-it", "/opt/scripts/entrypoint.sh"]
 
   ldap:
     image: gluufederation/opendj:3.1.2_dev
@@ -45,7 +44,6 @@ services:
       - ./volumes/opendj/logs:/opt/opendj/logs
       - ./volumes/opendj/db:/opt/opendj/db
       - ./volumes/opendj/flag:/flag
-    command: ["/opt/scripts/wait-for-it", "/opt/scripts/entrypoint.sh"]
 
   oxauth:
     image: gluufederation/oxauth:3.1.2_dev
@@ -58,7 +56,6 @@ services:
       - ./volumes/oxauth/custom/static:/opt/gluu/jetty/oxauth/custom/static
       - ./volumes/oxauth/lib/ext:/opt/gluu/jetty/oxauth/lib/ext
       - ./volumes/oxauth/logs:/opt/gluu/jetty/oxauth/logs
-    command: ["/opt/scripts/wait-for-it", "/opt/scripts/entrypoint.sh"]
 
   oxtrust:
     image: gluufederation/oxtrust:3.1.2_dev
@@ -74,7 +71,6 @@ services:
       - ./volumes/oxtrust/lib/ext:/opt/gluu/jetty/identity/lib/ext
       - ./volumes/oxtrust/logs:/opt/gluu/jetty/identity/logs
       - ./volumes/shared-shibboleth-idp:/opt/shared-shibboleth-idp
-    command: ["/opt/scripts/wait-for-it", "/opt/scripts/entrypoint.sh"]
 
   oxshibboleth:
     image: gluufederation/oxshibboleth:3.1.2_dev
@@ -84,7 +80,6 @@ services:
     container_name: oxshibboleth
     volumes:
       - ./volumes/shared-shibboleth-idp:/opt/shared-shibboleth-idp
-    command: ["/opt/scripts/wait-for-it", "/opt/scripts/entrypoint.sh"]
 
   oxpassport:
     image: gluufederation/oxpassport:3.1.2_dev
@@ -97,4 +92,3 @@ services:
     extra_hosts:
       - "${DOMAIN}:${HOST_IP}"
     container_name: oxpassport
-    command: ["/opt/scripts/wait-for-it", "/opt/scripts/entrypoint.sh"]
