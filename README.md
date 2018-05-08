@@ -36,10 +36,10 @@ Images are hosted at Docker Hub:
 
 [Single Host](./examples/single-host/)
 
-- Please note that `docker-compose up` on this `docker-compose.yaml` does not work due to the nature of docker-compose and how it doesn't wait for containers to truly "finish" starting/exiting. There are required steps necessary. [A pull request is currently in the works to rectify this issue](https://github.com/GluuFederation/docker-oxtrust/pull/2)
+- The directory contains `README.md` as a guide to deploy a basic single-host Gluu server stack.
 
 [Swarm](./examples/multi-host/)
 
-- The directory contains `README.md` as a guide to deploy basic multi-hosts Gluu server stack.
+- The directory contains `README.md` as a guide to deploy a basic multi-hosts Gluu server stack.
 
 Kubernetes - TBD
