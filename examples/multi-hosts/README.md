@@ -123,12 +123,6 @@ To deploy the service:
     eval $(docker-machine env manager-1)
     docker stack deploy -c consul.yml gluu
 
-Once the processes completed, we need to check whether a `consul` leader has been established or not, using this command:
-
-    docker-machine ssh manager-1 'curl -s 0.0.0.0:8500/v1/status/leader'
-
-If the command returns host and port of consul server, we're safe to proceed to next service.
-
 ### 2 - Prepare cluster-wide configuration
 
 Cluster-wide configuration are saved into Consul KV storage. All Gluu containers pull these config to self-configure themselves.
