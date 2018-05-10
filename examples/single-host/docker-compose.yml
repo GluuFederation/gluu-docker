@@ -1,4 +1,5 @@
-version: "3.3"
+# use v2.3 API to allow `mem_limit` option
+version: "2.3"
 
 services:
   consul:
@@ -56,6 +57,7 @@ services:
       - ./volumes/oxauth/custom/static:/opt/gluu/jetty/oxauth/custom/static
       - ./volumes/oxauth/lib/ext:/opt/gluu/jetty/oxauth/lib/ext
       - ./volumes/oxauth/logs:/opt/gluu/jetty/oxauth/logs
+    mem_limit: 1024M
 
   oxtrust:
     image: gluufederation/oxtrust:3.1.2_dev
@@ -71,6 +73,7 @@ services:
       - ./volumes/oxtrust/lib/ext:/opt/gluu/jetty/identity/lib/ext
       - ./volumes/oxtrust/logs:/opt/gluu/jetty/identity/logs
       - ./volumes/shared-shibboleth-idp:/opt/shared-shibboleth-idp
+    mem_limit: 1024M
 
   oxshibboleth:
     image: gluufederation/oxshibboleth:3.1.2_dev
@@ -80,6 +83,7 @@ services:
     container_name: oxshibboleth
     volumes:
       - ./volumes/shared-shibboleth-idp:/opt/shared-shibboleth-idp
+    mem_limit: 1024M
 
   oxpassport:
     image: gluufederation/oxpassport:3.1.2_dev
@@ -92,3 +96,4 @@ services:
     extra_hosts:
       - "${DOMAIN}:${HOST_IP}"
     container_name: oxpassport
+    restart: unless-stopped
