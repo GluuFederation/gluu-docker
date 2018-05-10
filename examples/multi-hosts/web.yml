@@ -25,6 +25,9 @@ services:
         condition: any
         delay: 5s
         window: 120s
+      resources:
+        limits:
+          memory: 1024M
 
   oxtrust:
     image: gluufederation/oxtrust:3.1.2_dev
@@ -49,6 +52,9 @@ services:
       placement:
         constraints:
           - node.role == manager
+      resources:
+        limits:
+          memory: 1024M
     volumes:
       - /opt/shared-shibboleth-idp:/opt/shared-shibboleth-idp
 
@@ -75,6 +81,9 @@ services:
       placement:
         constraints:
           - node.role == worker
+      resources:
+        limits:
+          memory: 1024M
     volumes:
       - /opt/shared-shibboleth-idp:/opt/shared-shibboleth-idp
 
@@ -83,6 +92,8 @@ services:
     environment:
       - GLUU_KV_HOST=consul.server
       - GLUU_LDAP_URL=ldap.server:1636
+      - GLUU_OXAUTH_BACKEND=oxauth.server:8080
+      - GLUU_OXTRUST_BACKEND=oxtrust.server:8080
     networks:
       gluu:
         aliases:
