@@ -10,9 +10,10 @@ services:
       - CONSUL_BIND_INTERFACE=eth0
       - CONSUL_CLIENT_INTERFACE=eth0
     container_name: consul
+    restart: unless-stopped
 
   nginx:
-    image: gluufederation/nginx:3.1.2_dev
+    image: gluufederation/nginx:3.1.3_dev
     environment:
       - GLUU_KV_HOST=consul
       - GLUU_OXAUTH_BACKEND=oxauth:8080
@@ -28,9 +29,10 @@ services:
       - oxtrust
       - oxshibboleth
       - oxpassport
+    restart: unless-stopped
 
   ldap:
-    image: gluufederation/opendj:3.1.2_dev
+    image: gluufederation/opendj:3.1.3_dev
     environment:
       - GLUU_KV_HOST=consul
       - GLUU_LDAP_INIT=true
@@ -45,9 +47,10 @@ services:
       - ./volumes/opendj/logs:/opt/opendj/logs
       - ./volumes/opendj/db:/opt/opendj/db
       - ./volumes/opendj/flag:/flag
+    restart: unless-stopped
 
   oxauth:
-    image: gluufederation/oxauth:3.1.2_dev
+    image: gluufederation/oxauth:3.1.3_dev
     environment:
       - GLUU_KV_HOST=consul
       - GLUU_LDAP_URL=ldap:1636
@@ -58,9 +61,10 @@ services:
       - ./volumes/oxauth/lib/ext:/opt/gluu/jetty/oxauth/lib/ext
       - ./volumes/oxauth/logs:/opt/gluu/jetty/oxauth/logs
     mem_limit: 1024M
+    restart: unless-stopped
 
   oxtrust:
-    image: gluufederation/oxtrust:3.1.2_dev
+    image: gluufederation/oxtrust:3.1.3_dev
     environment:
       - GLUU_KV_HOST=consul
       - GLUU_LDAP_URL=ldap:1636
@@ -74,9 +78,10 @@ services:
       - ./volumes/oxtrust/logs:/opt/gluu/jetty/identity/logs
       - ./volumes/shared-shibboleth-idp:/opt/shared-shibboleth-idp
     mem_limit: 1024M
+    restart: unless-stopped
 
   oxshibboleth:
-    image: gluufederation/oxshibboleth:3.1.2_dev
+    image: gluufederation/oxshibboleth:3.1.3_dev
     environment:
       - GLUU_KV_HOST=consul
       - GLUU_LDAP_URL=ldap:1636
@@ -84,9 +89,10 @@ services:
     volumes:
       - ./volumes/shared-shibboleth-idp:/opt/shared-shibboleth-idp
     mem_limit: 1024M
+    restart: unless-stopped
 
   oxpassport:
-    image: gluufederation/oxpassport:3.1.2_dev
+    image: gluufederation/oxpassport:3.1.3_dev
     environment:
       - GLUU_KV_HOST=consul
       - GLUU_LDAP_URL=ldap:1637

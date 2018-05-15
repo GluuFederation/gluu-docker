@@ -4,7 +4,7 @@ set -e
 
 CONFIG_DIR=$PWD/volumes/config-init/db
 HOST_IP=$(ip route get 1 | awk '{print $NF;exit}')
-GLUU_VERSION=3.1.2_dev
+GLUU_VERSION=3.1.3_dev
 INIT_CONFIG_CMD=""
 
 DOMAIN=""
