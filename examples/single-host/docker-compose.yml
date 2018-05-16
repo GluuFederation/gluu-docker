@@ -89,7 +89,7 @@ services:
     image: gluufederation/oxpassport:3.1.2_dev
     environment:
       - GLUU_KV_HOST=consul
-      - GLUU_LDAP_URL=ldap:1637
+      - GLUU_LDAP_URL=ldap:1636
       # required by wait-for-it script
       - GLUU_OXAUTH_BACKEND=oxauth:8080
       - GLUU_OXTRUST_BACKEND=oxtrust:8080
