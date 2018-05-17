@@ -103,11 +103,12 @@ generate_config() {
 
     echo "[I] Saving configuration to local disk for later use"
     docker run \
+        -v $CONFIG_DIR:/opt/config-init/db/ \
         --rm \
         --network container:consul \
         gluufederation/config-init:$GLUU_VERSION \
         dump \
-        --kv-host consul > $CONFIG_DIR/config.json
+        --kv-host consul
 }
 
 # ==========
