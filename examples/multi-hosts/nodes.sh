@@ -36,6 +36,8 @@ load_manager() {
         eval $(docker-machine env manager-1)
         docker swarm init --advertise-addr $(docker-machine ip manager-1)
         eval $(docker-machine env -u)
+        # required for config-init
+        docker-machine ssh manager-1 mkdir -p /root/config-init/db
         # required for ldap_init service
         docker-machine ssh manager-1 mkdir -p /flag /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs
     else
