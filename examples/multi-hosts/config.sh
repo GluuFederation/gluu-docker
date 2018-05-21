@@ -5,8 +5,12 @@ set -e
 bootstrap_config() {
     echo "[I] Prepare cluster-wide configuration"
 
-    # naive check to test whether config is in Consul
-    domain=$(docker-machine ssh manager-1 curl 0.0.0.0:8500/v1/kv/gluu/config/hostname?raw -s)
+    # guess if config already in Consul
+    consul_name=$(docker ps --filter name=consul --format '{{.Names}}')
+    if [[ ! -z $consul_name ]]; then
+        consul_ip=$(docker exec $consul_name ifconfig eth1 | grep 'inet addr' | cut -d: -f2 | awk '{print $1}')
+        domain=$(docker-machine ssh manager-1 curl $consul_ip:8500/v1/kv/gluu/config/hostname?raw -s)
+    fi
 
     if [[ -z $domain ]]; then
         echo "[W] Unable to find configuration in Consul"
@@ -19,14 +23,14 @@ bootstrap_config() {
         fi
 
         if [[ $load_choice = "y" ]]; then
-            docker-machine scp $saved_config manager-1:/root/config.json
+            docker-machine scp $saved_config manager-1:/root/config-init/db/config.json
             docker run \
                 --rm \
                 --network gluu \
-                -v /root/config.json:/opt/config-init/db/config.json \
+                -v /root/config-init/db:/opt/config-init/db/ \
                 gluufederation/config-init:3.1.2_dev \
                 load \
-                --kv-host $(docker-machine ip manager-1)
+                --kv-host consul.server
         else
             generate_config
         fi
@@ -71,16 +75,18 @@ generate_config() {
         --country-code $countryCode \
         --state $state \
         --city $city \
-        --kv-host $(docker-machine ip manager-1) \
+        --kv-host consul.server \
         --ldap-type opendj
 
     echo "[I] Saving configuration to local disk for later use"
     docker run \
         --rm \
         --network gluu \
+        -v /root/config-init/db:/opt/config-init/db/ \
         gluufederation/config-init:3.1.2_dev \
         dump \
-        --kv-host $(docker-machine ip manager-1) > $saved_config
+        --kv-host consul.server
+    docker-machine scp manager-1:/root/config-init/db/config.json $saved_config
 }
 
 bootstrap_config
