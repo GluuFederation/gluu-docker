@@ -5,7 +5,7 @@ networks:
     external: true
 
 services:
-  consul_server:
+  consul_manager:
     image: consul
     hostname: "{{.Node.ID}}-{{.Service.Name}}"
     command: "agent -server -ui -retry-join consul.server -client 0.0.0.0"
@@ -24,10 +24,6 @@ services:
       gluu:
         aliases:
           - consul.server
-    ports:
-      - target: 8500
-        published: 8500
-        mode: host
     deploy:
       mode: global
       endpoint_mode: dnsrr
@@ -43,13 +39,12 @@ services:
         constraints:
           - node.role == manager
 
-  consul_agent:
+  consul_worker:
     image: consul
-    command: "agent -server -retry-join consul.server"
+    command: "agent -server -retry-join consul.server -client 0.0.0.0"
     hostname: "{{.Node.ID}}-{{.Service.Name}}"
     environment:
       - CONSUL_BIND_INTERFACE=eth0
-      - CONSUL_CLIENT_INTERFACE=eth0
       - 'CONSUL_LOCAL_CONFIG={
           "leave_on_terminate": true,
           "skip_leave_on_interrupt" : false,
@@ -60,10 +55,6 @@ services:
       gluu:
         aliases:
           - consul.server
-    ports:
-      - target: 8500
-        published: 8500
-        mode: host
     deploy:
       mode: global
       endpoint_mode: dnsrr
