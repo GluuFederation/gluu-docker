@@ -112,8 +112,8 @@ In this example, the following services/containers are used to deploy Gluu stack
 
 Consul service divided into 2 parts to achieve HA/cluster setup:
 
-- `consul_server` deployed to `manager-1` node
-- `consul_agent` deployed to `worker-1` node
+- `consul_manager` deployed to `manager-1` node
+- `consul_worker` deployed to `worker-1` node
 
 Ideally at least 3 nodes are needed, but for example 2 instances of Consul are sufficient.
 
