@@ -27,7 +27,7 @@ load_manager() {
                     --digitalocean-access-token=$DO_TOKEN \
                     --digitalocean-region=sgp1 \
                     --digitalocean-private-networking="true" \
-                    --digitalocean-size=4gb \
+                    --digitalocean-size=8gb \
                     manager-1
                 ;;
         esac
@@ -36,10 +36,13 @@ load_manager() {
         eval $(docker-machine env manager-1)
         docker swarm init --advertise-addr $(docker-machine ip manager-1)
         eval $(docker-machine env -u)
+
         # required for config-init
-        docker-machine ssh manager-1 mkdir -p /root/config-init/db
+        docker-machine ssh manager-1 mkdir -p /opt/config-init/db
         # required for ldap_init service
-        docker-machine ssh manager-1 mkdir -p /flag /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs
+        docker-machine ssh manager-1 mkdir -p /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs /opt/opendj/flag
+        # required for consul
+        docker-machine ssh manager-1 mkdir -p /opt/consul
     else
         node_up manager-1
     fi
@@ -55,7 +58,7 @@ load_worker() {
                     --digitalocean-access-token=$DO_TOKEN \
                     --digitalocean-region=sgp1 \
                     --digitalocean-private-networking="true" \
-                    --digitalocean-size=4gb \
+                    --digitalocean-size=8gb \
                     worker-1
                 ;;
         esac
@@ -68,6 +71,8 @@ load_worker() {
         rm /tmp/join-token-worker
         # required for ldap_peer service
         docker-machine ssh worker-1 mkdir -p /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs
+        # required for consul
+        docker-machine ssh worker-1 mkdir -p /opt/consul
     else
         node_up worker-1
     fi

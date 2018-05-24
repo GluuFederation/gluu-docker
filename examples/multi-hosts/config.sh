@@ -23,11 +23,11 @@ bootstrap_config() {
         fi
 
         if [[ $load_choice = "y" ]]; then
-            docker-machine scp $saved_config manager-1:/root/config-init/db/config.json
+            docker-machine scp $saved_config manager-1:/opt/config-init/db/config.json
             docker run \
                 --rm \
                 --network gluu \
-                -v /root/config-init/db:/opt/config-init/db/ \
+                -v /opt/config-init/db:/opt/config-init/db/ \
                 gluufederation/config-init:3.1.2_dev \
                 load \
                 --kv-host consul.server
@@ -82,11 +82,11 @@ generate_config() {
     docker run \
         --rm \
         --network gluu \
-        -v /root/config-init/db:/opt/config-init/db/ \
+        -v /opt/config-init/db:/opt/config-init/db/ \
         gluufederation/config-init:3.1.2_dev \
         dump \
         --kv-host consul.server
-    docker-machine scp manager-1:/root/config-init/db/config.json $saved_config
+    docker-machine scp manager-1:/opt/config-init/db/config.json $saved_config
 }
 
 bootstrap_config

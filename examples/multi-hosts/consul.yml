@@ -38,6 +38,8 @@ services:
       placement:
         constraints:
           - node.role == manager
+    volumes:
+      - /opt/consul:/consul/data
 
   consul_worker:
     image: consul
@@ -69,3 +71,5 @@ services:
       placement:
         constraints:
           - node.role == worker
+    volumes:
+      - /opt/consul:/consul/data

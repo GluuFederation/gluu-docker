@@ -1,5 +1,5 @@
 gluu:
-  listen: 0.0.0.0:6379
+  listen: 0.0.0.0:22122
   hash: fnv1a_64
   distribution: ketama
   auto_eject_hosts: true
@@ -9,5 +9,5 @@ gluu:
   server_failure_limit: 2
   preconnect: true
   servers:
-  - REDIS_MANAGER_1:6379:1
-  - REDIS_WORKER_1:6379:1
+  - MANAGER_1_PRIV_ADDR:6379:1
+  - WORKER_1_PRIV_ADDR:6379:1

@@ -16,7 +16,7 @@ services:
           - oxauth.server
     deploy:
       endpoint_mode: dnsrr
-      replicas: 1
+      replicas: 2
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -27,7 +27,7 @@ services:
         window: 120s
       resources:
         limits:
-          memory: 1024M
+          memory: 2048M
 
   oxtrust:
     image: gluufederation/oxtrust:3.1.2_dev
@@ -54,7 +54,7 @@ services:
           - node.role == manager
       resources:
         limits:
-          memory: 1024M
+          memory: 2048M
     volumes:
       - /opt/shared-shibboleth-idp:/opt/shared-shibboleth-idp
 
