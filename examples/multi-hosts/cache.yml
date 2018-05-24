@@ -5,27 +5,6 @@ networks:
     external: true
 
 services:
-  # redis:
-  #   image: redis:alpine
-  #   networks:
-  #     gluu:
-  #       aliases:
-  #         - redis.server
-  #   deploy:
-  #     replicas: 1
-  #     endpoint_mode: dnsrr
-  #     update_config:
-  #       parallelism: 1
-  #       failure_action: rollback
-  #       delay: 30s
-  #     restart_policy:
-  #       condition: any
-  #       delay: 5s
-  #       window: 120s
-  #     placement:
-  #       constraints:
-  #         - node.role == worker
-
   twemproxy:
     image: perlmint/twemproxy
     volumes:
@@ -33,7 +12,7 @@ services:
     networks:
       gluu:
         aliases:
-          - cache.server
+          - twemproxy.server
     deploy:
       replicas: 2
       endpoint_mode: dnsrr
