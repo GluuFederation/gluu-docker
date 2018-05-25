@@ -15,7 +15,7 @@ services:
         aliases:
           - oxauth.server
     deploy:
-      endpoint_mode: dnsrr
+      # endpoint_mode: dnsrr
       replicas: 2
       update_config:
         parallelism: 1
@@ -27,7 +27,7 @@ services:
         window: 120s
       resources:
         limits:
-          memory: 2048M
+          memory: 1536M
 
   oxtrust:
     image: gluufederation/oxtrust:3.1.2_dev
@@ -39,7 +39,7 @@ services:
         aliases:
           - oxtrust.server
     deploy:
-      endpoint_mode: dnsrr
+      # endpoint_mode: dnsrr
       replicas: 1
       update_config:
         parallelism: 1
@@ -49,12 +49,12 @@ services:
         condition: any
         delay: 5s
         window: 120s
-      placement:
-        constraints:
-          - node.role == manager
+      # placement:
+      #   constraints:
+      #     - node.role == manager
       resources:
         limits:
-          memory: 2048M
+          memory: 1536M
     volumes:
       - /opt/shared-shibboleth-idp:/opt/shared-shibboleth-idp
 
@@ -68,8 +68,8 @@ services:
         aliases:
           - oxshibboleth.server
     deploy:
-      endpoint_mode: dnsrr
-      replicas: 1
+      # endpoint_mode: dnsrr
+      replicas: 2
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -78,12 +78,12 @@ services:
         condition: any
         delay: 5s
         window: 120s
-      placement:
-        constraints:
-          - node.role == worker
+      # placement:
+      #   constraints:
+      #     - node.role == worker
       resources:
         limits:
-          memory: 1024M
+          memory: 1536M
     volumes:
       - /opt/shared-shibboleth-idp:/opt/shared-shibboleth-idp
 
@@ -99,8 +99,8 @@ services:
         aliases:
           - oxpassport.server
     deploy:
-      endpoint_mode: dnsrr
-      replicas: 1
+      # endpoint_mode: dnsrr
+      replicas: 2
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -133,8 +133,9 @@ services:
           - nginx.server
           - ${DOMAIN}
     deploy:
-      mode: global
-      endpoint_mode: dnsrr
+      # mode: global
+      # endpoint_mode: dnsrr
+      replicas: 2
       update_config:
         parallelism: 1
         failure_action: rollback
