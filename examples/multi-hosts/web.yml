@@ -15,7 +15,6 @@ services:
         aliases:
           - oxauth.server
     deploy:
-      # endpoint_mode: dnsrr
       replicas: 2
       update_config:
         parallelism: 1
@@ -39,8 +38,7 @@ services:
         aliases:
           - oxtrust.server
     deploy:
-      # endpoint_mode: dnsrr
-      replicas: 1
+      replicas: 2
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -49,12 +47,14 @@ services:
         condition: any
         delay: 5s
         window: 120s
-      # placement:
-      #   constraints:
-      #     - node.role == manager
       resources:
         limits:
           memory: 1536M
+      labels:
+        - "traefik.port=8080"
+        - "traefik.backend=oxtrust"
+        - "traefik.frontend.rule=Host:oxtrust.gluu"
+        - "traefik.backend.loadbalancer.stickiness=true"
     volumes:
       - /opt/shared-shibboleth-idp:/opt/shared-shibboleth-idp
 
@@ -68,7 +68,6 @@ services:
         aliases:
           - oxshibboleth.server
     deploy:
-      # endpoint_mode: dnsrr
       replicas: 2
       update_config:
         parallelism: 1
@@ -78,12 +77,14 @@ services:
         condition: any
         delay: 5s
         window: 120s
-      # placement:
-      #   constraints:
-      #     - node.role == worker
       resources:
         limits:
           memory: 1536M
+      labels:
+        - "traefik.port=8080"
+        - "traefik.backend=oxshibboleth"
+        - "traefik.frontend.rule=Host:oxshibboleth.gluu"
+        - "traefik.backend.loadbalancer.stickiness=true"
     volumes:
       - /opt/shared-shibboleth-idp:/opt/shared-shibboleth-idp
 
@@ -99,7 +100,6 @@ services:
         aliases:
           - oxpassport.server
     deploy:
-      # endpoint_mode: dnsrr
       replicas: 2
       update_config:
         parallelism: 1
@@ -109,33 +109,45 @@ services:
         condition: any
         delay: 5s
         window: 120s
-      placement:
-        constraints:
-          - node.role == worker
 
   nginx:
     image: gluufederation/nginx:3.1.2_dev
     environment:
       - GLUU_KV_HOST=consul.server
+
+      # ==========================================================
+      # the following lines are used when resolver mode is enabled
+      # note we're using traefik to proxy ox apps
+      # ==========================================================
+      - GLUU_OXAUTH_BACKEND=oxauth.server:8080
+      # - GLUU_OXAUTH_HOST_HEADER=oxauth.gluu:8080
+      - GLUU_OXTRUST_BACKEND=traefik
+      - GLUU_OXTRUST_HOST_HEADER=oxtrust.gluu:8080
+      - GLUU_OXSHIBBOLETH_BACKEND=traefik
+      - GLUU_OXSHIBBOLETH_HOST_HEADER=oxshibboleth.gluu:8080
+      - GLUU_OXPASSPORT_BACKEND=oxpassport.server:8090
+      # - GLUU_OXPASSPORT_HOST_HEADER=oxpassport.gluu:8090
+      - GLUU_PROXY_MODE=resolver
+      - GLUU_RESOLVER_ADDR=127.0.0.11
+
       # ==========================================================
       # the following lines are used when resolver mode is enabled
       # note we're using native swarm routing to proxy ox apps
       # ==========================================================
-      - GLUU_OXAUTH_BACKEND=oxauth.server:8080
-      - GLUU_OXTRUST_BACKEND=oxtrust.server:8080
-      - GLUU_OXSHIBBOLETH_BACKEND=oxshibboleth.server:8080
-      - GLUU_OXPASSPORT_BACKEND=oxpassport.server:8090
-      - GLUU_PROXY_MODE=resolver
-      - GLUU_RESOLVER_ADDR=127.0.0.11
+      # - GLUU_OXAUTH_BACKEND=oxauth.server:8080
+      # - GLUU_OXTRUST_BACKEND=oxtrust.server:8080
+      # - GLUU_OXTRUST_HOST_HEADER=oxtrust.server:8080
+      # - GLUU_OXSHIBBOLETH_BACKEND=oxshibboleth.server:8080
+      # - GLUU_OXPASSPORT_BACKEND=oxpassport.server:8090
+      # - GLUU_PROXY_MODE=resolver
+      # - GLUU_RESOLVER_ADDR=127.0.0.11
     networks:
       gluu:
         aliases:
           - nginx.server
           - ${DOMAIN}
     deploy:
-      # mode: global
-      # endpoint_mode: dnsrr
-      replicas: 2
+      mode: global
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -151,3 +163,22 @@ services:
       - target: 443
         published: 443
         mode: host
+
+  gobetween:
+    image: iromli/gobetween
+    networks:
+      gluu:
+        aliases:
+          - gobetween.server
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
