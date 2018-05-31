@@ -18,6 +18,7 @@ docker-machine ssh manager-1 \
     -v /opt/opendj/ldif:/opt/opendj/ldif \
     -v /opt/opendj/logs:/opt/opendj/logs \
     -v /opt/opendj/flag:/flag \
+    -l "SERVICE_IGNORE=yes" \
     --hostname ldap.$NODE_ID \
     --name gluu_ldap_init.$NODE_ID \
     --network-alias ldap.server \

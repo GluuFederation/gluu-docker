@@ -24,3 +24,5 @@ services:
         condition: any
         delay: 5s
         window: 120s
+    labels:
+      - "SERVICE_IGNORE=yes"
