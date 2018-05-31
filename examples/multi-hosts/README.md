@@ -177,13 +177,22 @@ LDAP containers are divided into 2 roles:
 __NOTE__: OpenDJ containers are not deployed as service task because each of these containers require a reachable unique address for establishing replication.
 Due to how Docker service works, there's no guarantee that the address will still be unique after restart, hence OpenDJ containers are deployed via plain `docker run` command.
 
-### 5 - Deploy oxAuth, oxTrust, oxShibboleth, and nginx
+### 5 - Deploy Registrator
+
+[Registrator](https://gliderlabs.com/registrator/) acts a service registry bridge to watch oxAuth/oxTrust/oxShibboleth/oxPassport container events. The event will be watched and data will be saved into Consul.
+This is needed because nginx container need to reconfigure its config whenever those containers are added or removed into/from the cluster.
+
+Run the following command to deploy `registrator` service:
+
+    docker stack deploy -c registrator.yml gluu
+
+### 6 - Deploy oxAuth, oxTrust, oxShibboleth, and nginx
 
 Run the following commands to deploy oxAuth, oxTrust, oxShibboleth, and nginx:
 
     DOMAIN=$(docker-machine ssh manager-1 curl 0.0.0.0:8500/v1/kv/gluu/config/hostname?raw -s) docker stack deploy -c web.yml gluu
 
-### 6 - Enabling oxPassport
+### 7 - Enabling oxPassport
 
 Enable Passport support by doing steps below:
 
