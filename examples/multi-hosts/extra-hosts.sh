@@ -1,12 +1,14 @@
 #!/bin/bash
 set -e
 
-if [[ -z $(cat /etc/hosts|grep manager-1.gluu) ]]; then
-    echo "[I] Adding extra host manager-1.gluu"
-    cat /etc/manager-1.gluu >> /etc/hosts
+if [[ -z $(cat /etc/hosts|grep manager.gluu) ]]; then
+    echo "[I] Adding extra host manager.gluu"
+    cat /etc/manager.gluu >> /etc/hosts
 fi
 
-if [[ -z $(cat /etc/hosts|grep worker-1.gluu) ]]; then
-    echo "[I] Adding extra host worker-1.gluu"
-    cat /etc/worker-1.gluu >> /etc/hosts
-fi
+for node in worker-1 worker-2; do
+    if [[ -z $(cat /etc/hosts|grep $node.gluu) ]]; then
+        echo "[I] Adding extra host $node.gluu"
+        cat /etc/$node.gluu >> /etc/hosts
+    fi
+done

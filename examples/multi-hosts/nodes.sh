@@ -18,8 +18,8 @@ node_up() {
 }
 
 load_manager() {
-    if [[ -z $(docker-machine ls --filter name=manager-1 -q) ]]; then
-        echo "[I] Creating manager-1 node as Swarm manager"
+    if [[ -z $(docker-machine ls --filter name=manager -q) ]]; then
+        echo "[I] Creating manager node as Swarm manager"
         case $1 in
             digitalocean)
                 docker-machine create \
@@ -28,63 +28,63 @@ load_manager() {
                     --digitalocean-region=sgp1 \
                     --digitalocean-private-networking="true" \
                     --digitalocean-size=8gb \
-                    manager-1
+                    manager
                 ;;
         esac
 
         echo "[I] Initializing Swarm"
-        eval $(docker-machine env manager-1)
-        docker swarm init --advertise-addr $(docker-machine ip manager-1)
+        eval $(docker-machine env manager)
+        docker swarm init --advertise-addr $(docker-machine ip manager)
         eval $(docker-machine env -u)
 
         # required for config-init
-        docker-machine ssh manager-1 mkdir -p /opt/config-init/db
+        docker-machine ssh manager mkdir -p /opt/config-init/db
         # required for ldap_init service
-        docker-machine ssh manager-1 mkdir -p /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs /opt/opendj/flag
+        docker-machine ssh manager mkdir -p /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs /opt/opendj/flag
         # required for consul
-        docker-machine ssh manager-1 mkdir -p /opt/consul
+        docker-machine ssh manager mkdir -p /opt/consul
     else
-        node_up manager-1
+        node_up manager
     fi
 }
 
 load_worker() {
-    if [[ -z $(docker-machine ls --filter name=worker-1 -q) ]]; then
-        echo "[I] Creating worker-1 node as Swarm worker"
-        case $1 in
-            digitalocean)
-                docker-machine create \
-                    --driver=digitalocean \
-                    --digitalocean-access-token=$DO_TOKEN \
-                    --digitalocean-region=sgp1 \
-                    --digitalocean-private-networking="true" \
-                    --digitalocean-size=8gb \
-                    worker-1
-                ;;
-        esac
+    for node in worker-1 worker-2; do
+        if [[ -z $(docker-machine ls --filter name=$node -q) ]]; then
+            echo "[I] Creating $node node as Swarm worker"
+            case $1 in
+                digitalocean)
+                    docker-machine create \
+                        --driver=digitalocean \
+                        --digitalocean-access-token=$DO_TOKEN \
+                        --digitalocean-region=sgp1 \
+                        --digitalocean-private-networking="true" \
+                        --digitalocean-size=8gb \
+                        $node
+            esac
 
-        echo "[I] Joining Swarm"
-        docker-machine ssh manager-1 docker swarm join-token worker -q > /tmp/join-token-worker
-        eval $(docker-machine env worker-1)
-        docker swarm join --token $(cat /tmp/join-token-worker) $(docker-machine ip manager-1):2377
-        eval $(docker-machine env -u)
-        rm /tmp/join-token-worker
-        # required for ldap_peer service
-        docker-machine ssh worker-1 mkdir -p /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs
-        # required for consul
-        docker-machine ssh worker-1 mkdir -p /opt/consul
-    else
-        node_up worker-1
-    fi
+            echo "[I] Joining Swarm"
+            docker-machine ssh manager docker swarm join-token worker -q > volumes/join-token-worker
+            eval $(docker-machine env $node)
+            docker swarm join --token $(cat volumes/join-token-worker) $(docker-machine ip manager):2377
+            eval $(docker-machine env -u)
+            # rm /tmp/join-token-worker
+            # required for ldap_peer service
+            docker-machine ssh $node mkdir -p /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs
+            # required for consul
+            docker-machine ssh $node mkdir -p /opt/consul
+        else
+            node_up $node
+        fi
+    done
 }
 
 create_network() {
-    eval $(docker-machine env manager-1)
+    eval $(docker-machine env manager)
     net=$(docker network ls -f name=gluu --format '{{ .Name }}')
     if [[ -z $net ]]; then
         echo "[I] Creating network for swarm"
         docker network create -d overlay --attachable gluu
-        csync2_repl
     else
         echo "[I] $net network is available"
     fi
@@ -92,45 +92,70 @@ create_network() {
 }
 
 csync2_repl() {
-    echo "[I] Installing and configuring csync2 in manager-1 node"
-    docker-machine ssh manager-1 apt-get install -y csync2
-    echo $(docker-machine ip manager-1) manager-1.gluu > volumes/manager-1.gluu
-    echo $(docker-machine ip worker-1) worker-1.gluu > volumes/worker-1.gluu
-    docker-machine scp volumes/manager-1.gluu manager-1:/etc/
-    docker-machine scp volumes/worker-1.gluu manager-1:/etc/
-    docker-machine scp extra-hosts.sh manager-1:/root/
-    docker-machine ssh manager-1 bash /root/extra-hosts.sh
-    docker-machine scp csync2.cfg manager-1:/etc/
-    docker-machine ssh manager-1 mkdir -p /opt/shared-shibboleth-idp
-    docker-machine ssh manager-1 csync2 -k /etc/csync2.key
-    docker-machine ssh manager-1 openssl genrsa -out /etc/csync2_ssl_key.pem 1024
-    docker-machine ssh manager-1 openssl req -batch -new -key /etc/csync2_ssl_key.pem -out /etc/csync2_ssl_cert.csr
-    docker-machine ssh manager-1 openssl x509 -req -days 3600 -in /etc/csync2_ssl_cert.csr -signkey /etc/csync2_ssl_key.pem -out /etc/csync2_ssl_cert.pem
-    docker-machine scp manager-1:/etc/csync2.key volumes/
-    docker-machine scp manager-1:/etc/csync2_ssl_key.pem volumes/
-    docker-machine scp manager-1:/etc/csync2_ssl_cert.pem volumes/
-    docker-machine scp manager-1:/etc/csync2_ssl_cert.csr volumes/
-    docker-machine scp inetd-manager.conf manager-1:/etc/inetd.conf
-    docker-machine ssh manager-1 /etc/init.d/openbsd-inetd restart
-    docker-machine scp csync2-manager.cron manager-1:/etc/cron.d/csync2
-    docker-machine ssh manager-1 service cron reload
+    for node in manager worker-1 worker-2; do
+        echo "$(docker-machine ip $node) $node.gluu" > volumes/$node.gluu
+    done
 
-    echo "[I] Installing and configuring csync2 in worker-1 node"
-    docker-machine ssh worker-1 apt-get install -y csync2
-    docker-machine scp volumes/manager-1.gluu worker-1:/etc/
-    docker-machine scp volumes/worker-1.gluu worker-1:/etc/
-    docker-machine scp extra-hosts.sh worker-1:/root/
-    docker-machine ssh worker-1 bash /root/extra-hosts.sh
-    docker-machine scp csync2.cfg worker-1:/etc/
-    docker-machine ssh worker-1 mkdir -p /opt/shared-shibboleth-idp
-    docker-machine scp volumes/csync2.key worker-1:/etc/
-    docker-machine scp volumes/csync2_ssl_key.pem worker-1:/etc/
-    docker-machine scp volumes/csync2_ssl_cert.pem worker-1:/etc/
-    docker-machine scp volumes/csync2_ssl_cert.csr worker-1:/etc/
-    docker-machine scp inetd-worker.conf worker-1:/etc/inetd.conf
-    docker-machine ssh worker-1 /etc/init.d/openbsd-inetd restart
-    docker-machine scp csync2-worker.cron worker-1:/etc/cron.d/csync2
-    docker-machine ssh worker-1 service cron reload
+    docker-machine ssh manager dpkg -l > volumes/dpkg_manager_list
+    if [ ! -z "$(cat volumes/dpkg_manager_list | grep 'csync2')" ]; then
+        echo "csync2 installed"
+    else
+        echo "[I] Installing and configuring csync2 in manager node"
+        docker-machine ssh manager apt-get install -y csync2
+
+        docker-machine scp volumes/manager.gluu manager:/etc/
+        docker-machine scp volumes/worker-1.gluu manager:/etc/
+        docker-machine scp volumes/worker-2.gluu manager:/etc/
+
+        docker-machine scp extra-hosts.sh manager:/root/
+        docker-machine ssh manager bash /root/extra-hosts.sh
+        docker-machine scp csync2.cfg manager:/etc/
+
+        docker-machine ssh manager mkdir -p /opt/shared-shibboleth-idp
+        docker-machine ssh manager csync2 -k /etc/csync2.key
+        docker-machine ssh manager openssl genrsa -out /etc/csync2_ssl_key.pem 1024
+        docker-machine ssh manager openssl req -batch -new -key /etc/csync2_ssl_key.pem -out /etc/csync2_ssl_cert.csr
+        docker-machine ssh manager openssl x509 -req -days 3600 -in /etc/csync2_ssl_cert.csr -signkey /etc/csync2_ssl_key.pem -out /etc/csync2_ssl_cert.pem
+        docker-machine scp manager:/etc/csync2.key volumes/
+        docker-machine scp manager:/etc/csync2_ssl_key.pem volumes/
+        docker-machine scp manager:/etc/csync2_ssl_cert.pem volumes/
+        docker-machine scp manager:/etc/csync2_ssl_cert.csr volumes/
+        sed -e "s@NODE@manager@" inetd.conf.tmpl > volumes/inetd-manager.conf
+        docker-machine scp volumes/inetd-manager.conf manager:/etc/inetd.conf
+        docker-machine ssh manager /etc/init.d/openbsd-inetd restart
+        sed -e "s@NODE@manager@" csync2.cron.tmpl > volumes/csync2-manager.cron
+        docker-machine scp volumes/csync2-manager.cron manager:/etc/cron.d/csync2
+        docker-machine ssh manager service cron reload
+    fi
+
+    for node in worker-1 worker-2; do
+        docker-machine ssh $node dpkg -l > volumes/dpkg_${node}_list
+        if [ ! -z "$(cat volumes/dpkg_${node}_list | grep 'csync2')" ]; then
+            echo "csync2 installed"
+        else
+            echo "[I] Installing and configuring csync2 in $node node"
+            docker-machine ssh $node apt-get install -y csync2
+
+            docker-machine scp volumes/manager.gluu $node:/etc/
+            docker-machine scp volumes/worker-1.gluu $node:/etc/
+            docker-machine scp volumes/worker-2.gluu $node:/etc/
+
+            docker-machine scp extra-hosts.sh $node:/root/
+            docker-machine ssh $node bash /root/extra-hosts.sh
+            docker-machine scp csync2.cfg $node:/etc/
+            docker-machine ssh $node mkdir -p /opt/shared-shibboleth-idp
+            docker-machine scp volumes/csync2.key $node:/etc/
+            docker-machine scp volumes/csync2_ssl_key.pem $node:/etc/
+            docker-machine scp volumes/csync2_ssl_cert.pem $node:/etc/
+            docker-machine scp volumes/csync2_ssl_cert.csr $node:/etc/
+            sed -e "s@NODE@$node@" inetd.conf.tmpl > volumes/inetd-${node}.conf
+            docker-machine scp volumes/inetd-$node.conf $node:/etc/inetd.conf
+            docker-machine ssh $node /etc/init.d/openbsd-inetd restart
+            sed -e "s@NODE@$node@" csync2.cron.tmpl > volumes/csync2-${node}.cron
+            docker-machine scp volumes/csync2-$node.cron $node:/etc/cron.d/csync2
+            docker-machine ssh $node service cron reload
+        fi
+    done
 }
 
 setup() {
@@ -138,12 +163,13 @@ setup() {
     load_manager $1
     load_worker $1
     create_network
+    csync2_repl
 }
 
 teardown() {
     echo "[I] Teardown the cluster nodes"
 
-    for node in manager-1 worker-1; do
+    for node in manager worker-1 worker-2; do
         if [[ ! -z $(docker-machine ls --filter name=$node -q) ]]; then
             echo "[I] Removing $node node"
             docker-machine rm $node
@@ -191,4 +217,4 @@ main() {
     esac
 }
 
-main $@
+main "$@"
