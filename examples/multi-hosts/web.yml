@@ -121,8 +121,7 @@ services:
       - "SERVICE_8090_CHECK_TIMEOUT=5s"
 
   nginx:
-    # image: gluufederation/nginx:3.1.2_dev
-    image: iromli/nginx-ct
+    image: gluufederation/nginx:3.1.2_dev
     environment:
       - GLUU_KV_HOST=consul.server
     networks:
