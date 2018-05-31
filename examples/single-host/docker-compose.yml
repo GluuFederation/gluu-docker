@@ -28,8 +28,7 @@ services:
       - consul
 
   nginx:
-    # image: gluufederation/nginx:3.1.2_dev
-    image: iromli/nginx-ct
+    image: gluufederation/nginx:3.1.2_dev
     environment:
       - GLUU_KV_HOST=consul
     ports:
