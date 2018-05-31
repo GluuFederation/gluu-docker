@@ -27,6 +27,11 @@ services:
       resources:
         limits:
           memory: 1536M
+    labels:
+      - "SERVICE_NAME=oxauth"
+      - "SERVICE_8080_CHECK_HTTP=/oxauth/.well-known/openid-configuration"
+      - "SERVICE_8080_CHECK_INTERVAL=15s"
+      - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxtrust:
     image: gluufederation/oxtrust:3.1.2_dev
@@ -50,13 +55,13 @@ services:
       resources:
         limits:
           memory: 1536M
-      labels:
-        - "traefik.port=8080"
-        - "traefik.backend=oxtrust"
-        - "traefik.frontend.rule=Host:oxtrust.gluu"
-        - "traefik.backend.loadbalancer.stickiness=true"
     volumes:
       - /opt/shared-shibboleth-idp:/opt/shared-shibboleth-idp
+    labels:
+      - "SERVICE_NAME=oxtrust"
+      - "SERVICE_8080_CHECK_HTTP=/identity/restv1/scim-configuration"
+      - "SERVICE_8080_CHECK_INTERVAL=15s"
+      - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxshibboleth:
     image: gluufederation/oxshibboleth:3.1.2_dev
@@ -80,13 +85,13 @@ services:
       resources:
         limits:
           memory: 1536M
-      labels:
-        - "traefik.port=8080"
-        - "traefik.backend=oxshibboleth"
-        - "traefik.frontend.rule=Host:oxshibboleth.gluu"
-        - "traefik.backend.loadbalancer.stickiness=true"
     volumes:
       - /opt/shared-shibboleth-idp:/opt/shared-shibboleth-idp
+    labels:
+      - "SERVICE_NAME=oxshibboleth"
+      - "SERVICE_8086_CHECK_HTTP=/idp"
+      - "SERVICE_8086_CHECK_INTERVAL=15s"
+      - "SERVICE_8086_CHECK_TIMEOUT=5s"
 
   oxpassport:
     image: gluufederation/oxpassport:3.1.2_dev
@@ -109,38 +114,17 @@ services:
         condition: any
         delay: 5s
         window: 120s
+    labels:
+      - "SERVICE_NAME=oxpassport"
+      - "SERVICE_8090_CHECK_HTTP=/passport"
+      - "SERVICE_8090_CHECK_INTERVAL=15s"
+      - "SERVICE_8090_CHECK_TIMEOUT=5s"
 
   nginx:
-    image: gluufederation/nginx:3.1.2_dev
+    # image: gluufederation/nginx:3.1.2_dev
+    image: iromli/nginx-ct
     environment:
       - GLUU_KV_HOST=consul.server
-
-      # ==========================================================
-      # the following lines are used when resolver mode is enabled
-      # note we're using traefik to proxy ox apps
-      # ==========================================================
-      - GLUU_OXAUTH_BACKEND=oxauth.server:8080
-      # - GLUU_OXAUTH_HOST_HEADER=oxauth.gluu:8080
-      - GLUU_OXTRUST_BACKEND=traefik
-      - GLUU_OXTRUST_HOST_HEADER=oxtrust.gluu:8080
-      - GLUU_OXSHIBBOLETH_BACKEND=traefik
-      - GLUU_OXSHIBBOLETH_HOST_HEADER=oxshibboleth.gluu:8080
-      - GLUU_OXPASSPORT_BACKEND=oxpassport.server:8090
-      # - GLUU_OXPASSPORT_HOST_HEADER=oxpassport.gluu:8090
-      - GLUU_PROXY_MODE=resolver
-      - GLUU_RESOLVER_ADDR=127.0.0.11
-
-      # ==========================================================
-      # the following lines are used when resolver mode is enabled
-      # note we're using native swarm routing to proxy ox apps
-      # ==========================================================
-      # - GLUU_OXAUTH_BACKEND=oxauth.server:8080
-      # - GLUU_OXTRUST_BACKEND=oxtrust.server:8080
-      # - GLUU_OXTRUST_HOST_HEADER=oxtrust.server:8080
-      # - GLUU_OXSHIBBOLETH_BACKEND=oxshibboleth.server:8080
-      # - GLUU_OXPASSPORT_BACKEND=oxpassport.server:8090
-      # - GLUU_PROXY_MODE=resolver
-      # - GLUU_RESOLVER_ADDR=127.0.0.11
     networks:
       gluu:
         aliases:
@@ -163,22 +147,5 @@ services:
       - target: 443
         published: 443
         mode: host
-
-  gobetween:
-    image: iromli/gobetween
-    networks:
-      gluu:
-        aliases:
-          - gobetween.server
-    deploy:
-      replicas: 2
-      update_config:
-        parallelism: 1
-        failure_action: rollback
-        delay: 30s
-      restart_policy:
-        condition: any
-        delay: 5s
-        window: 120s
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "SERVICE_IGNORE=yes"

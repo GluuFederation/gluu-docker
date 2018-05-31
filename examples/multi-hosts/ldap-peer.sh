@@ -14,6 +14,7 @@ docker-machine ssh worker-1 \
     -v /opt/opendj/config:/opt/opendj/config \
     -v /opt/opendj/ldif:/opt/opendj/ldif \
     -v /opt/opendj/logs:/opt/opendj/logs \
+    -l "SERVICE_IGNORE=yes" \
     --hostname ldap.$NODE_ID \
     --name gluu_ldap_peer.$NODE_ID \
     --network-alias ldap.server \

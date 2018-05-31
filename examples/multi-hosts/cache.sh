@@ -11,6 +11,7 @@ docker-machine ssh manager-1 \
     -d \
     -p $MANAGER_1_PRIV_ADDR:6379:6379 \
     -v /opt/redis:/data \
+    -l "SERVICE_IGNORE=yes" \
     --name gluu_redis.$MANAGER_1_NODE_ID \
     --network gluu \
     --network-alias redis.$MANAGER_1_NODE_ID \
@@ -23,6 +24,7 @@ docker-machine ssh worker-1 \
     -d \
     -p $WORKER_1_PRIV_ADDR:6379:6379 \
     -v /opt/redis:/data \
+    -l "SERVICE_IGNORE=yes" \
     --name gluu_redis.$WORKER_1_NODE_ID \
     --network gluu \
     --network-alias redis.$WORKER_1_NODE_ID \
