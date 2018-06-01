@@ -9,7 +9,7 @@ bootstrap_config() {
     consul_name=$(docker ps --filter name=consul --format '{{.Names}}')
     if [[ ! -z $consul_name ]]; then
         consul_ip=$(docker exec $consul_name ifconfig eth1 | grep 'inet addr' | cut -d: -f2 | awk '{print $1}')
-        domain=$(docker-machine ssh manager-1 curl $consul_ip:8500/v1/kv/gluu/config/hostname?raw -s)
+        domain=$(docker-machine ssh manager curl $consul_ip:8500/v1/kv/gluu/config/hostname?raw -s)
     fi
 
     if [[ -z $domain ]]; then
@@ -23,7 +23,7 @@ bootstrap_config() {
         fi
 
         if [[ $load_choice = "y" ]]; then
-            docker-machine scp $saved_config manager-1:/opt/config-init/db/config.json
+            docker-machine scp $saved_config manager:/opt/config-init/db/config.json
             docker run \
                 --rm \
                 --network gluu \
@@ -86,7 +86,7 @@ generate_config() {
         gluufederation/config-init:3.1.2_dev \
         dump \
         --kv-host consul.server
-    docker-machine scp manager-1:/opt/config-init/db/config.json $saved_config
+    docker-machine scp manager:/opt/config-init/db/config.json $saved_config
 }
 
 bootstrap_config
