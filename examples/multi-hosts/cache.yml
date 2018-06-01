@@ -14,7 +14,7 @@ services:
         aliases:
           - twemproxy.server
     deploy:
-      replicas: 2
+      mode: global
       # endpoint_mode: dnsrr
       update_config:
         parallelism: 1

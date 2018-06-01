@@ -15,7 +15,7 @@ services:
         aliases:
           - oxauth.server
     deploy:
-      replicas: 2
+      mode: global
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -43,7 +43,7 @@ services:
         aliases:
           - oxtrust.server
     deploy:
-      replicas: 2
+      mode: global
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -73,7 +73,7 @@ services:
         aliases:
           - oxshibboleth.server
     deploy:
-      replicas: 2
+      mode: global
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -105,7 +105,7 @@ services:
         aliases:
           - oxpassport.server
     deploy:
-      replicas: 2
+      mode: global
       update_config:
         parallelism: 1
         failure_action: rollback
