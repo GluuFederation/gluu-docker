@@ -12,8 +12,8 @@ This is an example on how to deploy Gluu Server Docker Edition on multi-hosts se
 
 Nodes are divided into 2 roles:
 
-- `manager-1` as a Swarm manager
-- `worker-1` as a Swarm worker
+- Swarm manager, consists of `manager` node
+- Swarm worker, consists of `worker-1` and `worker-2` node
 
 These nodes are created/destroyed using `docker-machine`.
 Nodes are deployed as DigitalOcean droplets.
@@ -30,21 +30,22 @@ To setup nodes, execute the command below:
 
     ./nodes.sh up
 
-This command will create `manager-1` and `worker-1` nodes and setup the Swarm cluster.
+This command will create `manager`, `worker-1`, and `worker-2` nodes and setup the Swarm cluster.
 
 Wait until all processes completed, and then we can execute this command to check nodes status:
 
-    docker-machine ssh manager-1 'docker node ls'
+    docker-machine ssh manager 'docker node ls'
 
 which will return output similar to example below:
 
     ID                          HOSTNAME    STATUS  AVAILABILITY    MANAGER STATUS  ENGINE VERSION
-    hylmq7086sr1oxmac6k8mjtcr * manager-1   Ready   Active          Leader          18.03.0-ce
+    hylmq7086sr1oxmac6k8mjtcr * manager     Ready   Active          Leader          18.03.0-ce
     hdvgmuvwm9z5p4u4740ichd77   worker-1    Ready   Active                          18.03.0-ce
+    hdvgmuvwm9z5p4u4740ichd88   worker-2    Ready   Active                          18.03.0-ce
 
 After Swarm cluster created, we also create a custom network called `gluu`. To inspect the network, run the following command:
 
-    docker-machine ssh manager-1 'docker network inspect gluu'
+    docker-machine ssh manager 'docker network inspect gluu'
 
 which will return the information of the network:
 
@@ -112,15 +113,13 @@ In this example, the following services/containers are used to deploy Gluu stack
 
 Consul service divided into 2 parts to achieve HA/cluster setup:
 
-- `consul_manager` deployed to `manager-1` node
-- `consul_worker` deployed to `worker-1` node
-
-Ideally at least 3 nodes are needed, but for example 2 instances of Consul are sufficient.
+- `consul_manager` deployed to `manager` node
+- `consul_worker` deployed to `worker-1` and `worker-2` node
 
 To deploy the service:
 
-    # connect to remote docker engine in manager-1 node
-    eval $(docker-machine env manager-1)
+    # connect to remote docker engine in manager node
+    eval $(docker-machine env manager)
     docker stack deploy -c consul.yml gluu
 
 ### 2 - Prepare cluster-wide configuration
@@ -153,16 +152,16 @@ LDAP containers are divided into 2 roles:
 
     Run this command to deploy the container:
 
-        ./ldap-init.sh
+        ./ldap-manager.sh
 
     The process of initializing data will take some time.
 
 2.  LDAP that has no initial data (data will be replicated from existing LDAP if any)
 
     Before deploying this service (and other services that need to run after LDAP is ready),
-    we need to check if existing LDAP server in `manager-1` node has been fully ready:
+    we need to check if existing LDAP server in `manager` node has been fully ready:
 
-        docker-machine ssh manager-1 'docker logs $(docker ps --filter name=gluu_ldap_init -q) 2>&1' | grep 'The Directory Server has started successfully'
+        docker-machine ssh manager 'docker logs $(docker ps --filter name=gluu_ldap_init -q) 2>&1' | grep 'The Directory Server has started successfully'
 
     If we see the output similar to this one:
 
@@ -170,9 +169,13 @@ LDAP containers are divided into 2 roles:
 
     then we can proceed to deploy the next LDAP container:
 
-        ./ldap-peer.sh
+        ./ldap-worker-1.sh
 
     The process will also take some time, but it's safe to proceed to deploy next services/containers.
+
+    Repeat for third LDAP server by running this command:
+
+        ./ldap-worker-2.sh
 
 __NOTE__: OpenDJ containers are not deployed as service task because each of these containers require a reachable unique address for establishing replication.
 Due to how Docker service works, there's no guarantee that the address will still be unique after restart, hence OpenDJ containers are deployed via plain `docker run` command.
@@ -190,7 +193,8 @@ Run the following command to deploy `registrator` service:
 
 Run the following commands to deploy oxAuth, oxTrust, oxShibboleth, and nginx:
 
-    DOMAIN=$(docker-machine ssh manager-1 curl 0.0.0.0:8500/v1/kv/gluu/config/hostname?raw -s) docker stack deploy -c web.yml gluu
+    # $DOMAIN is the domain value that's entered when running `./config.sh`
+    DOMAIN=$DOMAIN docker stack deploy -c web.yml gluu
 
 ### 7 - Enabling oxPassport
 
@@ -209,5 +213,5 @@ Afterwards, run the following commands to deploy restart oxPassport:
     # in order to load strategies properly
     docker service update --force gluu_oxpassport
 
-    # disconnect from remote docker engine in manager-1 node
+    # disconnect from remote docker engine in manager node
     eval $(docker-machine env -u)
