@@ -15,8 +15,7 @@ services:
         aliases:
           - oxauth.server
     deploy:
-      endpoint_mode: dnsrr
-      replicas: 1
+      mode: global
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -27,7 +26,12 @@ services:
         window: 120s
       resources:
         limits:
-          memory: 1024M
+          memory: 1536M
+    labels:
+      - "SERVICE_NAME=oxauth"
+      - "SERVICE_8080_CHECK_HTTP=/oxauth/.well-known/openid-configuration"
+      - "SERVICE_8080_CHECK_INTERVAL=15s"
+      - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxtrust:
     image: gluufederation/oxtrust:3.1.2_dev
@@ -39,8 +43,7 @@ services:
         aliases:
           - oxtrust.server
     deploy:
-      endpoint_mode: dnsrr
-      replicas: 1
+      mode: global
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -49,14 +52,16 @@ services:
         condition: any
         delay: 5s
         window: 120s
-      placement:
-        constraints:
-          - node.role == manager
       resources:
         limits:
-          memory: 1024M
+          memory: 1536M
     volumes:
       - /opt/shared-shibboleth-idp:/opt/shared-shibboleth-idp
+    labels:
+      - "SERVICE_NAME=oxtrust"
+      - "SERVICE_8080_CHECK_HTTP=/identity/restv1/scim-configuration"
+      - "SERVICE_8080_CHECK_INTERVAL=15s"
+      - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxshibboleth:
     image: gluufederation/oxshibboleth:3.1.2_dev
@@ -68,8 +73,7 @@ services:
         aliases:
           - oxshibboleth.server
     deploy:
-      endpoint_mode: dnsrr
-      replicas: 1
+      mode: global
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -78,14 +82,16 @@ services:
         condition: any
         delay: 5s
         window: 120s
-      placement:
-        constraints:
-          - node.role == worker
       resources:
         limits:
-          memory: 1024M
+          memory: 1536M
     volumes:
       - /opt/shared-shibboleth-idp:/opt/shared-shibboleth-idp
+    labels:
+      - "SERVICE_NAME=oxshibboleth"
+      - "SERVICE_8086_CHECK_HTTP=/idp"
+      - "SERVICE_8086_CHECK_INTERVAL=15s"
+      - "SERVICE_8086_CHECK_TIMEOUT=5s"
 
   oxpassport:
     image: gluufederation/oxpassport:3.1.2_dev
@@ -99,8 +105,7 @@ services:
         aliases:
           - oxpassport.server
     deploy:
-      endpoint_mode: dnsrr
-      replicas: 1
+      mode: global
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -109,24 +114,16 @@ services:
         condition: any
         delay: 5s
         window: 120s
-      placement:
-        constraints:
-          - node.role == worker
+    labels:
+      - "SERVICE_NAME=oxpassport"
+      - "SERVICE_8090_CHECK_HTTP=/passport"
+      - "SERVICE_8090_CHECK_INTERVAL=15s"
+      - "SERVICE_8090_CHECK_TIMEOUT=5s"
 
   nginx:
     image: gluufederation/nginx:3.1.2_dev
     environment:
       - GLUU_KV_HOST=consul.server
-      # ==========================================================
-      # the following lines are used when resolver mode is enabled
-      # note we're using native swarm routing to proxy ox apps
-      # ==========================================================
-      - GLUU_OXAUTH_BACKEND=oxauth.server:8080
-      - GLUU_OXTRUST_BACKEND=oxtrust.server:8080
-      - GLUU_OXSHIBBOLETH_BACKEND=oxshibboleth.server:8080
-      - GLUU_OXPASSPORT_BACKEND=oxpassport.server:8090
-      - GLUU_PROXY_MODE=resolver
-      - GLUU_RESOLVER_ADDR=127.0.0.11
     networks:
       gluu:
         aliases:
@@ -134,7 +131,6 @@ services:
           - ${DOMAIN}
     deploy:
       mode: global
-      endpoint_mode: dnsrr
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -150,3 +146,5 @@ services:
       - target: 443
         published: 443
         mode: host
+    labels:
+      - "SERVICE_IGNORE=yes"

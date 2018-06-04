@@ -1,0 +1,14 @@
+gluu:
+  listen: 0.0.0.0:22122
+  hash: fnv1a_64
+  distribution: ketama
+  auto_eject_hosts: true
+  timeout: 400
+  redis: true
+  server_retry_timeout: 30000
+  server_failure_limit: 2
+  preconnect: true
+  servers:
+  - MANAGER_PRIV_ADDR:6379:1
+  - WORKER_1_PRIV_ADDR:6379:1
+  - WORKER_2_PRIV_ADDR:6379:1

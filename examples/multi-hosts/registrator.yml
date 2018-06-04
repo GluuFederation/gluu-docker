@@ -5,17 +5,15 @@ networks:
     external: true
 
 services:
-  twemproxy:
-    image: perlmint/twemproxy
+  registrator:
+    image: gliderlabs/registrator
+    command: -internal -cleanup -resync 30 -retry-attempts 5 -retry-interval 10 consul://consul.server:8500
     volumes:
-      - /root/nutcracker.yml:/etc/twemproxy/conf.yml
+      - /var/run/docker.sock:/tmp/docker.sock
     networks:
       gluu:
-        aliases:
-          - twemproxy.server
     deploy:
       mode: global
-      # endpoint_mode: dnsrr
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -24,5 +22,3 @@ services:
         condition: any
         delay: 5s
         window: 120s
-    labels:
-      - "SERVICE_IGNORE=yes"

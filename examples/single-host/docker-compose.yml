@@ -11,15 +11,26 @@ services:
       - CONSUL_CLIENT_INTERFACE=eth0
     container_name: consul
     restart: unless-stopped
+    volumes:
+      - ./volumes/consul:/consul/data
+    labels:
+      - "SERVICE_IGNORE=yes"
+    restart: unless-stopped
+
+  registrator:
+    image: gliderlabs/registrator
+    command: -internal -cleanup -resync 30 -retry-attempts 5 -retry-interval 10 consul://consul:8500
+    container_name: registrator
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock
+    restart: unless-stopped
+    depends_on:
+      - consul
 
   nginx:
     image: gluufederation/nginx:3.1.3_dev
     environment:
       - GLUU_KV_HOST=consul
-      - GLUU_OXAUTH_BACKEND=oxauth:8080
-      - GLUU_OXTRUST_BACKEND=oxtrust:8080
-      - GLUU_OXSHIBBOLETH_BACKEND=oxshibboleth:8080
-      - GLUU_OXPASSPORT_BACKEND=oxpassport:8090
     ports:
       - "80:80"
       - "443:443"
@@ -30,6 +41,8 @@ services:
       - oxshibboleth
       - oxpassport
     restart: unless-stopped
+    labels:
+      - "SERVICE_IGNORE=yes"
 
   ldap:
     image: gluufederation/opendj:3.1.3_dev
@@ -48,6 +61,8 @@ services:
       - ./volumes/opendj/db:/opt/opendj/db
       - ./volumes/opendj/flag:/flag
     restart: unless-stopped
+    labels:
+      - "SERVICE_IGNORE=yes"
 
   oxauth:
     image: gluufederation/oxauth:3.1.3_dev
@@ -60,8 +75,13 @@ services:
       - ./volumes/oxauth/custom/static:/opt/gluu/jetty/oxauth/custom/static
       - ./volumes/oxauth/lib/ext:/opt/gluu/jetty/oxauth/lib/ext
       - ./volumes/oxauth/logs:/opt/gluu/jetty/oxauth/logs
-    mem_limit: 1024M
+    mem_limit: 1536M
     restart: unless-stopped
+    labels:
+      - "SERVICE_NAME=oxauth"
+      - "SERVICE_8080_CHECK_HTTP=/oxauth/.well-known/openid-configuration"
+      - "SERVICE_8080_CHECK_INTERVAL=15s"
+      - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxtrust:
     image: gluufederation/oxtrust:3.1.3_dev
@@ -77,8 +97,13 @@ services:
       - ./volumes/oxtrust/lib/ext:/opt/gluu/jetty/identity/lib/ext
       - ./volumes/oxtrust/logs:/opt/gluu/jetty/identity/logs
       - ./volumes/shared-shibboleth-idp:/opt/shared-shibboleth-idp
-    mem_limit: 1024M
+    mem_limit: 1536M
     restart: unless-stopped
+    labels:
+      - "SERVICE_NAME=oxtrust"
+      - "SERVICE_8080_CHECK_HTTP=/identity/restv1/scim-configuration"
+      - "SERVICE_8080_CHECK_INTERVAL=15s"
+      - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxshibboleth:
     image: gluufederation/oxshibboleth:3.1.3_dev
@@ -90,6 +115,11 @@ services:
       - ./volumes/shared-shibboleth-idp:/opt/shared-shibboleth-idp
     mem_limit: 1024M
     restart: unless-stopped
+    labels:
+      - "SERVICE_NAME=oxshibboleth"
+      - "SERVICE_8086_CHECK_HTTP=/idp"
+      - "SERVICE_8086_CHECK_INTERVAL=15s"
+      - "SERVICE_8086_CHECK_TIMEOUT=5s"
 
   oxpassport:
     image: gluufederation/oxpassport:3.1.3_dev
@@ -103,3 +133,8 @@ services:
       - "${DOMAIN}:${HOST_IP}"
     container_name: oxpassport
     restart: unless-stopped
+    labels:
+      - "SERVICE_NAME=oxpassport"
+      - "SERVICE_8090_CHECK_HTTP=/passport"
+      - "SERVICE_8090_CHECK_INTERVAL=15s"
+      - "SERVICE_8090_CHECK_TIMEOUT=5s"
