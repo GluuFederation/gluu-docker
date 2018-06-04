@@ -32,4 +32,4 @@ docker-machine ssh manager \
     --network-alias ldap.manager \
     --network gluu \
     --restart unless-stopped \
-    gluufederation/opendj:3.1.2_dev
+    gluufederation/opendj:3.1.3_dev

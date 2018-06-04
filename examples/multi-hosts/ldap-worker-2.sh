@@ -20,4 +20,4 @@ docker-machine ssh worker-2 \
     --network-alias ldap.worker-2 \
     --network gluu \
     --restart unless-stopped \
-    gluufederation/opendj:3.1.2_dev
+    gluufederation/opendj:3.1.3_dev

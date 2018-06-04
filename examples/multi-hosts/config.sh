@@ -28,7 +28,7 @@ bootstrap_config() {
                 --rm \
                 --network gluu \
                 -v /opt/config-init/db:/opt/config-init/db/ \
-                gluufederation/config-init:3.1.2_dev \
+                gluufederation/config-init:3.1.3_dev \
                 load \
                 --kv-host consul.server
         else
@@ -66,7 +66,7 @@ generate_config() {
     docker run \
         --rm \
         --network gluu \
-        gluufederation/config-init:3.1.2_dev \
+        gluufederation/config-init:3.1.3_dev \
         generate \
         --admin-pw secret \
         --email $email \
@@ -83,7 +83,7 @@ generate_config() {
         --rm \
         --network gluu \
         -v /opt/config-init/db:/opt/config-init/db/ \
-        gluufederation/config-init:3.1.2_dev \
+        gluufederation/config-init:3.1.3_dev \
         dump \
         --kv-host consul.server
     docker-machine scp manager:/opt/config-init/db/config.json $saved_config

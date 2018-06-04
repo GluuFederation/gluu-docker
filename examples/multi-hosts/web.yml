@@ -6,7 +6,7 @@ networks:
 
 services:
   oxauth:
-    image: gluufederation/oxauth:3.1.2_dev
+    image: gluufederation/oxauth:3.1.3_dev
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
       - GLUU_KV_HOST=consul.server
@@ -34,7 +34,7 @@ services:
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxtrust:
-    image: gluufederation/oxtrust:3.1.2_dev
+    image: gluufederation/oxtrust:3.1.3_dev
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
       - GLUU_KV_HOST=consul.server
@@ -64,7 +64,7 @@ services:
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxshibboleth:
-    image: gluufederation/oxshibboleth:3.1.2_dev
+    image: gluufederation/oxshibboleth:3.1.3_dev
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
       - GLUU_KV_HOST=consul.server
@@ -94,7 +94,7 @@ services:
       - "SERVICE_8086_CHECK_TIMEOUT=5s"
 
   oxpassport:
-    image: gluufederation/oxpassport:3.1.2_dev
+    image: gluufederation/oxpassport:3.1.3_dev
     environment:
       - GLUU_KV_HOST=consul.server
       - GLUU_LDAP_URL=ldap.server:1636
@@ -121,7 +121,7 @@ services:
       - "SERVICE_8090_CHECK_TIMEOUT=5s"
 
   nginx:
-    image: gluufederation/nginx:3.1.2_dev
+    image: gluufederation/nginx:3.1.3_dev
     environment:
       - GLUU_KV_HOST=consul.server
     networks:
