@@ -38,6 +38,7 @@ services:
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
       - GLUU_KV_HOST=consul.server
+      - GLUU_OXAUTH_BACKEND=oxauth.server:8080
     networks:
       gluu:
         aliases:
