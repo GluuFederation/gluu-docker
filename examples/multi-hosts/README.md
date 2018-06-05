@@ -206,14 +206,7 @@ Run the following commands to deploy oxAuth, oxTrust, oxShibboleth, and nginx:
 
 ### 7 - Enabling oxPassport
 
-Enable Passport support by doing steps below:
-
-1. Login to oxTrust GUI.
-2. Click *Configuration > Organization Configuration* sidebar menu.
-3. On *System Configuration* tab, make sure *Passport Support* is enabled, then click *Update* button.
-4. Click *Configuration > Manage Custom Scripts* sidebar menu.
-5. On *Person Authentication* tab, make sure `passport_social` script is enabled, then click the *Update* button.
-6. On *UMA RPT Policies* tab, make sure `uma_rpt_policy` and `uma_client_authz_rpt_policy` scripts are enabled, then click the *Update* button.
+Enable Passport support by following the official docs [here](https://gluu.org/docs/ce/authn-guide/passport/#setup-passportjs-with-gluu).
 
 Afterwards, run the following commands to deploy restart oxPassport:
 
