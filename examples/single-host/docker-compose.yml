@@ -28,7 +28,7 @@ services:
       - consul
 
   nginx:
-    image: gluufederation/nginx:3.1.3_dev
+    image: gluufederation/nginx:latest
     environment:
       - GLUU_KV_HOST=consul
     ports:
@@ -45,7 +45,7 @@ services:
       - "SERVICE_IGNORE=yes"
 
   ldap:
-    image: gluufederation/opendj:3.1.3_dev
+    image: gluufederation/opendj:latest
     environment:
       - GLUU_KV_HOST=consul
       - GLUU_LDAP_INIT=true
@@ -65,7 +65,7 @@ services:
       - "SERVICE_IGNORE=yes"
 
   oxauth:
-    image: gluufederation/oxauth:3.1.3_dev
+    image: gluufederation/oxauth:latest
     environment:
       - GLUU_KV_HOST=consul
       - GLUU_LDAP_URL=ldap:1636
@@ -84,7 +84,7 @@ services:
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxtrust:
-    image: gluufederation/oxtrust:3.1.3_dev
+    image: gluufederation/oxtrust:latest
     environment:
       - GLUU_KV_HOST=consul
       - GLUU_LDAP_URL=ldap:1636
@@ -107,7 +107,7 @@ services:
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxshibboleth:
-    image: gluufederation/oxshibboleth:3.1.3_dev
+    image: gluufederation/oxshibboleth:latest
     environment:
       - GLUU_KV_HOST=consul
       - GLUU_LDAP_URL=ldap:1636
@@ -123,7 +123,7 @@ services:
       - "SERVICE_8086_CHECK_TIMEOUT=5s"
 
   oxpassport:
-    image: gluufederation/oxpassport:3.1.3_dev
+    image: gluufederation/oxpassport:latest
     environment:
       - GLUU_KV_HOST=consul
       - GLUU_LDAP_URL=ldap:1636

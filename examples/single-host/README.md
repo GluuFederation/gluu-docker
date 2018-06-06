@@ -40,7 +40,7 @@ FAQ:
 
         docker run --rm \
             --network container:consul \
-            gluufederation/config-init:3.1.2_dev \
+            gluufederation/config-init:latest \
             generate \
             --kv-host "${GLUU_KV_HOST}" \
             --ldap-type "${GLUU_LDAP_TYPE}" \
