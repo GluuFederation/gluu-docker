@@ -2,11 +2,19 @@
 
 This is an example on how to deploy Gluu Server Docker Edition on multi-hosts setup.
 
-## Pre-requisites
+## Requirements
 
-- [Docker](https://docs.docker.com/install/)
-- [Docker Machine](https://docs.docker.com/machine/install-machine/)
-- [DigitalOcean access token](https://www.digitalocean.com/community/tutorials/how-to-use-the-digitalocean-api-v2); required only if nodes are provisioned using DigitalOcean droplet
+-   [Docker](https://docs.docker.com/install/)
+
+-   [Docker Machine](https://docs.docker.com/machine/install-machine/)
+
+-   [DigitalOcean access token](https://www.digitalocean.com/community/tutorials/how-to-use-the-digitalocean-api-v2)
+
+-   Get the source code:
+
+        wget -q https://github.com/GluuFederation/gluu-docker/archive/3.1.3.zip
+        unzip 3.1.3.zip
+        cd gluu-docker-3.1.3/examples/multi-hosts/
 
 ## Provisioning Cluster Nodes
 
@@ -24,7 +32,7 @@ Refer to https://docs.docker.com/engine/swarm/key-concepts/#nodes for an overvie
 
 __Note__, we need to create a file contains DigitalOcean access token:
 
-    echo $DO_TOKEN > $PWD/volumes/digital-access-token
+    echo $DO_TOKEN > $PWD/volumes/digitalocean-access-token
 
 To setup nodes, execute the command below:
 
@@ -142,7 +150,7 @@ In this case, we're using Redis.
 
 Run the following command to deploy cache service:
 
-    docker stack deploy -c cache.yml gluu
+    ./cache.sh
 
 ### 4 - Deploy LDAP
 
@@ -187,6 +195,7 @@ This is needed because nginx container need to reconfigure its config whenever t
 
 Run the following command to deploy `registrator` service:
 
+    eval $(docker-machine env manager)
     docker stack deploy -c registrator.yml gluu
 
 ### 6 - Deploy oxAuth, oxTrust, oxShibboleth, and nginx
@@ -198,14 +207,7 @@ Run the following commands to deploy oxAuth, oxTrust, oxShibboleth, and nginx:
 
 ### 7 - Enabling oxPassport
 
-Enable Passport support by doing steps below:
-
-1. Login to oxTrust GUI.
-2. Click *Configuration > Organization Configuration* sidebar menu.
-3. On *System Configuration* tab, make sure *Passport Support* is enabled, then click *Update* button.
-4. Click *Configuration > Manage Custom Scripts* sidebar menu.
-5. On *Person Authentication* tab, make sure `passport_social` script is enabled, then click the *Update* button.
-6. On *UMA RPT Policies* tab, make sure `uma_rpt_policy` and `uma_client_authz_rpt_policy` scripts are enabled, then click the *Update* button.
+Enable Passport support by following the official docs [here](https://gluu.org/docs/ce/authn-guide/passport/#setup-passportjs-with-gluu).
 
 Afterwards, run the following commands to deploy restart oxPassport:
 
