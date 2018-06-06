@@ -150,7 +150,7 @@ In this case, we're using Redis.
 
 Run the following command to deploy cache service:
 
-    docker stack deploy -c cache.yml gluu
+    ./cache.sh
 
 ### 4 - Deploy LDAP
 
