@@ -32,7 +32,7 @@ Refer to https://docs.docker.com/engine/swarm/key-concepts/#nodes for an overvie
 
 __Note__, we need to create a file contains DigitalOcean access token:
 
-    echo $DO_TOKEN > $PWD/volumes/digital-access-token
+    echo $DO_TOKEN > $PWD/volumes/digitalocean-access-token
 
 To setup nodes, execute the command below:
 
