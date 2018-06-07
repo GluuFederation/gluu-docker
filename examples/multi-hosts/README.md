@@ -1,6 +1,6 @@
 # Multi-hosts Deployment using Docker Swarm
 
-This is an example of how to deploy Gluu Server Docker Edition on multi-hosts setup.
+This is an example of how to deploy Gluu Server Docker Edition on multi-host setup.
 
 ## Requirements
 
@@ -23,14 +23,13 @@ Nodes are divided into two roles:
 - Swarm manager, consists of `manager` node
 - Swarm worker, consists of `worker-1` and `worker-2` node
 
-These nodes are created/destroyed using `docker-machine`.
-Nodes are deployed as DigitalOcean droplets.
+These nodes are created/destroyed using `docker-machine` and are deployed as DigitalOcean droplets.
 
 Refer to https://docs.docker.com/engine/swarm/key-concepts/#nodes for an overview of each role.
 
 ### Set Up Nodes
 
-We need to create a file contains DigitalOcean access token:
+We need to create a file containing DigitalOcean access token:
 
     echo $DO_TOKEN > $PWD/volumes/digitalocean-access-token
 
@@ -40,7 +39,7 @@ To set up nodes, execute the command below:
 
 This command will create `manager`, `worker-1`, and `worker-2` nodes and set up the Swarm cluster.
 
-Wait until all processes completed, and then we can execute this command to check nodes status:
+Wait until all processes are completed, and then we can execute this command to check nodes status:
 
     docker-machine ssh manager 'docker node ls'
 
@@ -51,11 +50,11 @@ This will return an output similar to the example below:
     hdvgmuvwm9z5p4u4740ichd77   worker-1    Ready   Active                          18.03.0-ce
     hdvgmuvwm9z5p4u4740ichd88   worker-2    Ready   Active                          18.03.0-ce
 
-After the Swarm cluster created, we also create a custom network called `gluu`. To inspect the network, run the following command:
+After the Swarm cluster is created, we also create a custom network called `gluu`. To inspect the network, run the following command:
 
     docker-machine ssh manager 'docker network inspect gluu'
 
-This will return the information of the network:
+This will return the network information:
 
     [
         {
@@ -100,8 +99,8 @@ This will prompt the user to destroy each node.
 
 ## Deploying Services
 
-Basically, a service can be seen as tasks definition that executed on manager or worker node.
-A service manages a specific image tasks (create/destroy/scale/etc).
+Basically, a service can be seen as tasks executed on a manager or worker node.
+A service manages specific image tasks (such as create/destroy/scale/etc).
 
 Refer to https://docs.docker.com/engine/swarm/key-concepts/#services-and-tasks for an overview of Swarm service.
 
@@ -119,7 +118,7 @@ In this example, the following services/containers are used to deploy the Gluu s
 
 ### 1 - Deploying Consul
 
-Consul service divided into two parts to achieve HA/cluster setup:
+Consul service is divided into two parts to achieve HA/cluster setup:
 
 - `consul_manager` deployed to `manager` node
 - `consul_worker` deployed to `worker-1` and `worker-2` node
@@ -132,13 +131,13 @@ To deploy the service:
 
 ### 2 - Prepare cluster-wide configuration
 
-Cluster-wide configurations are saved into Consul KV storage. All Gluu containers pull these config to self-configure themselves.
+Cluster-wide configurations are saved into Consul KV storage. All Gluu containers pull these to self-configure themselves.
 
 Run the following command to prepare the configuration:
 
     ./config.sh
 
-If there's no configuration saved in Consul KV, the script will ask user whether to import configuration from backup file or generating new ones (we only need to input required parameters and the configuration will be generated, saved to Consul, and export them to local file for backup purpose).
+If there's no configuration saved in Consul KV, the script will ask the user whether to import configuration from a backup file or to generate new ones (we only need to input required parameters and the configuration will be generated, saved to Consul, and export them to local file for backup purpose).
 
 **NOTE:** this process may take some time, please wait until the process completed.
 
@@ -155,7 +154,7 @@ Run the following command to deploy cache service:
 
 LDAP containers are divided into two roles:
 
-1.  LDAP that has initial data.
+1.  LDAP that has initial data
 
     Run this command to deploy the container:
 
@@ -185,7 +184,7 @@ LDAP containers are divided into two roles:
         ./ldap-worker-2.sh
 
 __NOTE__: OpenDJ containers are not deployed as service tasks because each of these containers requires a reachable unique address for establishing replication.
-Due to how Docker service works, there's no guarantee that the address will still be unique after restart, hence OpenDJ containers are deployed via plain `docker run` command.
+Due to how the Docker service works, there's no guarantee that the address will still be unique after restart, hence OpenDJ containers are deployed via a plain `docker run` command.
 
 ### 5 - Deploy Registrator
 
@@ -198,7 +197,7 @@ Run the following command to deploy `registrator` service:
 
 ### 6 - Deploy oxAuth, oxTrust, oxShibboleth, and NGINX
 
-Run the following commands to deploy oxAuth, oxTrust, oxShibboleth, and nginx:
+Run the following commands to deploy oxAuth, oxTrust, oxShibboleth, and NGINX:
 
     # $DOMAIN is the domain value that's entered when running `./config.sh`
     DOMAIN=$DOMAIN docker stack deploy -c web.yml gluu
