@@ -1,4 +1,4 @@
-# Multi-hosts Deployment using Docker Swarm
+# Multi-host Deployment using Docker Swarm
 
 This is an example of how to deploy Gluu Server Docker Edition on multi-host setup.
 
