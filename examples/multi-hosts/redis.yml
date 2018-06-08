@@ -1,0 +1,81 @@
+version: "3.3"
+
+networks:
+  gluu:
+    external: true
+
+services:
+  redis_manager:
+    image: redis:alpine
+    volumes:
+      - /opt/redis:/data
+    networks:
+      gluu:
+        aliases:
+          - redis.manager
+          - redis.server
+    deploy:
+      mode: global
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints:
+          - node.hostname == manager
+    labels:
+      - "SERVICE_IGNORE=yes"
+
+  redis_worker_1:
+    image: redis:alpine
+    volumes:
+      - /opt/redis:/data
+    networks:
+      gluu:
+        aliases:
+          - redis.worker-1
+          - redis.server
+    deploy:
+      mode: global
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints:
+          - node.hostname == worker-1
+    labels:
+      - "SERVICE_IGNORE=yes"
+
+  redis_worker_2:
+    image: redis:alpine
+    volumes:
+      - /opt/redis:/data
+    networks:
+      gluu:
+        aliases:
+          - redis.worker-2
+          - redis.server
+    deploy:
+      mode: global
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints:
+          - node.hostname == worker-2
+    labels:
+      - "SERVICE_IGNORE=yes"
