@@ -15,7 +15,6 @@ services:
           - twemproxy.server
     deploy:
       mode: global
-      # endpoint_mode: dnsrr
       update_config:
         parallelism: 1
         failure_action: rollback

@@ -1,0 +1,41 @@
+version: "3.3"
+
+networks:
+  gluu:
+    external: true
+
+services:
+  ldap_worker_2:
+    image: gluufederation/opendj:latest
+    hostname: ldap.worker-2
+    environment:
+      - GLUU_LDAP_INIT=false
+      - GLUU_KV_HOST=consul.server
+      - GLUU_LDAP_ADDR_INTERFACE=eth0
+      - GLUU_LDAP_ADVERTISE_ADDR=ldap.worker-2
+    networks:
+      gluu:
+        aliases:
+          - ldap.worker-2
+          - ldap.server
+    deploy:
+      mode: global
+      endpoint_mode: dnsrr
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints:
+          - node.hostname == worker-2
+    volumes:
+      - /opt/opendj/db:/opt/opendj/db
+      - /opt/opendj/config:/opt/opendj/config
+      - /opt/opendj/ldif:/opt/opendj/ldif
+      - /opt/opendj/logs:/opt/opendj/logs
+    labels:
+      - "SERVICE_IGNORE=yes"
