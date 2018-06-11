@@ -8,7 +8,7 @@ Repositories for supported images are shown below:
 
 - [config-init](http://github.com/GluuFederation/docker-config-init)
 - [openldap](http://github.com/GluuFederation/docker-openldap)
-- [opendj](http://github.com/GluuFederation/docker-opendj)
+- [opendj](http://github.com/GluuFederation/docker-opendj) (Recommended for replication)
 - [oxauth](http://github.com/GluuFederation/docker-oxauth)
 - [oxtrust](http://github.com/GluuFederation/docker-oxtrust)
 - [nginx](http://github.com/GluuFederation/docker-nginx)
