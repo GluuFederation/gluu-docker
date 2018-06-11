@@ -4,7 +4,7 @@ Currently in development.
 
 ## Code Repositories
 
-Repositories for supported images are shown below (Under 3.1.2 branch):
+Repositories for supported images are shown below:
 
 - [config-init](http://github.com/GluuFederation/docker-config-init)
 - [openldap](http://github.com/GluuFederation/docker-openldap)
@@ -20,7 +20,7 @@ Repositories for supported images are shown below (Under 3.1.2 branch):
 
 Images are hosted at Docker Hub:
 
-`<image>:3.1.2_dev` are the latest builds currently.
+`<image>:3.1.3:latest` are the latest builds currently.
 
 - [config-init](https://hub.docker.com/r/gluufederation/config-init)
 - [openldap](https://hub.docker.com/r/gluufederation/openldap)
