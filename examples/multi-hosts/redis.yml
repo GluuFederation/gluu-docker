@@ -5,17 +5,19 @@ networks:
     external: true
 
 services:
-  redis_manager:
+  redis:
     image: redis:alpine
-    volumes:
-      - /opt/redis:/data
+    # run cluster-enabled redis-server
+    command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --appendonly yes --cluster-node-timeout 5000
+    # volumes:
+    #   - /opt/redis:/data
     networks:
       gluu:
         aliases:
-          - redis.manager
           - redis.server
     deploy:
-      mode: global
+      replicas: 9
+      endpoint_mode: dnsrr
       update_config:
         parallelism: 1
         failure_action: rollback
@@ -24,58 +26,8 @@ services:
         condition: any
         delay: 5s
         window: 120s
-      placement:
-        constraints:
-          - node.hostname == manager
     labels:
       - "SERVICE_IGNORE=yes"
-
-  redis_worker_1:
-    image: redis:alpine
-    volumes:
-      - /opt/redis:/data
-    networks:
-      gluu:
-        aliases:
-          - redis.worker-1
-          - redis.server
-    deploy:
-      mode: global
-      update_config:
-        parallelism: 1
-        failure_action: rollback
-        delay: 30s
-      restart_policy:
-        condition: any
-        delay: 5s
-        window: 120s
-      placement:
-        constraints:
-          - node.hostname == worker-1
-    labels:
-      - "SERVICE_IGNORE=yes"
-
-  redis_worker_2:
-    image: redis:alpine
-    volumes:
-      - /opt/redis:/data
-    networks:
-      gluu:
-        aliases:
-          - redis.worker-2
-          - redis.server
-    deploy:
-      mode: global
-      update_config:
-        parallelism: 1
-        failure_action: rollback
-        delay: 30s
-      restart_policy:
-        condition: any
-        delay: 5s
-        window: 120s
-      placement:
-        constraints:
-          - node.hostname == worker-2
-    labels:
-      - "SERVICE_IGNORE=yes"
+      # - "SERVICE_NAME=redis"
+      # - "SERVICE_6379_CHECK_TCP=true"
+      # - "SERVICE_6379_CHECK_INTERVAL=15s"

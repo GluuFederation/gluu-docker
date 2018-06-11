@@ -12,7 +12,8 @@ services:
       - GLUU_LDAP_INIT=true
       - GLUU_LDAP_INIT_HOST=ldap.server
       - GLUU_CACHE_TYPE=REDIS
-      - GLUU_REDIS_URL=twemproxy.server:22122
+      - GLUU_REDIS_URL=${GLUU_REDIS_URL}
+      - GLUU_REDIS_TYPE=CLUSTER
       - GLUU_KV_HOST=consul.server
       - GLUU_OXTRUST_CONFIG_GENERATION=true
       - GLUU_LDAP_ADDR_INTERFACE=eth0
