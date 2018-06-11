@@ -150,7 +150,11 @@ In this case, we're using Redis.
 
 Run the following command to deploy cache service:
 
-    ./cache.sh
+    docker stack deploy -c redis.yml gluu
+
+Wait for few seconds, then run the command to create Redis cluster:
+
+    ./cache.sh create-cluster
 
 ### 4 - Deploy LDAP
 
@@ -160,7 +164,7 @@ LDAP containers are divided into 2 roles:
 
     Run this command to deploy the container:
 
-        ./ldap-manager.sh
+        GLUU_REDIS_URL=$(sh cache.sh get-cluster-url) docker stack deploy -c ldap-manager.yml gluu
 
     The process of initializing data will take some time.
 
@@ -177,13 +181,13 @@ LDAP containers are divided into 2 roles:
 
     then we can proceed to deploy the next LDAP container:
 
-        ./ldap-worker-1.sh
+        docker stack deploy -c ldap-worker-1.yml gluu
 
     The process will also take some time, but it's safe to proceed to deploy next services/containers.
 
     Repeat for third LDAP server by running this command:
 
-        ./ldap-worker-2.sh
+        docker stack deploy -c ldap-worker-2.yml gluu
 
 __NOTE__: OpenDJ containers are not deployed as service task because each of these containers require a reachable unique address for establishing replication.
 Due to how Docker service works, there's no guarantee that the address will still be unique after restart, hence OpenDJ containers are deployed via plain `docker run` command.
