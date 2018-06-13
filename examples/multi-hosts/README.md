@@ -162,9 +162,17 @@ LDAP containers are divided into 2 roles:
 
 1.  LDAP that has initial data.
 
-    Run this command to deploy the container:
+    First of all, we need to get all redis IP addresses:
 
-        GLUU_REDIS_URL=$(sh cache.sh get-cluster-url) docker stack deploy -c ldap-manager.yml gluu
+        ./cache.sh get-cluster-url
+
+    The output will be something like this:
+
+        10.0.0.13:6379,10.0.0.20:6379,10.0.0.12:6379,10.0.0.18:6379,10.0.0.17:6379,10.0.0.16:6379,10.0.0.15:6379,10.0.0.14:6379,10.0.0.19:6379
+
+    Save the value and pass it as environment variable when running first LDAP container:
+
+        GLUU_REDIS_URL=$REDIS_CLUSTER_URL docker stack deploy -c ldap-manager.yml gluu
 
     The process of initializing data will take some time.
 
