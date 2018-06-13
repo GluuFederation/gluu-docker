@@ -9,7 +9,7 @@ get_redis_name() {
 }
 
 lookup_redis() {
-    docker exec $(get_redis_name) nslookup redis.server 127.0.0.11  2>&1 | tail -n +5 | awk -F ":" '{print $2}' | awk -F " " '{print $1}'
+    docker exec $(get_redis_name) nslookup redis.server 127.0.0.11 2>&1 | tail -n +5 | awk -F ":" '{print $2}' | awk -F " " '{print $1}'
 }
 
 create_cluster() {

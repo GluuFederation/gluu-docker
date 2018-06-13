@@ -9,8 +9,6 @@ services:
     image: redis:alpine
     # run cluster-enabled redis-server
     command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --appendonly yes --cluster-node-timeout 5000
-    # volumes:
-    #   - /opt/redis:/data
     networks:
       gluu:
         aliases:
@@ -28,6 +26,3 @@ services:
         window: 120s
     labels:
       - "SERVICE_IGNORE=yes"
-      # - "SERVICE_NAME=redis"
-      # - "SERVICE_6379_CHECK_TCP=true"
-      # - "SERVICE_6379_CHECK_INTERVAL=15s"
