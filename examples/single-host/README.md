@@ -1,6 +1,6 @@
 # Gluu Server Docker Edition Single-host Setup
 
-This in an example of running Gluu Server Docker edition on a single VM.
+This id an example of running Gluu Server Docker edition on a single VM.
 
 #### Requirements:
 
@@ -66,3 +66,7 @@ FAQ:
     After that oxAuth, NGINX, then oxTrust, which relies on the `/.well-known/openid-configuration/` to properly set it's own configuration. These containers can be restarted at any time from that point on.
 
     Currently all of the images, with the exception of the `consul` and `registrator` containers, have wait-for-it scripts designed to prevent them from trying to start, before the necessary launch procedure is accomplished. This mitigates failure during the build process.
+    
+## Documentation
+
+Please refer to the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/ce/3.1.3/docker/intro/) for further reading on Docker image implementations.
