@@ -1,14 +1,14 @@
 # Gluu Server Docker Edition
 
-Currently in development.
+[Gluu Server Docker Edition Documentation](https://gluu.org/docs/ce/3.1.3/docker/intro/)
 
 ## Code Repositories
 
-Repositories for supported images are shown below (Under 3.1.2 branch):
+Repositories for supported images are shown below:
 
 - [config-init](http://github.com/GluuFederation/docker-config-init)
 - [openldap](http://github.com/GluuFederation/docker-openldap)
-- [opendj](http://github.com/GluuFederation/docker-opendj)
+- [opendj](http://github.com/GluuFederation/docker-opendj) (Recommended for replication)
 - [oxauth](http://github.com/GluuFederation/docker-oxauth)
 - [oxtrust](http://github.com/GluuFederation/docker-oxtrust)
 - [nginx](http://github.com/GluuFederation/docker-nginx)
@@ -20,7 +20,7 @@ Repositories for supported images are shown below (Under 3.1.2 branch):
 
 Images are hosted at Docker Hub:
 
-`<image>:3.1.2_dev` are the latest builds currently.
+`<image>:3.1.3:latest` are the latest builds currently.
 
 - [config-init](https://hub.docker.com/r/gluufederation/config-init)
 - [openldap](https://hub.docker.com/r/gluufederation/openldap)
