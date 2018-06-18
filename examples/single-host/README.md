@@ -59,14 +59,14 @@ FAQ:
 
     Firstly, [consul](https://www.consul.io/), which is our key value store, as well as service discovery container.
 
-    Secondly, [config-init](https://github.com/GluuFederation/docker-config-init/tree/3.1.2), which will load all of the necessary keys, configuration settings, templates and other requirements, into consul. This container will run to completion and then exit and remove itself. All services hereinafter will use consul to pull their necessary configuration.
+    Secondly, [config-init](https://github.com/GluuFederation/docker-config-init/tree/3.1.3), which will load all of the necessary keys, configuration settings, templates and other requirements, into consul. This container will run to completion and then exit and remove itself. All services hereinafter will use consul to pull their necessary configuration.
 
     Next is our OpenDJ container. OpenDJ will install and configure itself inside the container as well as create volumes inside of the current directory as `/volumes/` for necessary persistent data, like db, schema, etc..
 
     After that oxAuth, NGINX, then oxTrust, which relies on the `/.well-known/openid-configuration/` to properly set it's own configuration. These containers can be restarted at any time from that point on.
 
     Currently all of the images, with the exception of the `consul` and `registrator` containers, have wait-for-it scripts designed to prevent them from trying to start, before the necessary launch procedure is accomplished. This mitigates failure during the build process.
-    
+
 ## Documentation
 
 Please refer to the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/ce/3.1.3/docker/intro/) for further reading on Docker image implementations.
