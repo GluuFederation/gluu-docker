@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: opendj-repl
+spec:
+  serviceName: opendj
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opendj
+  template:
+    metadata:
+      labels:
+        app: opendj
+    spec:
+      containers:
+        - name: opendj
+          image: 'gluufederation/opendj:3.1.3_wrapper'
+          env:
+            - name: GLUU_CONFIG_ADAPTER
+              value: "kubernetes"
+            - name: GLUU_LDAP_INIT
+              value: "false"
+            - name: GLUU_LDAP_PEERS_LOOKUP
+              value: opendj
+            - name: GLUU_RESOLVER_ADDR
+              value: kube-dns.kube-system
+          ports:
+            - containerPort: 1636
+              name: ldaps
+            - containerPort: 1389
+              name: ldap
+            - containerPort: 8989
+              name: replication
+            - containerPort: 4444
+              name: admin

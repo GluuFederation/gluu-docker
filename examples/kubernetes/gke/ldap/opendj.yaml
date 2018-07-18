@@ -1,0 +1,70 @@
+# headless for peer discovery
+apiVersion: v1
+kind: Service
+metadata:
+  name: opendj
+  labels:
+    app: opendj
+spec:
+  ports:
+  - port: 1636
+    name: ldaps
+    targetPort: 1636
+    protocol: TCP
+  - port: 1389
+    name: ldap
+    targetPort: 1389
+    protocol: TCP
+  - port: 8989
+    name: replication
+    targetPort: 8989
+    protocol: TCP
+  - port: 4444
+    name: admin
+    targetPort: 4444
+    protocol: TCP
+  clusterIP: None
+  selector:
+    app: opendj
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: opendj-init
+spec:
+  serviceName: opendj
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opendj
+  template:
+    metadata:
+      labels:
+        app: opendj
+    spec:
+      containers:
+      - name: opendj
+        imagePullPolicy: Always
+        image: 'gluufederation/opendj:3.1.3_wrapper'
+        env:
+          - name: GLUU_CONFIG_ADAPTER
+            value: "kubernetes"
+          - name: GLUU_LDAP_INIT
+            value: "true"
+          - name: GLUU_LDAP_INIT_HOST
+            value: "opendj"
+          - name: GLUU_LDAP_INIT_PORT
+            value: "1636"
+          - name: GLUU_OXTRUST_CONFIG_GENERATION
+            value: "true"
+        ports:
+          - containerPort: 1636
+            name: ldaps
+          - containerPort: 1389
+            name: ldap
+          - containerPort: 8989
+            name: replication
+          - containerPort: 4444
+            name: admin
