@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: oxtrust
+  labels:
+    app: oxtrust
+spec:
+  ports:
+  - port: 8080
+    name: oxtrust
+  selector:
+    app: oxtrust
+  # type: NodePort
+  clusterIP: None
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: oxtrust
+  labels:
+    app: oxtrust
+spec:
+  serviceName: oxtrust
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oxtrust
+  template:
+    metadata:
+      labels:
+        app: oxtrust
+    spec:
+      containers:
+      - name: oxtrust
+        imagePullPolicy: Always
+        image: gluufederation/oxtrust:3.1.3_wrapper
+        ports:
+        - containerPort: 8080
+        env:
+          - name: GLUU_CONFIG_ADAPTER
+            value: "kubernetes"
+          - name: GLUU_LDAP_URL
+            value: "opendj:1636"
+          - name: GLUU_OXAUTH_BACKEND
+            value: "oxauth:8080"
+      hostAliases:
+      - ip: 35.240.176.188
+        hostnames:
+        - kube.gluu.local

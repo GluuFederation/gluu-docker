@@ -1,0 +1,42 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-admin-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: User
+    # change it to your actual account; the email can be fetched using
+    # the following command: `gcloud info | grep Account`
+    name: "admin@example.com"
+    apiGroup: rbac.authorization.k8s.io
+
+---
+
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: gluu-rolebinding
+  namespace: default
+subjects:
+- kind: User
+  name: system:serviceaccount:default:default # Name is case sensitive
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role # this must be Role or ClusterRole
+  name: gluu-role # this must match the name of the Role or ClusterRole you wish to bind to
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: gluu-role
+  namespace: default
+rules:
+- apiGroups: [""] # "" refers to the core API group
+  resources: ["services", "endpoints", "configmaps"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]

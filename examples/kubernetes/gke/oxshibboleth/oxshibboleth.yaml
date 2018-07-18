@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: oxshibboleth
+  labels:
+    app: oxshibboleth
+spec:
+  ports:
+  - port: 8080
+    name: oxshibboleth
+  selector:
+    app: oxshibboleth
+  # type: NodePort
+  # clusterIP: None
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: oxshibboleth
+  labels:
+    app: oxshibboleth
+spec:
+  serviceName: oxshibboleth
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oxshibboleth
+  template:
+    metadata:
+      labels:
+        app: oxshibboleth
+    spec:
+      containers:
+      - name: oxshibboleth
+        imagePullPolicy: Always
+        image: gluufederation/oxshibboleth:3.1.3_wrapper
+        ports:
+        - containerPort: 8080
+        env:
+          - name: GLUU_CONFIG_ADAPTER
+            value: "kubernetes"
+          - name: GLUU_LDAP_URL
+            value: "opendj:1636"
+          # - name: GLUU_OXAUTH_BACKEND
+          #   value: "oxauth:8080"
+      hostAliases:
+      - ip: 35.240.176.188
+        hostnames:
+        - kube.gluu.local
+
+---
+
+  apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: oxtrust-shared-shibboleth-idp
+    labels:
+        oxtrust: shared-shibboleth-idp
+  spec:
+    capacity:
+      storage: 10M
+    accessModes:
+      - ReadWriteMany
+    hostPath:
+        path: "/data/oxtrust/shared-shibboleth-idp"
