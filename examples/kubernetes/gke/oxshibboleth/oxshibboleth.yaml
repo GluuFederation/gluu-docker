@@ -10,8 +10,7 @@ spec:
     name: oxshibboleth
   selector:
     app: oxshibboleth
-  # type: NodePort
-  # clusterIP: None
+  clusterIP: None
 
 ---
 
@@ -45,23 +44,15 @@ spec:
             value: "opendj:1636"
           # - name: GLUU_OXAUTH_BACKEND
           #   value: "oxauth:8080"
+        volumeMounts:
+          # name must match the volume name below
+          - name: nfs
+            mountPath: "/opt/shared-shibboleth-idp"
       hostAliases:
       - ip: 35.240.176.188
         hostnames:
         - kube.gluu.local
-
----
-
-  apiVersion: v1
-  kind: PersistentVolume
-  metadata:
-    name: oxtrust-shared-shibboleth-idp
-    labels:
-        oxtrust: shared-shibboleth-idp
-  spec:
-    capacity:
-      storage: 10M
-    accessModes:
-      - ReadWriteMany
-    hostPath:
-        path: "/data/oxtrust/shared-shibboleth-idp"
+      volumes:
+      - name: nfs
+        persistentVolumeClaim:
+          claimName: nfs

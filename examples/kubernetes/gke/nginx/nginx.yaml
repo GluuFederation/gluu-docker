@@ -201,10 +201,10 @@ spec:
         backend:
           serviceName: oxauth
           servicePort: 8080
-      # - path: /idp
-      #   backend:
-      #     serviceName: oxshibboleth
-      #     servicePort: 8080
+      - path: /idp
+        backend:
+          serviceName: oxshibboleth
+          servicePort: 8080
       - path: /passport
         backend:
           serviceName: oxpassport
