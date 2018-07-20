@@ -79,9 +79,10 @@ load_config() {
         --rm \
         --network container:consul \
         -v $CONFIG_DIR:/opt/config-init/db/ \
+        -e GLUU_CONFIG_ADAPTER=consul \
+        -e GLUU_CONSUL_HOST=consul \
         gluufederation/config-init:$GLUU_VERSION \
-        load \
-        --kv-host consul
+        load
 }
 
 generate_config() {
@@ -89,6 +90,9 @@ generate_config() {
     docker run \
         --rm \
         --network container:consul \
+        -v $CONFIG_DIR:/opt/config-init/db/ \
+        -e GLUU_CONFIG_ADAPTER=consul \
+        -e GLUU_CONSUL_HOST=consul \
         gluufederation/config-init:$GLUU_VERSION \
         generate \
         --admin-pw $ADMIN_PW \
@@ -98,17 +102,7 @@ generate_config() {
         --country-code $COUNTRY_CODE \
         --state $STATE \
         --city $CITY \
-        --kv-host consul \
         --ldap-type opendj
-
-    echo "[I] Saving configuration to local disk for later use"
-    docker run \
-        -v $CONFIG_DIR:/opt/config-init/db/ \
-        --rm \
-        --network container:consul \
-        gluufederation/config-init:$GLUU_VERSION \
-        dump \
-        --kv-host consul
 }
 
 # ==========

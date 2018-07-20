@@ -30,7 +30,9 @@ services:
   nginx:
     image: gluufederation/nginx:latest
     environment:
-      - GLUU_KV_HOST=consul
+      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONSUL_HOST=consul
+      - GLUU_CONSUL_PORT=8500
     ports:
       - "80:80"
       - "443:443"
@@ -47,7 +49,9 @@ services:
   ldap:
     image: gluufederation/opendj:latest
     environment:
-      - GLUU_KV_HOST=consul
+      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONSUL_HOST=consul
+      - GLUU_CONSUL_PORT=8500
       - GLUU_LDAP_INIT=true
       - GLUU_LDAP_INIT_HOST=ldap
       - GLUU_LDAP_INIT_PORT=1636
@@ -67,7 +71,9 @@ services:
   oxauth:
     image: gluufederation/oxauth:latest
     environment:
-      - GLUU_KV_HOST=consul
+      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONSUL_HOST=consul
+      - GLUU_CONSUL_PORT=8500
       - GLUU_LDAP_URL=ldap:1636
     container_name: oxauth
     volumes:
@@ -86,7 +92,9 @@ services:
   oxtrust:
     image: gluufederation/oxtrust:latest
     environment:
-      - GLUU_KV_HOST=consul
+      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONSUL_HOST=consul
+      - GLUU_CONSUL_PORT=8500
       - GLUU_LDAP_URL=ldap:1636
       - GLUU_OXAUTH_BACKEND=oxauth:8080
     extra_hosts:
@@ -109,7 +117,9 @@ services:
   oxshibboleth:
     image: gluufederation/oxshibboleth:latest
     environment:
-      - GLUU_KV_HOST=consul
+      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONSUL_HOST=consul
+      - GLUU_CONSUL_PORT=8500
       - GLUU_LDAP_URL=ldap:1636
     container_name: oxshibboleth
     volumes:
@@ -125,7 +135,9 @@ services:
   oxpassport:
     image: gluufederation/oxpassport:latest
     environment:
-      - GLUU_KV_HOST=consul
+      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONSUL_HOST=consul
+      - GLUU_CONSUL_PORT=8500
       - GLUU_LDAP_URL=ldap:1636
       # required by wait-for-it script
       - GLUU_OXAUTH_BACKEND=oxauth:8080
