@@ -40,9 +40,10 @@ FAQ:
 
         docker run --rm \
             --network container:consul \
+            -e GLUU_CONFIG_ADAPTER=consul \
+            -e GLUU_CONSUL_HOST=consul \
             gluufederation/config-init:latest \
             generate \
-            --kv-host "${GLUU_KV_HOST}" \
             --ldap-type "${GLUU_LDAP_TYPE}" \
             --domain $domain \
             --admin-pw $adminPw \
