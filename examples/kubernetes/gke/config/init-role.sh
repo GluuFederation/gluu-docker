@@ -10,7 +10,7 @@ echo "using $GLUU_CONFIG_ADAPTER as config adapter"
 
 kubectl run config-init \
     --env=GLUU_CONFIG_ADAPTER="$GLUU_CONFIG_ADAPTER" \
-    --image=gluufederation/config-init:3.1.3_wrapper \
+    --image=gluufederation/config-init:latest \
     --restart=Never \
     -i \
     --tty \

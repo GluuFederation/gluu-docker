@@ -10,7 +10,7 @@ spec:
       path: /home/docker/config-init
   containers:
   - name: config-init-dump
-    image: "gluufederation/config-init:3.1.3_wrapper"
+    image: "gluufederation/config-init:latest"
     args: ["dump"]
     volumeMounts:
     - name: vol
