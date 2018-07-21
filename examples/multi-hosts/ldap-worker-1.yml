@@ -10,7 +10,8 @@ services:
     hostname: ldap.worker-1
     environment:
       - GLUU_LDAP_INIT=false
-      - GLUU_KV_HOST=consul.server
+      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONSUL_HOST=consul.server
       - GLUU_LDAP_ADDR_INTERFACE=eth0
       - GLUU_LDAP_ADVERTISE_ADDR=ldap.worker-1
     networks:

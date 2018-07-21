@@ -9,7 +9,8 @@ services:
     image: gluufederation/oxauth:latest
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
-      - GLUU_KV_HOST=consul.server
+      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONSUL_HOST=consul.server
     networks:
       gluu:
         aliases:
@@ -37,7 +38,8 @@ services:
     image: gluufederation/oxtrust:latest
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
-      - GLUU_KV_HOST=consul.server
+      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONSUL_HOST=consul.server
       - GLUU_OXAUTH_BACKEND=oxauth.server:8080
     networks:
       gluu:
@@ -68,7 +70,8 @@ services:
     image: gluufederation/oxshibboleth:latest
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
-      - GLUU_KV_HOST=consul.server
+      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONSUL_HOST=consul.server
     networks:
       gluu:
         aliases:
@@ -97,7 +100,8 @@ services:
   oxpassport:
     image: gluufederation/oxpassport:latest
     environment:
-      - GLUU_KV_HOST=consul.server
+      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONSUL_HOST=consul.server
       - GLUU_LDAP_URL=ldap.server:1636
       - GLUU_OXAUTH_BACKEND=oxauth.server:8080
       - GLUU_OXTRUST_BACKEND=oxtrust.server:8080
@@ -124,7 +128,9 @@ services:
   nginx:
     image: gluufederation/nginx:latest
     environment:
-      - GLUU_KV_HOST=consul.server
+      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONSUL_HOST=consul.server
+      - GLUU_CONSUL_PORT=8500
     networks:
       gluu:
         aliases:

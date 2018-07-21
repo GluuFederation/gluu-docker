@@ -33,9 +33,10 @@ bootstrap_config() {
                 --rm \
                 --network container:$(get_consul_name) \
                 -v /opt/config-init/db:/opt/config-init/db/ \
+                -e GLUU_CONFIG_ADAPTER=consul \
+                -e GLUU_CONSUL_HOST=consul.server \
                 gluufederation/config-init:latest \
-                load \
-                --kv-host consul.server
+                load
         else
             generate_config
         fi
@@ -71,6 +72,9 @@ generate_config() {
     docker run \
         --rm \
         --network container:$(get_consul_name) \
+        -v /opt/config-init/db:/opt/config-init/db/ \
+        -e GLUU_CONFIG_ADAPTER=consul \
+        -e GLUU_CONSUL_HOST=consul.server \
         gluufederation/config-init:latest \
         generate \
         --admin-pw secret \
@@ -80,17 +84,7 @@ generate_config() {
         --country-code $countryCode \
         --state $state \
         --city $city \
-        --kv-host consul.server \
         --ldap-type opendj
-
-    echo "[I] Saving configuration to local disk for later use"
-    docker run \
-        --rm \
-        --network container:$(get_consul_name) \
-        -v /opt/config-init/db:/opt/config-init/db/ \
-        gluufederation/config-init:latest \
-        dump \
-        --kv-host consul.server
     docker-machine scp manager:/opt/config-init/db/config.json $saved_config
 }
 
