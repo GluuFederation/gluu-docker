@@ -29,7 +29,7 @@ spec:
 
 ---
 
-apiVersion: apps/v1
+apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
   name: opendj-init
@@ -95,3 +95,5 @@ spec:
             name: opendj-db
           - mountPath: /flag
             name: opendj-flag
+      nodeSelector:
+        opendj-init: "true"

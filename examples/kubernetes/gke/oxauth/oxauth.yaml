@@ -10,7 +10,6 @@ spec:
     name: oxauth
   selector:
     app: oxauth
-  # type: NodePort
 
 ---
 
@@ -41,3 +40,25 @@ spec:
             value: "kubernetes"
           - name: GLUU_LDAP_URL
             value: "opendj:1636"
+        volumeMounts:
+          - mountPath: /opt/gluu/jetty/oxauth/logs
+            name: oxauth-logs
+          - mountPath: /opt/gluu/jetty/oxauth/lib/ext
+            name: oxauth-lib-ext
+          - mountPath: /opt/gluu/jetty/oxauth/custom/static
+            name: oxauth-custom-static
+          - mountPath: /opt/gluu/jetty/oxauth/custom/pages
+            name: oxauth-custom-pages
+      volumes:
+        - name: oxauth-logs
+          persistentVolumeClaim:
+            claimName: oxauth-logs-volume-claim
+        - name: oxauth-lib-ext
+          persistentVolumeClaim:
+            claimName: oxauth-lib-ext-volume-claim
+        - name: oxauth-custom-static
+          persistentVolumeClaim:
+            claimName: oxauth-custom-static-volume-claim
+        - name: oxauth-custom-pages
+          persistentVolumeClaim:
+            claimName: oxauth-custom-pages-volume-claim

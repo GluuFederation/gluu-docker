@@ -47,12 +47,14 @@ spec:
               name: replication
             - containerPort: 4444
               name: admin
-        volumeMounts:
-          - mountPath: /opt/opendj/config
-            name: opendj-config
-          - mountPath: /opt/opendj/ldif
-            name: opendj-ldif
-          - mountPath: /opt/opendj/logs
-            name: opendj-logs
-          - mountPath: /opt/opendj/db
-            name: opendj-db
+          volumeMounts:
+            - mountPath: /opt/opendj/config
+              name: opendj-config
+            - mountPath: /opt/opendj/ldif
+              name: opendj-ldif
+            - mountPath: /opt/opendj/logs
+              name: opendj-logs
+            - mountPath: /opt/opendj/db
+              name: opendj-db
+      nodeSelector:
+        opendj-init: "false"
