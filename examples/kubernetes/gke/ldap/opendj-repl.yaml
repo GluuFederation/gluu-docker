@@ -13,9 +13,22 @@ spec:
       labels:
         app: opendj
     spec:
+      volumes:
+        - name: opendj-config
+          persistentVolumeClaim:
+            claimName: opendj-config-volume-claim
+        - name: opendj-ldif
+          persistentVolumeClaim:
+            claimName: opendj-ldif-volume-claim
+        - name: opendj-logs
+          persistentVolumeClaim:
+            claimName: opendj-logs-volume-claim
+        - name: opendj-db
+          persistentVolumeClaim:
+            claimName: opendj-db-volume-claim
       containers:
         - name: opendj
-          image: 'gluufederation/opendj:3.1.3_wrapper'
+          image: 'gluufederation/opendj:latest'
           env:
             - name: GLUU_CONFIG_ADAPTER
               value: "kubernetes"
@@ -34,3 +47,12 @@ spec:
               name: replication
             - containerPort: 4444
               name: admin
+        volumeMounts:
+          - mountPath: /opt/opendj/config
+            name: opendj-config
+          - mountPath: /opt/opendj/ldif
+            name: opendj-ldif
+          - mountPath: /opt/opendj/logs
+            name: opendj-logs
+          - mountPath: /opt/opendj/db
+            name: opendj-db
