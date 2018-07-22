@@ -48,6 +48,6 @@ spec:
           - name: GLUU_OXTRUST_BACKEND
             value: "oxtrust:8080"
       hostAliases:
-      - ip: 35.240.176.188
+      - ip: NGINX_IP
         hostnames:
         - kube.gluu.local

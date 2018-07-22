@@ -57,7 +57,7 @@ spec:
           - mountPath: /opt/gluu/jetty/identity/custom/pages
             name: oxtrust-custom-pages
       hostAliases:
-      - ip: 35.240.176.188
+      - ip: NGINX_IP
         hostnames:
         - kube.gluu.local
       volumes:

@@ -20,6 +20,8 @@ spec:
             - mountPath: /opt/config-init/db/
               name: config
           env:
+            - name: GLUU_CONFIG_ADAPTER
+              value: kubernetes
             - name: ADMIN_PW
               value: "secret"
             - name: EMAIL
@@ -38,4 +40,4 @@ spec:
               value: "kubernetes"
             - name: LDAP_TYPE
               value: "opendj"
-          command: ["python", "/opt/config-init/entrypoint.py", "generate", "--admin-pw", "$(ADMIN_PW)", "--email", "$(EMAIL)", "--domain", "$(DOMAIN)", "--org-name", "$(ORG_NAME)", "--country-code", "$(COUNTRY_CODE)", "--state", "$(STATE)", "--city", "$(CITY)", "--ldap-type", "$(LDAP_TYPE)"]
+          command: ["python", "/opt/config-init/scripts/entrypoint.py", "generate", "--admin-pw", "$(ADMIN_PW)", "--email", "$(EMAIL)", "--domain", "$(DOMAIN)", "--org-name", "$(ORG_NAME)", "--country-code", "$(COUNTRY_CODE)", "--state", "$(STATE)", "--city", "$(CITY)", "--ldap-type", "$(LDAP_TYPE)"]
