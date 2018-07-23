@@ -48,6 +48,21 @@
 
         kubectl apply -f generate-config.yaml
 
+### Redis
+
+1.  Deploy a set of Redis pods:
+
+        cd ../redis
+        kubectl apply -f redis.yaml
+
+2.  Run redis-trib to create Redis cluster:
+
+        sh redis-cluster.sh create-cluster
+
+    Type `yes` after seeing this output:
+
+        If you don't see a command prompt, try pressing enter.
+
 ### OpenDJ (LDAP)
 
 1.  Go to `ldap` directory:
@@ -74,7 +89,7 @@
 
 4.  Deploy OpenDJ pod that generates initial data:
 
-        kubectl apply -f opendj.yaml
+        sh deploy-pod.sh
 
     Please wait until pod is completed. Check the logs using `kubectl logs -f POD_NAME`
 
