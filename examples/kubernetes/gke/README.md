@@ -50,18 +50,9 @@
 
 ### Redis
 
-1.  Deploy a set of Redis pods:
+Deploy Redis pod:
 
-        cd ../redis
-        kubectl apply -f redis.yaml
-
-2.  Run redis-trib to create Redis cluster:
-
-        sh redis-cluster.sh create-cluster
-
-    Type `yes` after seeing this output:
-
-        If you don't see a command prompt, try pressing enter.
+    kubectl apply -f redis.yaml
 
 ### OpenDJ (LDAP)
 
@@ -89,7 +80,7 @@
 
 4.  Deploy OpenDJ pod that generates initial data:
 
-        sh deploy-pod.sh
+        kubectl apply -f opendj-init.yaml
 
     Please wait until pod is completed. Check the logs using `kubectl logs -f POD_NAME`
 
@@ -204,3 +195,12 @@ Deploy oxPassport pod:
 
     cd ../oxpassport
     NGINX_IP=NGINX_CLUSTER_IP sh deploy-pod.sh
+
+Enable Passport support by following the official docs [here](https://gluu.org/docs/ce/authn-guide/passport/#setup-passportjs-with-gluu).
+
+Afterwards, run the following commands to _restart_ oxPassport:
+
+    # this will force oxpassport to reload all of its containers
+    # in order to load strategies properly
+    kubectl scale deployment --replicas=0 oxpassport
+    kubectl scale deployment --replicas=1 oxpassport

@@ -78,9 +78,9 @@ spec:
           - name: GLUU_CACHE_TYPE
             value: "REDIS"
           - name: GLUU_REDIS_TYPE
-            value: "CLUSTER"
+            value: "STANDALONE"
           - name: GLUU_REDIS_URL
-            value: "REDIS_CLUSTER_URL"
+            value: "redis:6379"
         ports:
           - containerPort: 1636
             name: ldaps
