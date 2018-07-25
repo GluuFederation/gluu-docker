@@ -152,27 +152,13 @@ Run the following command to deploy cache service:
 
     docker stack deploy -c redis.yml gluu
 
-Wait for few seconds, then run the command to create Redis cluster:
-
-    ./cache.sh create-cluster
-
 ### 4 - Deploy LDAP
 
 LDAP containers are divided into two roles:
 
 1.  LDAP that has initial data
 
-    First of all, we need to get all redis IP addresses:
-
-        ./cache.sh get-cluster-url
-
-    The output will be something like this:
-
-        10.0.0.13:6379,10.0.0.20:6379,10.0.0.12:6379,10.0.0.18:6379,10.0.0.17:6379,10.0.0.16:6379,10.0.0.15:6379,10.0.0.14:6379,10.0.0.19:6379
-
-    Save the value and pass it as environment variable when running first LDAP container:
-
-        GLUU_REDIS_URL=$REDIS_CLUSTER_URL docker stack deploy -c ldap-manager.yml gluu
+        docker stack deploy -c ldap-manager.yml gluu
 
     The process of initializing data will take some time.
 
