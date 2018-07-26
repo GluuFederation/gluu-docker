@@ -38,6 +38,15 @@
 
             ACCOUNT=EMAIL sh prepare-roles.yaml
 
+Please note that if you get the error below, look closley at the `user=` section. The email is case sensitive based on how Google stores it. I received this error because my email address returned from the `gcloud info | grep Account` email was lower case, but Google has it saved in the backend as case sensitive for some reason. I changed the `ACCOUNT=` variable from `ACCOUNT=myadminemail@gmail.com` to `ACCOUNT=MyAdminEmail@gmail.com`
+
+```
+PS C:\Users\User\Documents\Gluu_Kubernetes\GKE\gluu-docker\examples\kubernetes\gke\config> kubectl apply -f .\config-roles.yaml
+clusterrolebinding.rbac.authorization.k8s.io "cluster-admin-binding" configured
+rolebinding.rbac.authorization.k8s.io "gluu-rolebinding" unchanged
+Error from server (Forbidden): error when creating ".\\config-roles.yaml": roles.rbac.authorization.k8s.io "gluu-role" is forbidden: attempt to grant extra privileges: [PolicyRule{Resources:["services"], APIGroups:[""], Verbs:["get"]} PolicyRule{Resources:["services"], APIGroups:[""], Verbs:["list"]} PolicyRule{Resources:["services"], APIGroups:[""], Verbs:["watch"]} PolicyRule{Resources:["services"], APIGroups:[""], Verbs:["create"]} PolicyRule{Resources:["services"], APIGroups:[""], Verbs:["update"]} PolicyRule{Resources:["services"], APIGroups:[""], Verbs:["patch"]} PolicyRule{Resources:["services"], APIGroups:[""], Verbs:["delete"]} PolicyRule{Resources:["endpoints"], APIGroups:[""], Verbs:["get"]} PolicyRule{Resources:["endpoints"], APIGroups:[""], Verbs:["list"]} PolicyRule{Resources:["endpoints"], APIGroups:[""], Verbs:["watch"]} PolicyRule{Resources:["endpoints"], APIGroups:[""], Verbs:["create"]} PolicyRule{Resources:["endpoints"], APIGroups:[""], Verbs:["update"]} PolicyRule{Resources:["endpoints"], APIGroups:[""], Verbs:["patch"]} PolicyRule{Resources:["endpoints"], APIGroups:[""], Verbs:["delete"]} PolicyRule{Resources:["configmaps"], APIGroups:[""], Verbs:["get"]} PolicyRule{Resources:["configmaps"], APIGroups:[""], Verbs:["list"]} PolicyRule{Resources:["configmaps"], APIGroups:[""], Verbs:["watch"]} PolicyRule{Resources:["configmaps"], APIGroups:[""], Verbs:["create"]} PolicyRule{Resources:["configmaps"], APIGroups:[""], Verbs:["update"]} PolicyRule{Resources:["configmaps"], APIGroups:[""], Verbs:["patch"]} PolicyRule{Resources:["configmaps"], APIGroups:[""], Verbs:["delete"]}] user=&{MyAdminEmail@gmail.com  [system:authenticated] map[]} ownerrules=[PolicyRule{Resources:["selfsubjectaccessreviews" "selfsubjectrulesreviews"], APIGroups:["authorization.k8s.io"], Verbs:["create"]} PolicyRule{NonResourceURLs:["/api" "/api/*" "/apis" "/apis/*" "/healthz" "/swagger-2.0.0.pb-v1" "/swagger.json" "/swaggerapi" "/swaggerapi/*" "/version"], Verbs:["get"]}] ruleResolutionErrors=[]
+```
+
 3.  Prepare volumes for config:
 
         ZONE=ZONE_NAME sh prepare-volumes.sh
@@ -52,7 +61,7 @@
 
 Deploy Redis pod:
 
-    kubectl apply -f redis.yaml
+    kubectl apply -f redis/redis.yaml
 
 ### OpenDJ (LDAP)
 
