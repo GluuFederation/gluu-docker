@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: config-init-load
+spec:
+  template:
+    metadata:
+      labels:
+        app: config-init-load
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: config-volume-claim
+      containers:
+        - name: config-init-load
+          image: 'gluufederation/config-init:latest'
+          volumeMounts:
+            - mountPath: /opt/config-init/db/
+              name: config
+          env:
+            - name: GLUU_CONFIG_ADAPTER
+              value: kubernetes
+          command: ["python", "/opt/config-init/scripts/entrypoint.py", "load"]
