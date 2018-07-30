@@ -20,7 +20,7 @@ Repositories for supported images are shown below:
 
 Images are hosted at Docker Hub:
 
-`<image>:3.1.3:latest` are the latest builds currently.
+`<image>:latest` are the latest builds currently.
 
 - [config-init](https://hub.docker.com/r/gluufederation/config-init)
 - [openldap](https://hub.docker.com/r/gluufederation/openldap)
