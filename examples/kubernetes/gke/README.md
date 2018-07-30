@@ -36,7 +36,7 @@
 
     -   Pass the email address as environment variable:
 
-            ACCOUNT=EMAIL sh prepare-roles.yaml
+            ACCOUNT=EMAIL sh prepare-roles.sh
 
 Please note that if you get the error below, look closley at the `user=` section. The email is case sensitive based on how Google stores it. I received this error because my email address returned from the `gcloud info | grep Account` email was lower case, but Google has it saved in the backend as case sensitive for some reason. I changed the `ACCOUNT=` variable from `ACCOUNT=myadminemail@gmail.com` to `ACCOUNT=MyAdminEmail@gmail.com`
 
@@ -61,7 +61,8 @@ Error from server (Forbidden): error when creating ".\\config-roles.yaml": roles
 
 Deploy Redis pod:
 
-    kubectl apply -f redis/redis.yaml
+    cd ../redis
+    kubectl apply -f redis.yaml
 
 ### OpenDJ (LDAP)
 
