@@ -133,7 +133,14 @@ Afterwards deploy the custom Ingress for Gluu Server routes.
 
 3.  Deploy oxAuth pod:
 
-        kubectl apply -f oxauth.yaml
+    -   Get `EXTERNAL-IP` of `ingress-nginx`:
+
+            NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)                      AGE
+            ingress-nginx          LoadBalancer   10.11.254.183   35.240.221.38   80:30306/TCP,443:30247/TCP   1m
+
+        In the example above, the external IP is set to `35.240.221.38`. Pass the value as seen below:
+
+            NGINX_IP=NGINX_CLUSTER_IP sh deploy-pod.sh
 
 ### NFS
 
