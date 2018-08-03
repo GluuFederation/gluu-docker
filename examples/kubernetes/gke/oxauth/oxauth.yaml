@@ -49,6 +49,10 @@ spec:
             name: oxauth-custom-static
           - mountPath: /opt/gluu/jetty/oxauth/custom/pages
             name: oxauth-custom-pages
+      hostAliases:
+      - ip: NGINX_IP
+        hostnames:
+        - kube.gluu.local
       volumes:
         - name: oxauth-logs
           persistentVolumeClaim:
