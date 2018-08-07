@@ -169,7 +169,7 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
     Note the `CLUSTER-IP` for `nfs-server`. In this example, the IP is `10.11.240.76`.
     Use the value as environment variable as seen below:
 
-        NFS_IP=NFS_CLUSTER_IP sh prepare-volumes.yaml
+        NFS_IP=NFS_CLUSTER_IP sh prepare-volumes.sh
 
 5.  Create required directory inside NFS pod:
 
