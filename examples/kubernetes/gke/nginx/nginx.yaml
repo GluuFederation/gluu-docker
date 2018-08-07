@@ -5,6 +5,9 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/app-root: "/identity"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
 spec:
   tls:
     - hosts:
@@ -183,7 +186,36 @@ metadata:
   name: gluu-ingress
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    nginx.org/ssl-services: "oxauth,oxtrust"
+    nginx.org/ssl-services: "oxauth"
+    nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout invalid_header http_500 http_502 http_503 http_504"
+spec:
+  tls:
+    - hosts:
+      - kube.gluu.local
+      secretName: tls-certificate
+  rules:
+  - host: kube.gluu.local
+    http:
+      paths:
+      - path: /oxauth
+        backend:
+          serviceName: oxauth
+          servicePort: 8080
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gluu-ingress-stateful
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.org/ssl-services: "oxtrust"
+    nginx.ingress.kubernetes.io/app-root: "/identity"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+    nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout invalid_header http_500 http_502 http_503 http_504"
 spec:
   tls:
     - hosts:
@@ -196,10 +228,6 @@ spec:
       - path: /identity
         backend:
           serviceName: oxtrust
-          servicePort: 8080
-      - path: /oxauth
-        backend:
-          serviceName: oxauth
           servicePort: 8080
       - path: /idp
         backend:
