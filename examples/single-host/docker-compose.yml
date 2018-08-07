@@ -123,6 +123,8 @@ services:
       - GLUU_CONSUL_HOST=consul
       - GLUU_CONSUL_PORT=8500
       - GLUU_LDAP_URL=ldap:1636
+    extra_hosts:
+      - "${DOMAIN}:${HOST_IP}"
     container_name: oxshibboleth
     volumes:
       - ./volumes/shared-shibboleth-idp:/opt/shared-shibboleth-idp
