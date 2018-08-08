@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: oxauth
+  labels:
+    app: oxauth
+spec:
+  ports:
+  - port: 8080
+    name: oxauth
+  selector:
+    app: oxauth
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oxauth
+  labels:
+    app: oxauth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oxauth
+  template:
+    metadata:
+      labels:
+        app: oxauth
+    spec:
+      containers:
+      - name: oxauth
+        imagePullPolicy: Always
+        image: gluufederation/oxauth:latest
+        ports:
+        - containerPort: 8080
+        env:
+          - name: GLUU_CONFIG_ADAPTER
+            value: "kubernetes"
+          - name: GLUU_LDAP_URL
+            value: "opendj:1636"
+        volumeMounts:
+          - mountPath: /opt/gluu/jetty/oxauth/logs
+            name: oxauth-logs
+          - mountPath: /opt/gluu/jetty/oxauth/lib/ext
+            name: oxauth-lib-ext
+          - mountPath: /opt/gluu/jetty/oxauth/custom/static
+            name: oxauth-custom-static
+          - mountPath: /opt/gluu/jetty/oxauth/custom/pages
+            name: oxauth-custom-pages
+      hostAliases:
+      - ip: NGINX_IP
+        hostnames:
+        - kube.gluu.local
+      volumes:
+        - name: oxauth-logs
+          persistentVolumeClaim:
+            claimName: oxauth-logs-volume-claim
+        - name: oxauth-lib-ext
+          persistentVolumeClaim:
+            claimName: oxauth-lib-ext-volume-claim
+        - name: oxauth-custom-static
+          persistentVolumeClaim:
+            claimName: oxauth-custom-static-volume-claim
+        - name: oxauth-custom-pages
+          persistentVolumeClaim:
+            claimName: oxauth-custom-pages-volume-claim
