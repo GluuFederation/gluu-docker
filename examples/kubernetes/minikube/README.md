@@ -87,7 +87,7 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 
         cd ../shared-shib
 
-2.  Prepare volumes for NFS:
+2.  Prepare volumes for shared Shibboleth files:
 
         kubectl apply -f shared-shib-volumes.yaml
 
