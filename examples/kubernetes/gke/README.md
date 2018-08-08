@@ -53,7 +53,7 @@ Error from server (Forbidden): error when creating ".\\config-roles.yaml": roles
 
     where `ZONE_NAME` is the name of zone used when creating cluster
 
-4.  Generate configuration:
+4.  Modify the `generate-config.yaml` environment variables to match your desired parameters, i.e. domain name, email, org, password, etc. Then run the following command to generate configuration:
 
         kubectl apply -f generate-config.yaml
 
