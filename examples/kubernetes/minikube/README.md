@@ -34,6 +34,13 @@
 
         kubectl apply -f generate-config.yaml
 
+### Redis
+
+Deploy Redis pod:
+
+    cd ../redis
+    kubectl apply -f redis.yaml
+
 ### OpenDJ (LDAP)
 
 1.  Go to `ldap` directory:
@@ -114,16 +121,8 @@ Deploy oxShibboleth pod:
 
 ### oxPassport
 
-Deploy oxPassport pod:
+Enable Passport support by following the official docs [here](https://gluu.org/docs/ce/authn-guide/passport/#setup-passportjs-with-gluu).
+Afterwards, deploy oxPassport pod:
 
     cd ../oxpassport
     NGINX_IP=$(minikube ip) sh deploy-pod.sh
-
-Enable Passport support by following the official docs [here](https://gluu.org/docs/ce/authn-guide/passport/#setup-passportjs-with-gluu).
-
-Afterwards, run the following commands to _restart_ oxPassport:
-
-    # this will force oxpassport to reload all of its containers
-    # in order to load strategies properly
-    kubectl scale deployment --replicas=0 oxpassport
-    kubectl scale deployment --replicas=1 oxpassport
