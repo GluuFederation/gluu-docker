@@ -206,15 +206,15 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 
 1. Adjust the hostname from `kube.gluu.local` in `oxshibboleth.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxShibboleth pod:
 
-    cd ../oxshibboleth
-    NGINX_IP=NGINX_CLUSTER_IP sh deploy-pod.sh
+            cd ../oxshibboleth
+            NGINX_IP=NGINX_CLUSTER_IP sh deploy-pod.sh
 
 ### oxPassport
 
 1. Adjust the hostname from `kube.gluu.local` in `oxpassport.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxPassport pod:
 
-    cd ../oxpassport
-    NGINX_IP=NGINX_CLUSTER_IP sh deploy-pod.sh
+            cd ../oxpassport
+            NGINX_IP=NGINX_CLUSTER_IP sh deploy-pod.sh
 
 1. Enable Passport support by following the official docs [here](https://gluu.org/docs/ce/authn-guide/passport/#setup-passportjs-with-gluu).
 
