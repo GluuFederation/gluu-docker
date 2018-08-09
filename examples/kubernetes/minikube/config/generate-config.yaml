@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: config-init
+spec:
+  template:
+    metadata:
+      labels:
+        app: config-init
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: config-volume-claim
+      containers:
+        - name: config-init
+          image: 'gluufederation/config-init:latest'
+          volumeMounts:
+            - mountPath: /opt/config-init/db/
+              name: config
+          env:
+            - name: GLUU_CONFIG_ADAPTER
+              value: kubernetes
+            - name: ADMIN_PW
+              value: "secret"
+            - name: EMAIL
+              value: "support@gluu.local"
+            - name: DOMAIN
+              value: "kube.gluu.local"
+            - name: ORG_NAME
+              value: "Gluu, Inc"
+            - name: COUNTRY_CODE
+              value: "US"
+            - name: STATE
+              value: "TX"
+            - name: CITY
+              value: "Austin"
+            - name: GLUU_CONFIG_ADAPTER
+              value: "kubernetes"
+            - name: LDAP_TYPE
+              value: "opendj"
+          command: ["python", "/opt/config-init/scripts/entrypoint.py", "generate", "--admin-pw", "$(ADMIN_PW)", "--email", "$(EMAIL)", "--domain", "$(DOMAIN)", "--org-name", "$(ORG_NAME)", "--country-code", "$(COUNTRY_CODE)", "--state", "$(STATE)", "--city", "$(CITY)", "--ldap-type", "$(LDAP_TYPE)"]

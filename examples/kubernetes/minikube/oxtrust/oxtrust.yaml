@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: oxtrust
+  labels:
+    app: oxtrust
+spec:
+  ports:
+  - port: 8080
+    name: oxtrust
+  selector:
+    app: oxtrust
+  clusterIP: None
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: oxtrust
+  labels:
+    app: oxtrust
+spec:
+  serviceName: oxtrust
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oxtrust
+  template:
+    metadata:
+      labels:
+        app: oxtrust
+    spec:
+      containers:
+      - name: oxtrust
+        imagePullPolicy: Always
+        image: gluufederation/oxtrust:latest
+        ports:
+        - containerPort: 8080
+        env:
+          - name: GLUU_CONFIG_ADAPTER
+            value: "kubernetes"
+          - name: GLUU_LDAP_URL
+            value: "opendj:1636"
+          - name: GLUU_OXAUTH_BACKEND
+            value: "oxauth:8080"
+        volumeMounts:
+          # name must match the volume name below
+          - name: shared-shib
+            mountPath: "/opt/shared-shibboleth-idp"
+          - mountPath: /opt/gluu/jetty/identity/logs
+            name: oxtrust-logs
+          - mountPath: /opt/gluu/jetty/identity/lib/ext
+            name: oxtrust-lib-ext
+          - mountPath: /opt/gluu/jetty/identity/custom/static
+            name: oxtrust-custom-static
+          - mountPath: /opt/gluu/jetty/identity/custom/pages
+            name: oxtrust-custom-pages
+      hostAliases:
+      - ip: NGINX_IP
+        hostnames:
+        - kube.gluu.local
+      volumes:
+      - name: shared-shib
+        persistentVolumeClaim:
+          claimName: shared-shib-volume-claim
+      - name: oxtrust-logs
+        persistentVolumeClaim:
+          claimName: oxtrust-logs-volume-claim
+      - name: oxtrust-lib-ext
+        persistentVolumeClaim:
+          claimName: oxtrust-lib-ext-volume-claim
+      - name: oxtrust-custom-static
+        persistentVolumeClaim:
+          claimName: oxtrust-custom-static-volume-claim
+      - name: oxtrust-custom-pages
+        persistentVolumeClaim:
+          claimName: oxtrust-custom-pages-volume-claim

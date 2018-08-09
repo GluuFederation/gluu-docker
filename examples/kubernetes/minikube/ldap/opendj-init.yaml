@@ -1,0 +1,97 @@
+# headless for peer discovery
+apiVersion: v1
+kind: Service
+metadata:
+  name: opendj
+  labels:
+    app: opendj
+spec:
+  ports:
+  - port: 1636
+    name: ldaps
+    targetPort: 1636
+    protocol: TCP
+  - port: 1389
+    name: ldap
+    targetPort: 1389
+    protocol: TCP
+  - port: 8989
+    name: replication
+    targetPort: 8989
+    protocol: TCP
+  - port: 4444
+    name: admin
+    targetPort: 4444
+    protocol: TCP
+  clusterIP: None
+  selector:
+    app: opendj
+
+---
+
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: opendj-init
+spec:
+  serviceName: opendj
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opendj
+  template:
+    metadata:
+      labels:
+        app: opendj
+    spec:
+      volumes:
+        - name: opendj-config
+          persistentVolumeClaim:
+            claimName: opendj-config-volume-claim
+        - name: opendj-ldif
+          persistentVolumeClaim:
+            claimName: opendj-ldif-volume-claim
+        - name: opendj-logs
+          persistentVolumeClaim:
+            claimName: opendj-logs-volume-claim
+        - name: opendj-db
+          persistentVolumeClaim:
+            claimName: opendj-db-volume-claim
+        - name: opendj-flag
+          persistentVolumeClaim:
+            claimName: opendj-flag-volume-claim
+      containers:
+      - name: opendj
+        imagePullPolicy: Always
+        image: 'gluufederation/opendj:latest'
+        env:
+          - name: GLUU_CONFIG_ADAPTER
+            value: "kubernetes"
+          - name: GLUU_LDAP_INIT
+            value: "true"
+          - name: GLUU_LDAP_INIT_HOST
+            value: "opendj"
+          - name: GLUU_LDAP_INIT_PORT
+            value: "1636"
+          - name: GLUU_OXTRUST_CONFIG_GENERATION
+            value: "true"
+        ports:
+          - containerPort: 1636
+            name: ldaps
+          - containerPort: 1389
+            name: ldap
+          - containerPort: 8989
+            name: replication
+          - containerPort: 4444
+            name: admin
+        volumeMounts:
+          - mountPath: /opt/opendj/config
+            name: opendj-config
+          - mountPath: /opt/opendj/ldif
+            name: opendj-ldif
+          - mountPath: /opt/opendj/logs
+            name: opendj-logs
+          - mountPath: /opt/opendj/db
+            name: opendj-db
+          - mountPath: /flag
+            name: opendj-flag

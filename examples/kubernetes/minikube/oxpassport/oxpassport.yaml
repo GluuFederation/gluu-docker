@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: oxpassport
+  labels:
+    app: oxpassport
+spec:
+  ports:
+  - port: 8090
+    name: oxpassport
+  selector:
+    app: oxpassport
+  # type: NodePort
+  # clusterIP: None
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oxpassport
+  labels:
+    app: oxpassport
+spec:
+  # serviceName: oxpassport
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oxpassport
+  template:
+    metadata:
+      labels:
+        app: oxpassport
+    spec:
+      containers:
+      - name: oxpassport
+        imagePullPolicy: Always
+        image: gluufederation/oxpassport:latest
+        ports:
+        - containerPort: 8090
+        env:
+          - name: GLUU_CONFIG_ADAPTER
+            value: "kubernetes"
+          # - name: GLUU_LDAP_URL
+          #   value: "opendj:1636"
+          - name: GLUU_OXAUTH_BACKEND
+            value: "oxauth:8080"
+          - name: GLUU_OXTRUST_BACKEND
+            value: "oxtrust:8080"
+      hostAliases:
+      - ip: NGINX_IP
+        hostnames:
+        - kube.gluu.local
