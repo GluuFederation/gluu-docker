@@ -102,22 +102,22 @@ Deploy Redis pod:
 
 1. To allow external traffic to the cluster, we need to deploy nginx Ingress and its controller.
 
-    cd ../nginx
-    kubectl apply -f mandatory.yaml
-    kubectl apply -f cloud-generic.yaml
+       cd ../nginx
+       kubectl apply -f mandatory.yaml
+       kubectl apply -f cloud-generic.yaml
 
 1. The commands above will deploy a `LoadBalancer` service in the `ingress-nginx` namespace. Run `kubectl get svc -n ingress-nginx`:
 
-    NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
-    ingress-nginx          LoadBalancer   10.11.254.183   <pending>     80:30306/TCP,443:30247/TCP   50s
+       NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
+       ingress-nginx          LoadBalancer   10.11.254.183   <pending>     80:30306/TCP,443:30247/TCP   50s
 
 1. Create secrets to store TLS cert and key:
 
-    sh tls-secrets.sh
+       sh tls-secrets.sh
 
 1. Adjust all references to the hostname `kube.gluu.local` in `nginx.yaml` to the hostname you applied earlier while generating the configuration. Afterwards deploy the custom Ingress for Gluu Server routes.
 
-    kubectl apply -f nginx.yaml
+       kubectl apply -f nginx.yaml
     
     - You can see the host and ip after with `kubectl get ing`
     
