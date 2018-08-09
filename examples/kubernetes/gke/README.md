@@ -98,7 +98,7 @@ Deploy Redis pod:
 
         kubectl apply -f opendj-repl.yaml
 
-### nginx Ingress
+### Nginx Ingress
 
 1. To allow external traffic to the cluster, we need to deploy nginx Ingress and its controller.
 
@@ -144,7 +144,7 @@ Deploy Redis pod:
 
             NGINX_IP=NGINX_EXTERNAL_IP sh deploy-pod.sh
 
-### NFS (Option)
+### NFS (Optional)
 
 **This step is only required if you're utilizing Shibboleth, otherwise it's not necessary**
 
