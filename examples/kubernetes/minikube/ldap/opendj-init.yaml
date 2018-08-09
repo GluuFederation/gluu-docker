@@ -75,12 +75,6 @@ spec:
             value: "1636"
           - name: GLUU_OXTRUST_CONFIG_GENERATION
             value: "true"
-          - name: GLUU_CACHE_TYPE
-            value: "REDIS"
-          - name: GLUU_REDIS_TYPE
-            value: "STANDALONE"
-          - name: GLUU_REDIS_URL
-            value: "redis:6379"
         ports:
           - containerPort: 1636
             name: ldaps
