@@ -206,12 +206,16 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 
 1. Adjust the hostname from `kube.gluu.local` in `oxshibboleth.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxShibboleth pod:
 
+    -   Get the `EXTERNAL-IP` of `ingress-nginx` with `kubectl get svc -n ingress-nginx`:
+
        cd ../oxshibboleth
-       NGINX_IP=NGINX_CLUSTER_IP sh deploy-pod.sh
+       NGINX_IP=NGINX_EXTERNAL_IP sh deploy-pod.sh
 
 ### oxPassport
 
 1. Adjust the hostname from `kube.gluu.local` in `oxpassport.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxPassport pod:
+
+    -   Get the `EXTERNAL-IP` of `ingress-nginx` with `kubectl get svc -n ingress-nginx`:
 
        cd ../oxpassport
        NGINX_IP=NGINX_CLUSTER_IP sh deploy-pod.sh
