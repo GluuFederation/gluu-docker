@@ -1,0 +1,133 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: oxtrust-logs-volume-claim
+spec:
+  storageClassName: ""
+  volumeName: oxtrust-logs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10M
+  selector:
+    matchLabels:
+      oxtrust: logs
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: oxtrust-lib-ext-volume-claim
+spec:
+  storageClassName: ""
+  volumeName: oxtrust-lib-ext
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10M
+  selector:
+    matchLabels:
+      oxtrust: lib-ext
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: oxtrust-custom-static-volume-claim
+spec:
+  storageClassName: ""
+  volumeName: oxtrust-custom-static
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10M
+  selector:
+    matchLabels:
+      oxtrust: custom-static
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: oxtrust-custom-pages-volume-claim
+spec:
+  storageClassName: ""
+  volumeName: oxtrust-custom-pages
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10M
+  selector:
+    matchLabels:
+      oxtrust: custom-pages
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: oxtrust-logs
+  labels:
+      oxtrust: logs
+spec:
+  capacity:
+    storage: 10M
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+      path: "/data/oxtrust/logs"
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: oxtrust-lib-ext
+  labels:
+      oxtrust: lib-ext
+spec:
+  capacity:
+    storage: 10M
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+      path: "/data/oxtrust/lib/ext"
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: oxtrust-custom-static
+  labels:
+      oxtrust: custom-static
+spec:
+  capacity:
+    storage: 10M
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+      path: "/data/oxtrust/custom/static"
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: oxtrust-custom-pages
+  labels:
+      oxtrust: custom-pages
+spec:
+  capacity:
+    storage: 10M
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data/oxtrust/custom/pages"
