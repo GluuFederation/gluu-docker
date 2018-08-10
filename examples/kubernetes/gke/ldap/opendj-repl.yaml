@@ -13,6 +13,16 @@ spec:
       labels:
         app: opendj
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - opendj
+            topologyKey: "kubernetes.io/hostname"
       volumes:
         - name: opendj-config
           persistentVolumeClaim:
