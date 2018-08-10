@@ -19,6 +19,9 @@ services:
       - GLUU_OXTRUST_CONFIG_GENERATION=true
       - GLUU_LDAP_ADDR_INTERFACE=eth0
       - GLUU_LDAP_ADVERTISE_ADDR=ldap.manager
+      # the value must match network alias `ldap.server` because other containers
+      # use this value as LDAP hostname
+      - GLUU_CERT_ALT_NAME=ldap.server
     networks:
       gluu:
         aliases:

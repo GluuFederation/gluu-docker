@@ -81,6 +81,10 @@ spec:
             value: "STANDALONE"
           - name: GLUU_REDIS_URL
             value: "redis:6379"
+          # the value must match serviceName `opendj` because other containers
+          # use this value as LDAP hostname
+          - name: GLUU_CERT_ALT_NAME
+            value: "opendj"
         ports:
           - containerPort: 1636
             name: ldaps
