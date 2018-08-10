@@ -69,6 +69,9 @@ services:
       - GLUU_CACHE_TYPE=REDIS
       - GLUU_REDIS_URL=redis:6379
       - GLUU_REDIS_TYPE=STANDALONE
+      # the value must match service name `ldap` because other containers
+      # use this value as LDAP hostname
+      - GLUU_CERT_ALT_NAME=ldap
     container_name: ldap
     volumes:
       - ./volumes/opendj/config:/opt/opendj/config
