@@ -35,6 +35,11 @@ spec:
       - name: oxshibboleth
         imagePullPolicy: Always
         image: gluufederation/oxshibboleth:latest
+        resources:
+          requests:
+            memory: "1000Mi"
+          limits:
+            memory: "1536Mi"
         ports:
         - containerPort: 8080
         env:
@@ -42,8 +47,10 @@ spec:
             value: "kubernetes"
           - name: GLUU_LDAP_URL
             value: "opendj:1636"
-          # - name: GLUU_OXAUTH_BACKEND
-          #   value: "oxauth:8080"
+          - name: GLUU_OXAUTH_BACKEND
+            value: "oxauth:8080"
+          - name: GLUU_MAX_RAM_FRACTION
+            value: "1"
         volumeMounts:
           # name must match the volume name below
           - name: shared-shib
