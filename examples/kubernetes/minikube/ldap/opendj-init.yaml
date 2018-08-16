@@ -105,3 +105,13 @@ spec:
             name: opendj-db
           - mountPath: /flag
             name: opendj-flag
+        readinessProbe:
+          tcpSocket:
+            port: 1636
+          initialDelaySeconds: 25
+          periodSeconds: 25
+        livenessProbe:
+          tcpSocket:
+            port: 1636
+          initialDelaySeconds: 30
+          periodSeconds: 30
