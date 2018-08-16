@@ -69,5 +69,15 @@ spec:
               name: opendj-logs
             - mountPath: /opt/opendj/db
               name: opendj-db
+        readinessProbe:
+          tcpSocket:
+            port: 1636
+          initialDelaySeconds: 25
+          periodSeconds: 25
+        livenessProbe:
+          tcpSocket:
+            port: 1636
+          initialDelaySeconds: 30
+          periodSeconds: 30
       nodeSelector:
         opendj-init: "false"

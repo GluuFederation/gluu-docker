@@ -47,6 +47,18 @@ spec:
             value: "oxauth:8080"
           - name: GLUU_OXTRUST_BACKEND
             value: "oxtrust:8080"
+        livenessProbe:
+          httpGet:
+            path: /passport
+            port: 8090
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /passport
+            port: 8090
+          initialDelaySeconds: 25
+          periodSeconds: 25
       hostAliases:
       - ip: NGINX_IP
         hostnames:

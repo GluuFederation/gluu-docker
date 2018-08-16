@@ -63,6 +63,18 @@ spec:
             name: oxtrust-custom-static
           - mountPath: /opt/gluu/jetty/identity/custom/pages
             name: oxtrust-custom-pages
+        livenessProbe:
+          httpGet:
+            path: /identity/restv1/scim-configuration
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /identity/restv1/scim-configuration
+            port: 8080
+          initialDelaySeconds: 25
+          periodSeconds: 25
       hostAliases:
       - ip: NGINX_IP
         hostnames:

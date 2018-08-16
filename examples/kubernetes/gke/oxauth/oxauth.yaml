@@ -56,6 +56,18 @@ spec:
             name: oxauth-custom-static
           - mountPath: /opt/gluu/jetty/oxauth/custom/pages
             name: oxauth-custom-pages
+        livenessProbe:
+          httpGet:
+            path: /oxauth/.well-known/openid-configuration
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /oxauth/.well-known/openid-configuration
+            port: 8080
+          initialDelaySeconds: 25
+          periodSeconds: 25
       hostAliases:
       - ip: NGINX_IP
         hostnames:
