@@ -55,6 +55,18 @@ spec:
           # name must match the volume name below
           - name: shared-shib
             mountPath: "/opt/shared-shibboleth-idp"
+        livenessProbe:
+          httpGet:
+            path: /idp
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /idp
+            port: 8080
+          initialDelaySeconds: 25
+          periodSeconds: 25
       hostAliases:
       - ip: NGINX_IP
         hostnames:
