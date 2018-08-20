@@ -49,3 +49,7 @@ Images are hosted at Docker Hub:
 [Minikube](./examples/kubernetes/minikube)
 
 - The directory contains `README.md` as a guide to deploy a basic Gluu server stack on Minikube.
+
+## Issues
+
+If you find any issues, please post them on the customer support portal, [support.gluu.org](https://support.gluu.org).
