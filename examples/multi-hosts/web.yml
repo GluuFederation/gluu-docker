@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.7"
 
 networks:
   gluu:
@@ -33,6 +33,7 @@ services:
       - "SERVICE_8080_CHECK_HTTP=/oxauth/.well-known/openid-configuration"
       - "SERVICE_8080_CHECK_INTERVAL=15s"
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
+    init: true
 
   oxtrust:
     image: gluufederation/oxtrust:latest
@@ -65,6 +66,7 @@ services:
       - "SERVICE_8080_CHECK_HTTP=/identity/restv1/scim-configuration"
       - "SERVICE_8080_CHECK_INTERVAL=15s"
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
+    init: true
 
   oxshibboleth:
     image: gluufederation/oxshibboleth:latest
@@ -96,6 +98,7 @@ services:
       - "SERVICE_8086_CHECK_HTTP=/idp"
       - "SERVICE_8086_CHECK_INTERVAL=15s"
       - "SERVICE_8086_CHECK_TIMEOUT=5s"
+    init: true
 
   oxpassport:
     image: gluufederation/oxpassport:latest
@@ -124,6 +127,7 @@ services:
       - "SERVICE_8090_CHECK_HTTP=/passport"
       - "SERVICE_8090_CHECK_INTERVAL=15s"
       - "SERVICE_8090_CHECK_TIMEOUT=5s"
+    init: true
 
   nginx:
     image: gluufederation/nginx:latest
@@ -155,3 +159,4 @@ services:
         mode: host
     labels:
       - "SERVICE_IGNORE=yes"
+    init: true

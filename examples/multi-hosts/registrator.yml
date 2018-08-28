@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.7"
 
 networks:
   gluu:
@@ -22,3 +22,4 @@ services:
         condition: any
         delay: 5s
         window: 120s
+    init: true
