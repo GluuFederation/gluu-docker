@@ -31,6 +31,7 @@ spec:
       labels:
         app: oxshibboleth
     spec:
+      shareProcessNamespace: true
       containers:
       - name: oxshibboleth
         imagePullPolicy: Always

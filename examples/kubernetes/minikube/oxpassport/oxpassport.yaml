@@ -32,6 +32,7 @@ spec:
       labels:
         app: oxpassport
     spec:
+      shareProcessNamespace: true
       containers:
       - name: oxpassport
         imagePullPolicy: Always
