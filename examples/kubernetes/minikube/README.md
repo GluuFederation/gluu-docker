@@ -8,7 +8,9 @@
 
 3.  Create cluster:
 
-        minikube start
+        minikube start \
+            --extra-config=kubelet.feature-gates=PodShareProcessNamespace=true \
+            --extra-config=apiserver.feature-gates=PodShareProcessNamespace=true
 
 4.  Configure `kubectl` to use the cluster:
 
