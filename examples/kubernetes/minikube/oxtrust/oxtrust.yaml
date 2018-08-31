@@ -31,7 +31,6 @@ spec:
       labels:
         app: oxtrust
     spec:
-      shareProcessNamespace: true
       containers:
       - name: oxtrust
         imagePullPolicy: Always

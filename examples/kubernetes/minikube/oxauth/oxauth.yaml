@@ -29,7 +29,6 @@ spec:
       labels:
         app: oxauth
     spec:
-      shareProcessNamespace: true
       containers:
       - name: oxauth
         imagePullPolicy: Always
