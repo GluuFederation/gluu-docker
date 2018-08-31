@@ -45,7 +45,6 @@ services:
       - /opt/consul:/consul/data
     labels:
       - "SERVICE_IGNORE=yes"
-    init: true
 
   # consul_manager:
   #   image: consul

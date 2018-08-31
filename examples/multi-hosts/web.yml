@@ -33,7 +33,6 @@ services:
       - "SERVICE_8080_CHECK_HTTP=/oxauth/.well-known/openid-configuration"
       - "SERVICE_8080_CHECK_INTERVAL=15s"
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
-    init: true
 
   oxtrust:
     image: gluufederation/oxtrust:latest

@@ -49,4 +49,3 @@ services:
       - /opt/opendj/flag:/flag
     labels:
       - "SERVICE_IGNORE=yes"
-    init: true
