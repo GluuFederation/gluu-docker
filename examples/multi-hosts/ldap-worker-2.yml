@@ -43,4 +43,3 @@ services:
       - /opt/opendj/logs:/opt/opendj/logs
     labels:
       - "SERVICE_IGNORE=yes"
-    init: true
