@@ -19,7 +19,7 @@ services:
 
   registrator:
     image: gluufederation/registrator:dev
-    command: -internal -cleanup -resync 30 -retry-attempts 5 -retry-interval 10 consul://consul:8500
+    command: registrator -internal -cleanup -resync 30 -retry-attempts 5 -retry-interval 10 consul://consul:8500
     container_name: registrator
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock
