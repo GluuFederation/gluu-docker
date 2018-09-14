@@ -37,7 +37,7 @@ services:
     restart: unless-stopped
 
   nginx:
-    image: gluufederation/nginx:latest
+    image: gluufederation/nginx:3.1.4_dev
     environment:
       - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul
