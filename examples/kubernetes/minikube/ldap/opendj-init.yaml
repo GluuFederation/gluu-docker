@@ -63,7 +63,7 @@ spec:
       containers:
       - name: opendj
         imagePullPolicy: Always
-        image: 'gluufederation/opendj:latest'
+        image: 'gluufederation/opendj:3.1.4_dev'
         env:
           - name: GLUU_CONFIG_ADAPTER
             value: "kubernetes"
