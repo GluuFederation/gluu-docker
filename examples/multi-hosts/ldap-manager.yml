@@ -6,7 +6,7 @@ networks:
 
 services:
   ldap_manager:
-    image: gluufederation/opendj:latest
+    image: gluufederation/opendj:3.1.4_dev
     hostname: ldap.manager
     environment:
       - GLUU_LDAP_INIT=true
