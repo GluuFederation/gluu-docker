@@ -35,7 +35,7 @@ bootstrap_config() {
                 -v /opt/config-init/db:/opt/config-init/db/ \
                 -e GLUU_CONFIG_ADAPTER=consul \
                 -e GLUU_CONSUL_HOST=consul.server \
-                gluufederation/config-init:latest \
+                gluufederation/config-init:3.1.4_dev \
                 load
         else
             generate_config
@@ -75,7 +75,7 @@ generate_config() {
         -v /opt/config-init/db:/opt/config-init/db/ \
         -e GLUU_CONFIG_ADAPTER=consul \
         -e GLUU_CONSUL_HOST=consul.server \
-        gluufederation/config-init:latest \
+        gluufederation/config-init:3.1.4_dev \
         generate \
         --admin-pw secret \
         --email $email \
