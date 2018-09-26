@@ -35,7 +35,7 @@ spec:
       containers:
       - name: oxpassport
         imagePullPolicy: Always
-        image: gluufederation/oxpassport:latest
+        image: gluufederation/oxpassport:3.1.4_dev
         ports:
         - containerPort: 8090
         env:
