@@ -74,6 +74,7 @@ services:
       - ./volumes/opendj/logs:/opt/opendj/logs
       - ./volumes/opendj/db:/opt/opendj/db
       - ./volumes/opendj/flag:/flag
+      - ./volumes/opendj/backup:/opt/backup
     restart: unless-stopped
     labels:
       - "SERVICE_IGNORE=yes"
