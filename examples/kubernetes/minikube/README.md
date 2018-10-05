@@ -34,7 +34,9 @@
 
         kubectl apply -f generate-config.yaml
 
-### Redis
+### Redis (optional)
+
+Note: this pod is optional and used only when `GLUU_CACHE_TYPE` is set to `REDIS`.
 
 Deploy Redis pod:
 
