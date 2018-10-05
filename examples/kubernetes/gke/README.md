@@ -57,7 +57,9 @@
 
         kubectl apply -f generate-config.yaml
 
-### Redis
+### Redis (optional)
+
+Note: this pod is optional and used only when `GLUU_CACHE_TYPE` is set to `REDIS`.
 
 Deploy Redis pod:
 
@@ -118,9 +120,9 @@ Deploy Redis pod:
 1. Adjust all references to the hostname `kube.gluu.local` in `nginx.yaml` to the hostname you applied earlier while generating the configuration. Afterwards deploy the custom Ingress for Gluu Server routes.
 
        kubectl apply -f nginx.yaml
-    
+
     - You can see the host and ip after with `kubectl get ing`
-    
+
 ### oxAuth
 
 1.  Go to the `oxauth` directory:
@@ -225,6 +227,6 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 1. Afterwards, run the following commands to _restart_ oxPassport:
 
     - this will force oxpassport to reload all of its containers in order to load strategies properly
-    
+
           kubectl scale deployment --replicas=0 oxpassport
           kubectl scale deployment --replicas=1 oxpassport
