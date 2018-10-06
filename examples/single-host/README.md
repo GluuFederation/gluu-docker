@@ -12,8 +12,8 @@ This id an example of running Gluu Server Docker edition on a single VM.
 
         mkdir docker-gluu-server
         cd docker-gluu-server
-        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/master/examples/single-host/run_all.sh
-        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/master/examples/single-host/docker-compose.yml
+        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.4/examples/single-host/run_all.sh
+        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.4/examples/single-host/docker-compose.yml
         chmod +x run_all.sh
 
 Run the following command inside the `/path/to/docker-gluu-server/` directory and follow the prompts:
