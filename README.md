@@ -37,7 +37,7 @@ Images are hosted at Docker Hub:
 
 - The directory contains `README.md` as a guide to deploy a basic single-host Gluu server stack.
 
-[Swarm](./examples/multi-host/)
+[Swarm](./examples/multi-hosts/)
 
 - The directory contains `README.md` as a guide to deploy a basic multi-hosts Gluu server stack.
 
