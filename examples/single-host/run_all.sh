@@ -2,6 +2,19 @@
 
 set -e
 
+CONFIG_DIR=$PWD/volumes/config-init/db
+GLUU_VERSION=3.1.4_dev
+INIT_CONFIG_CMD=""
+DOMAIN=""
+ADMIN_PW=""
+EMAIL=""
+ORG_NAME=""
+COUNTRY_CODE=""
+STATE=""
+CITY=""
+DOCKER_COMPOSE=${DOCKER_COMPOSE:-docker-compose}
+DOCKER=${DOCKER:-docker}
+
 gather_ip() {
 
     echo "[I] Determining OS Type and Attempting to Gather External IP Address"
@@ -63,33 +76,34 @@ confirm_ip() {
     esac
 }
 
-CONFIG_DIR=$PWD/volumes/config-init/db
+check_docker() {
+    if [ -z $(which $DOCKER) ]; then
+        echo "[E] Unable to detect docker executable"
+        echo "[W] Make sure docker is installed and available in PATH or explictly passed as DOCKER environment variable"
+        exit 1
+    fi
+}
 
-GLUU_VERSION=3.1.4_dev
-INIT_CONFIG_CMD=""
-
-DOMAIN=""
-ADMIN_PW=""
-EMAIL=""
-ORG_NAME=""
-COUNTRY_CODE=""
-STATE=""
-CITY=""
-
-mkdir -p $CONFIG_DIR
+check_docker_compose() {
+    if [ -z $(which $DOCKER_COMPOSE) ]; then
+        echo "[E] Unable to detect docker-compose executable"
+        echo "[W] Make sure docker-compose is installed and available in PATH or explictly passed as DOCKER_COMPOSE environment variable"
+        exit 1
+    fi
+}
 
 # deploy service defined in docker-compose.yml
 load_services() {
     echo "[I] Deploying containers"
-    DOMAIN=$DOMAIN HOST_IP=$HOST_IP docker-compose up -d
+    DOMAIN=$DOMAIN HOST_IP=$HOST_IP $DOCKER_COMPOSE up -d
 }
 
 prepare_config() {
     echo "[I] Preparing cluster-wide configuration"
 
     # guess if config already in Consul
-    if [[ ! -z $(docker ps --filter name=consul -q) ]]; then
-        consul_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul)
+    if [[ ! -z $($DOCKER ps --filter name=consul -q) ]]; then
+        consul_ip=$($DOCKER inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul)
         DOMAIN=$(curl $consul_ip:8500/v1/kv/gluu/config/hostname?raw -s)
     fi
 
@@ -99,7 +113,7 @@ prepare_config() {
 
         if [[ -f $CONFIG_DIR/config.json ]]; then
             read -p "[I] Load previously saved configuration in local disk? [Y/n]" load_choice
-            
+
             if [[ $load_choice != "n" && $load_choice != "N" ]]; then
                 DOMAIN=$(cat $CONFIG_DIR/config.json |  awk ' /'hostname'/ {print $2} ' | sed 's/[",]//g')
                 INIT_CONFIG_CMD="load"
@@ -143,7 +157,7 @@ prepare_config() {
 
 load_config() {
     echo "[I] Loading existing config."
-    docker run \
+    $DOCKER run \
         --rm \
         --network container:consul \
         -v $CONFIG_DIR:/opt/config-init/db/ \
@@ -155,7 +169,7 @@ load_config() {
 
 generate_config() {
     echo "[I] Generating configuration for the first time; this may take a moment"
-    docker run \
+    $DOCKER run \
         --rm \
         --network container:consul \
         -v $CONFIG_DIR:/opt/config-init/db/ \
@@ -173,12 +187,17 @@ generate_config() {
         --ldap-type opendj
 }
 
-gather_ip
-until confirm_ip; do : ; done
-
 # ==========
 # entrypoint
 # ==========
+check_docker
+check_docker_compose
+
+mkdir -p $CONFIG_DIR
+
+gather_ip
+until confirm_ip; do : ; done
+
 prepare_config
 load_services
 
