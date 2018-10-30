@@ -183,7 +183,7 @@ generate_config() {
         --org-name "$ORG_NAME" \
         --country-code $COUNTRY_CODE \
         --state $STATE \
-        --city $CITY \
+        --city "$CITY" \
         --ldap-type opendj
 }
 
