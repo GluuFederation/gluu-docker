@@ -37,7 +37,7 @@ services:
   #   restart: unless-stopped
 
   nginx:
-    image: gluufederation/nginx:3.1.4_dev
+    image: gluufederation/nginx:3.1.4_01
     environment:
       - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul
@@ -51,7 +51,7 @@ services:
       - "SERVICE_IGNORE=yes"
 
   ldap:
-    image: gluufederation/opendj:3.1.4_dev
+    image: gluufederation/opendj:3.1.4_01
     environment:
       - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul
@@ -81,7 +81,7 @@ services:
       - "SERVICE_IGNORE=yes"
 
   oxauth:
-    image: gluufederation/oxauth:3.1.4_dev
+    image: gluufederation/oxauth:3.1.4_01
     environment:
       - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul
@@ -104,7 +104,7 @@ services:
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxtrust:
-    image: gluufederation/oxtrust:3.1.4_dev
+    image: gluufederation/oxtrust:3.1.4_01
     environment:
       - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul
@@ -129,7 +129,7 @@ services:
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxshibboleth:
-    image: gluufederation/oxshibboleth:3.1.4_dev
+    image: gluufederation/oxshibboleth:3.1.4_01
     environment:
       - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul
@@ -149,7 +149,7 @@ services:
       - "SERVICE_8086_CHECK_TIMEOUT=5s"
 
   oxpassport:
-    image: gluufederation/oxpassport:3.1.4_dev
+    image: gluufederation/oxpassport:3.1.4_01
     environment:
       - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul
