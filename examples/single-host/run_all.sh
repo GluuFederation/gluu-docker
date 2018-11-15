@@ -3,7 +3,7 @@
 set -e
 
 CONFIG_DIR=$PWD/volumes/config-init/db
-GLUU_VERSION=3.1.4_01
+GLUU_VERSION=3.1.4_02
 INIT_CONFIG_CMD=""
 DOMAIN=""
 ADMIN_PW=""
@@ -96,6 +96,7 @@ check_docker_compose() {
 load_services() {
     echo "[I] Deploying containers"
     DOMAIN=$DOMAIN HOST_IP=$HOST_IP $DOCKER_COMPOSE up -d
+    sudo chmod -R g+w $PWD/volumes
 }
 
 prepare_config() {
@@ -163,7 +164,7 @@ load_config() {
         -v $CONFIG_DIR:/opt/config-init/db/ \
         -e GLUU_CONFIG_ADAPTER=consul \
         -e GLUU_CONSUL_HOST=consul \
-        gluufederation/config-init:$GLUU_VERSION \
+        registry.connect.redhat.com/gluufederation/config-init:$GLUU_VERSION \
         load
 }
 
@@ -175,7 +176,7 @@ generate_config() {
         -v $CONFIG_DIR:/opt/config-init/db/ \
         -e GLUU_CONFIG_ADAPTER=consul \
         -e GLUU_CONSUL_HOST=consul \
-        gluufederation/config-init:$GLUU_VERSION \
+        registry.connect.redhat.com/gluufederation/config-init:$GLUU_VERSION \
         generate \
         --admin-pw $ADMIN_PW \
         --email $EMAIL \
@@ -185,6 +186,11 @@ generate_config() {
         --state $STATE \
         --city "$CITY" \
         --ldap-type opendj
+}
+
+docker_login() {
+    echo "[I] Attempting login to RedHat registry server at registry.connect.redhat.com"
+    docker login registry.connect.redhat.com
 }
 
 # ==========
@@ -198,6 +204,7 @@ mkdir -p $CONFIG_DIR
 gather_ip
 until confirm_ip; do : ; done
 
+docker_login
 prepare_config
 load_services
 

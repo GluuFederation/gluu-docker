@@ -12,8 +12,8 @@ This id an example of running Gluu Server Docker edition on a single VM.
 
         mkdir docker-gluu-server
         cd docker-gluu-server
-        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.4/examples/single-host/run_all.sh
-        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.4/examples/single-host/docker-compose.yml
+        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.4-rhel/examples/single-host/run_all.sh
+        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.4-rhel/examples/single-host/docker-compose.yml
         chmod +x run_all.sh
 
 Run the following command inside the `/path/to/docker-gluu-server/` directory and follow the prompts:
@@ -42,7 +42,7 @@ FAQ:
             --network container:consul \
             -e GLUU_CONFIG_ADAPTER=consul \
             -e GLUU_CONSUL_HOST=consul \
-            gluufederation/config-init:3.1.4_01 \
+            registry.connect.redhat.com/gluufederation/config-init:3.1.4_02 \
             generate \
             --ldap-type "${GLUU_LDAP_TYPE}" \
             --domain $domain \
@@ -52,6 +52,7 @@ FAQ:
             --country-code $countryCode \
             --state $state \
             --city $city
+
     - Note this command is to create the initial configuration and is slightly different than the `load` or `dump` option of config-init.
 
 1) What is the launch process for the containers?
@@ -60,7 +61,7 @@ FAQ:
 
     Firstly, [consul](https://www.consul.io/), which is our key value store, as well as service discovery container.
 
-    Secondly, [config-init](https://github.com/GluuFederation/docker-config-init/tree/3.1.3), which will load all of the necessary keys, configuration settings, templates and other requirements, into consul. This container will run to completion and then exit and remove itself. All services hereinafter will use consul to pull their necessary configuration.
+    Secondly, [config-init](https://github.com/GluuFederation/docker-config-init/tree/rhel), which will load all of the necessary keys, configuration settings, templates and other requirements, into consul. This container will run to completion and then exit and remove itself. All services hereinafter will use consul to pull their necessary configuration.
 
     Next is our OpenDJ container. OpenDJ will install and configure itself inside the container as well as create volumes inside of the current directory as `/volumes/` for necessary persistent data, like db, schema, etc..
 
@@ -70,4 +71,4 @@ FAQ:
 
 ## Documentation
 
-Please refer to the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/ce/3.1.3/docker/intro/) for further reading on Docker image implementations.
+Please refer to the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/de/) for further reading on Docker image implementations.
