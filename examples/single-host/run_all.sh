@@ -3,7 +3,7 @@
 set -e
 
 CONFIG_DIR=$PWD/volumes/config-init/db
-GLUU_VERSION=3.1.4_01
+GLUU_VERSION=3.1.4_02
 INIT_CONFIG_CMD=""
 DOMAIN=""
 ADMIN_PW=""
