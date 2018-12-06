@@ -2,7 +2,7 @@
 
 This is an example of how to deploy Gluu Server Docker Edition on multi-host setup.
 
-For futher reading, please see the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/ce/3.1.3/docker/intro/).
+For futher reading, please see the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/ce/3.1.4/docker/intro/).
 
 ## Requirements
 
@@ -14,9 +14,9 @@ For futher reading, please see the [Gluu Server Docker Edition Documentation](ht
 
 -   Get the source code:
 
-        wget -q https://github.com/GluuFederation/gluu-docker/archive/3.1.3.zip
-        unzip 3.1.3.zip
-        cd gluu-docker-3.1.3/examples/multi-hosts/
+        wget -q https://github.com/GluuFederation/gluu-docker/archive/3.1.4.zip
+        unzip 3.1.4.zip
+        cd gluu-docker-3.1.4/examples/multi-hosts/
 
 ## Provisioning Cluster Nodes
 
