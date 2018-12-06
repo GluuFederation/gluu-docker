@@ -70,4 +70,4 @@ FAQ:
 
 ## Documentation
 
-Please refer to the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/ce/3.1.3/docker/intro/) for further reading on Docker image implementations.
+Please refer to the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/ce/3.1.4/docker/intro/) for further reading on Docker image implementations.
