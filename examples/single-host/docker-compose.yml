@@ -51,7 +51,7 @@ services:
       - "SERVICE_IGNORE=yes"
 
   ldap:
-    image: gluufederation/opendj:3.1.4_02
+    image: gluufederation/opendj:3.1.4_03
     environment:
       - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul
