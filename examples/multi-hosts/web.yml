@@ -6,7 +6,7 @@ networks:
 
 services:
   oxauth:
-    image: gluufederation/oxauth:3.1.4_01
+    image: gluufederation/oxauth:3.1.4_02
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
       - GLUU_CONFIG_ADAPTER=consul
@@ -35,7 +35,7 @@ services:
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxtrust:
-    image: gluufederation/oxtrust:3.1.4_01
+    image: gluufederation/oxtrust:3.1.4_02
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
       - GLUU_CONFIG_ADAPTER=consul
