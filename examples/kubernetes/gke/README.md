@@ -57,15 +57,6 @@
 
         kubectl apply -f generate-config.yaml
 
-### Redis (optional)
-
-Note: this pod is optional and used only when `GLUU_CACHE_TYPE` is set to `REDIS`.
-
-Deploy Redis pod:
-
-    cd ../redis
-    kubectl apply -f redis.yaml
-
 ### OpenDJ (LDAP)
 
 1.  Go to `ldap` directory:
@@ -223,10 +214,3 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
        NGINX_IP=NGINX_CLUSTER_IP sh deploy-pod.sh
 
 1. Enable Passport support by following the official docs [here](https://gluu.org/docs/ce/authn-guide/passport/#setup-passportjs-with-gluu).
-
-1. Afterwards, run the following commands to _restart_ oxPassport:
-
-    - this will force oxpassport to reload all of its containers in order to load strategies properly
-
-          kubectl scale deployment --replicas=0 oxpassport
-          kubectl scale deployment --replicas=1 oxpassport

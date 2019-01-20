@@ -38,16 +38,14 @@ spec:
             claimName: opendj-db-volume-claim
       containers:
         - name: opendj
-          image: 'gluufederation/opendj:3.1.4_03'
+          image: gluufederation/opendj:3.1.5_dev
           env:
             - name: GLUU_CONFIG_ADAPTER
               value: "kubernetes"
+            - name: GLUU_SECRET_ADAPTER
+              value: "kubernetes"
             - name: GLUU_LDAP_INIT
               value: "false"
-            - name: GLUU_LDAP_PEERS_LOOKUP
-              value: opendj
-            - name: GLUU_RESOLVER_ADDR
-              value: kube-dns.kube-system
             # the value must match serviceName `opendj` because other containers
             - name: GLUU_CERT_ALT_NAME
               value: "opendj"
