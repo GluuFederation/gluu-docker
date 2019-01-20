@@ -35,18 +35,14 @@ spec:
       containers:
       - name: oxpassport
         imagePullPolicy: Always
-        image: gluufederation/oxpassport:3.1.4_01
+        image: gluufederation/oxpassport:3.1.5_dev
         ports:
         - containerPort: 8090
         env:
           - name: GLUU_CONFIG_ADAPTER
             value: "kubernetes"
-          # - name: GLUU_LDAP_URL
-          #   value: "opendj:1636"
-          - name: GLUU_OXAUTH_BACKEND
-            value: "oxauth:8080"
-          - name: GLUU_OXTRUST_BACKEND
-            value: "oxtrust:8080"
+          - name: GLUU_SECRET_ADAPTER
+            value: "kubernetes"
         livenessProbe:
           httpGet:
             path: /passport
