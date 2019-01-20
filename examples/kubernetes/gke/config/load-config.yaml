@@ -15,11 +15,13 @@ spec:
             claimName: config-volume-claim
       containers:
         - name: config-init-load
-          image: 'gluufederation/config-init:3.1.4_03'
+          image: gluufederation/config-init:3.1.5_dev
           volumeMounts:
             - mountPath: /opt/config-init/db/
               name: config
           env:
             - name: GLUU_CONFIG_ADAPTER
               value: kubernetes
-          command: ["python", "/opt/config-init/scripts/entrypoint.py", "load"]
+            - name: GLUU_SECRET_ADAPTER
+              value: kubernetes
+          args: ["load"]
