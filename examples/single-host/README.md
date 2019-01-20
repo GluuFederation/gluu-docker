@@ -1,36 +1,79 @@
 # Gluu Server Docker Edition Single-host Setup
 
-This id an example of running Gluu Server Docker edition on a single VM.
+This is an example of running Gluu Server Docker Edition on a single VM.
 
-#### Requirements:
+## Requirements:
 
-1) Follow the [Docker installation instructions](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) or use the [convenience installation script](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-convenience-script)
+1)  Follow the [Docker installation instructions](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) or use the [convenience installation script](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-convenience-script)
 
-1) [Docker-compose](https://docs.docker.com/compose/install/#install-compose)
+1)  [docker-compose](https://docs.docker.com/compose/install/#install-compose).
 
-1) `run_all.sh` setup file and docker-compose.yaml
+1)  Obtain Google Cloud Platform KMS credentials JSON file, save it as `gcp_kms_creds.json`.
+
+1)  Create `gcp_kms_stanza.hcl`:
+
+        seal "gcpckms" {
+            credentials = "/vault/config/creds.json"
+            project     = "<PROJECT_NAME>"
+            region      = "<REGION_NAME>"
+            key_ring    = "<KEYRING_NAME>"
+            crypto_key  = "<KEY_NAME>"
+        }
+
+1)  Obtain files for deployment:
 
         mkdir docker-gluu-server
         cd docker-gluu-server
-        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.4/examples/single-host/run_all.sh
-        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.4/examples/single-host/docker-compose.yml
+        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.5/examples/single-host/run_all.sh
+        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.5/examples/single-host/docker-compose.yml
+        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.5/examples/single-host/vault_gluu_policy.hcl
         chmod +x run_all.sh
 
-Run the following command inside the `/path/to/docker-gluu-server/` directory and follow the prompts:
+1)  Run the following command inside the `/path/to/docker-gluu-server/` directory and follow the prompts:
 
-```
-./run_all.sh
-```
+        ./run_all.sh
 
-The startup process takes roughly 5-10 minutes depending. The longest is usually OpenDJ. You can keep track of that process by using the following command:
+    The startup process may take some time. You can keep track of the deployment by using the following command:
 
-```
-docker logs -f ldap
-```
+        docker-compose logs -f
 
-The same for all the other services after as well.
+1)  On initial deployment, since Vault has not been configured yet, each service (other than Consul, Vault, and Registrator) will wait for Vault readiness.
 
-FAQ:
+    -   Initialize Vault:
+
+            docker exec vault vault operator init -key-shares=1 -key-threshold=1 -recovery-shares=1 -recovery-threshold=1 > vault_key_token.txt
+
+        The output of this command is redirected to a file `vault_key_token.txt`. Secure this file as it contains recovery key and root token.
+
+    -   Login to Vault using root token:
+
+            docker exec -ti vault vault login -no-print
+
+        A prompt will appear to enter the root token.
+
+    -   Write policy to access Vault's secrets:
+
+            docker exec vault vault policy write gluu /vault/config/policy.hcl
+
+    -   Enable Vault AppRole for containers:
+
+            docker exec vault vault auth enable approle
+            docker exec vault vault write auth/approle/role/gluu policies=gluu
+            docker exec vault vault write auth/approle/role/gluu \
+                secret_id_ttl=0 \
+                token_num_uses=0 \
+                token_ttl=20m \
+                token_max_ttl=30m \
+                secret_id_num_uses=0
+
+    -   Generate RoleID and SecretID for containers:
+
+            docker exec vault vault read -field=role_id auth/approle/role/gluu/role-id > vault_role_id.txt
+            docker exec vault vault write -f -field=secret_id auth/approle/role/gluu/secret-id > vault_secret_id.txt
+
+    Afterwards, check the logs to see the progress of deployment after Vault has been initialized and configured properly.
+
+## FAQ
 
 1) What network is Gluu Server Docker Edition running on?
 
@@ -42,7 +85,7 @@ FAQ:
             --network container:consul \
             -e GLUU_CONFIG_ADAPTER=consul \
             -e GLUU_CONSUL_HOST=consul \
-            gluufederation/config-init:3.1.4_02 \
+            gluufederation/config-init:3.1.5_dev \
             generate \
             --ldap-type "${GLUU_LDAP_TYPE}" \
             --domain $domain \
@@ -60,7 +103,7 @@ FAQ:
 
     Firstly, [consul](https://www.consul.io/), which is our key value store, as well as service discovery container.
 
-    Secondly, [config-init](https://github.com/GluuFederation/docker-config-init/tree/3.1.4), which will load all of the necessary keys, configuration settings, templates and other requirements, into consul. This container will run to completion and then exit and remove itself. All services hereinafter will use consul to pull their necessary configuration.
+    Secondly, [config-init](https://github.com/GluuFederation/docker-config-init/tree/3.1.5), which will load all of the necessary keys, configuration settings, templates and other requirements, into consul. This container will run to completion and then exit and remove itself. All services hereinafter will use consul to pull their necessary configuration.
 
     Next is our OpenDJ container. OpenDJ will install and configure itself inside the container as well as create volumes inside of the current directory as `/volumes/` for necessary persistent data, like db, schema, etc..
 
@@ -70,4 +113,4 @@ FAQ:
 
 ## Documentation
 
-Please refer to the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/ce/3.1.4/docker/intro/) for further reading on Docker image implementations.
+Please refer to the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/ce/3.1.5/docker/intro/) for further reading on Docker image implementations.

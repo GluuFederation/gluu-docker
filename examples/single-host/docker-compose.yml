@@ -17,6 +17,30 @@ services:
       - "SERVICE_IGNORE=yes"
     restart: unless-stopped
 
+  vault:
+    container_name: vault
+    image: vault:1.0.1
+    command: vault server -config=/vault/config
+    volumes:
+      - ./volumes/vault/config:/vault/config
+      - ./volumes/vault/data:/vault/data
+      - ./volumes/vault/logs:/vault/logs
+      - ./vault_gluu_policy.hcl:/vault/config/policy.hcl
+      - ./gcp_kms_stanza.hcl:/vault/config/stanza.hcl
+      - ./gcp_kms_creds.json:/vault/config/creds.json
+    cap_add:
+      - IPC_LOCK
+    environment:
+      - VAULT_REDIRECT_INTERFACE=eth0
+      - VAULT_CLUSTER_INTERFACE=eth0
+      - VAULT_ADDR=http://0.0.0.0:8200
+      - VAULT_LOCAL_CONFIG={"backend":{"consul":{"address":"consul:8500","path":"vault/"}},"listener":{"tcp":{"address":"0.0.0.0:8200","tls_disable":1}}}
+    restart: unless-stopped
+    depends_on:
+      - consul
+    labels:
+      - "SERVICE_IGNORE=yes"
+
   registrator:
     image: gluufederation/registrator:dev
     command: registrator -internal -cleanup -resync 30 -retry-attempts 5 -retry-interval 10 consul://consul:8500
@@ -27,44 +51,18 @@ services:
     depends_on:
       - consul
 
-  # redis:
-  #   image: redis:alpine
-  #   # run cluster-enabled redis-server
-  #   # command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --appendonly yes --cluster-node-timeout 5000
-  #   container_name: redis
-  #   labels:
-  #     - "SERVICE_IGNORE=yes"
-  #   restart: unless-stopped
-
-  nginx:
-    image: gluufederation/nginx:3.1.4_01
-    environment:
-      - GLUU_CONFIG_ADAPTER=consul
-      - GLUU_CONSUL_HOST=consul
-      - GLUU_CONSUL_PORT=8500
-    ports:
-      - "80:80"
-      - "443:443"
-    container_name: nginx
-    restart: unless-stopped
-    labels:
-      - "SERVICE_IGNORE=yes"
-
   ldap:
-    image: gluufederation/opendj:3.1.4_03
+    image: gluufederation/opendj:3.1.5_dev
     environment:
-      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_CONSUL_HOST=consul
-      - GLUU_CONSUL_PORT=8500
+      - GLUU_SECRET_VAULT_HOST=vault
       - GLUU_LDAP_INIT=true
       - GLUU_LDAP_INIT_HOST=ldap
       - GLUU_LDAP_INIT_PORT=1636
       - GLUU_LDAP_ADDR_INTERFACE=eth0
       - GLUU_OXTRUST_CONFIG_GENERATION=true
       - GLUU_CACHE_TYPE=NATIVE_PERSISTENCE
-      # - GLUU_CACHE_TYPE=REDIS  # don't forget to enable redis service
-      # - GLUU_REDIS_URL=redis:6379
-      # - GLUU_REDIS_TYPE=STANDALONE
       # the value must match service name `ldap` because other containers
       # use this value as LDAP hostname
       - GLUU_CERT_ALT_NAME=ldap
@@ -76,16 +74,35 @@ services:
       - ./volumes/opendj/db:/opt/opendj/db
       - ./volumes/opendj/flag:/flag
       - ./volumes/opendj/backup:/opt/opendj/bak
+      - ./vault_role_id.txt:/etc/certs/vault_role_id
+      - ./vault_secret_id.txt:/etc/certs/vault_secret_id
+    restart: unless-stopped
+    labels:
+      - "SERVICE_IGNORE=yes"
+
+  nginx:
+    image: gluufederation/nginx:3.1.5_dev
+    environment:
+      - GLUU_CONSUL_HOST=consul
+      - GLUU_CONFIG_CONSUL_HOST=consul
+      - GLUU_SECRET_VAULT_HOST=vault
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./vault_role_id.txt:/etc/certs/vault_role_id
+      - ./vault_secret_id.txt:/etc/certs/vault_secret_id
+    container_name: nginx
     restart: unless-stopped
     labels:
       - "SERVICE_IGNORE=yes"
 
   oxauth:
-    image: gluufederation/oxauth:3.1.4_01
+    image: gluufederation/oxauth:3.1.5_dev
     environment:
-      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_CONSUL_HOST=consul
-      - GLUU_CONSUL_PORT=8500
+      - GLUU_SECRET_VAULT_HOST=vault
       - GLUU_LDAP_URL=ldap:1636
     extra_hosts:
       - "${DOMAIN}:${HOST_IP}"
@@ -95,6 +112,8 @@ services:
       - ./volumes/oxauth/custom/static:/opt/gluu/jetty/oxauth/custom/static
       - ./volumes/oxauth/lib/ext:/opt/gluu/jetty/oxauth/lib/ext
       - ./volumes/oxauth/logs:/opt/gluu/jetty/oxauth/logs
+      - ./vault_role_id.txt:/etc/certs/vault_role_id
+      - ./vault_secret_id.txt:/etc/certs/vault_secret_id
     mem_limit: 1536M
     restart: unless-stopped
     labels:
@@ -104,11 +123,11 @@ services:
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxtrust:
-    image: gluufederation/oxtrust:3.1.4_01
+    image: gluufederation/oxtrust:3.1.5_dev
     environment:
-      - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul
-      - GLUU_CONSUL_PORT=8500
+      - GLUU_CONFIG_CONSUL_HOST=consul
+      - GLUU_SECRET_VAULT_HOST=vault
       - GLUU_LDAP_URL=ldap:1636
       - GLUU_OXAUTH_BACKEND=oxauth:8080
     extra_hosts:
@@ -120,6 +139,8 @@ services:
       - ./volumes/oxtrust/lib/ext:/opt/gluu/jetty/identity/lib/ext
       - ./volumes/oxtrust/logs:/opt/gluu/jetty/identity/logs
       - ./volumes/shared-shibboleth-idp:/opt/shared-shibboleth-idp
+      - ./vault_role_id.txt:/etc/certs/vault_role_id
+      - ./vault_secret_id.txt:/etc/certs/vault_secret_id
     mem_limit: 1536M
     restart: unless-stopped
     labels:
@@ -129,17 +150,19 @@ services:
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxshibboleth:
-    image: gluufederation/oxshibboleth:3.1.4_01
+    image: gluufederation/oxshibboleth:3.1.5_dev
     environment:
-      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_CONSUL_HOST=consul
-      - GLUU_CONSUL_PORT=8500
+      - GLUU_SECRET_VAULT_HOST=vault
       - GLUU_LDAP_URL=ldap:1636
     extra_hosts:
       - "${DOMAIN}:${HOST_IP}"
     container_name: oxshibboleth
     volumes:
       - ./volumes/shared-shibboleth-idp:/opt/shared-shibboleth-idp
+      - ./vault_role_id.txt:/etc/certs/vault_role_id
+      - ./vault_secret_id.txt:/etc/certs/vault_secret_id
     mem_limit: 1024M
     restart: unless-stopped
     labels:
@@ -149,17 +172,16 @@ services:
       - "SERVICE_8086_CHECK_TIMEOUT=5s"
 
   oxpassport:
-    image: gluufederation/oxpassport:3.1.4_01
+    image: gluufederation/oxpassport:3.1.5_dev
     environment:
-      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_CONSUL_HOST=consul
-      - GLUU_CONSUL_PORT=8500
-      - GLUU_LDAP_URL=ldap:1636
-      # required by wait-for-it script
-      - GLUU_OXAUTH_BACKEND=oxauth:8080
-      - GLUU_OXTRUST_BACKEND=oxtrust:8080
+      - GLUU_SECRET_VAULT_HOST=vault
     extra_hosts:
       - "${DOMAIN}:${HOST_IP}"
+    volumes:
+      - ./vault_role_id.txt:/etc/certs/vault_role_id
+      - ./vault_secret_id.txt:/etc/certs/vault_secret_id
     container_name: oxpassport
     restart: unless-stopped
     labels:

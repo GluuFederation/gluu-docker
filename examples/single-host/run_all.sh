@@ -3,7 +3,7 @@
 set -e
 
 CONFIG_DIR=$PWD/volumes/config-init/db
-GLUU_VERSION=3.1.4_03
+GLUU_VERSION=3.1.5_dev
 INIT_CONFIG_CMD=""
 DOMAIN=""
 ADMIN_PW=""
@@ -16,7 +16,6 @@ DOCKER_COMPOSE=${DOCKER_COMPOSE:-docker-compose}
 DOCKER=${DOCKER:-docker}
 
 gather_ip() {
-
     echo "[I] Determining OS Type and Attempting to Gather External IP Address"
     unameOut="$(uname -s)"
     case "${unameOut}" in
@@ -53,7 +52,6 @@ valid_ip() {
 }
 
 confirm_ip() {
-
     read -p "Is this the correct external IP Address: ${HOST_IP} [Y/n]? " cont
     case "$cont" in
         y|Y)
@@ -92,14 +90,13 @@ check_docker_compose() {
     fi
 }
 
-# deploy service defined in docker-compose.yml
 load_services() {
     echo "[I] Deploying containers"
     DOMAIN=$DOMAIN HOST_IP=$HOST_IP $DOCKER_COMPOSE up -d
 }
 
-prepare_config() {
-    echo "[I] Preparing cluster-wide configuration"
+prepare_config_secret() {
+    echo "[I] Preparing cluster-wide config and secrets"
 
     # guess if config already in Consul
     if [[ ! -z $($DOCKER ps --filter name=consul -q) ]]; then
@@ -161,10 +158,12 @@ load_config() {
         --rm \
         --network container:consul \
         -v $CONFIG_DIR:/opt/config-init/db/ \
-        -e GLUU_CONFIG_ADAPTER=consul \
-        -e GLUU_CONSUL_HOST=consul \
+        -v $PWD/vault_role_id.txt:/etc/certs/vault_role_id \
+        -v $PWD/vault_secret_id.txt:/etc/certs/vault_secret_id \
+        -e GLUU_CONFIG_CONSUL_HOST=consul \
+        -e GLUU_SECRET_VAULT_HOST=vault \
         gluufederation/config-init:$GLUU_VERSION \
-        load
+            load
 }
 
 generate_config() {
@@ -173,18 +172,20 @@ generate_config() {
         --rm \
         --network container:consul \
         -v $CONFIG_DIR:/opt/config-init/db/ \
-        -e GLUU_CONFIG_ADAPTER=consul \
-        -e GLUU_CONSUL_HOST=consul \
+        -v $PWD/vault_role_id.txt:/etc/certs/vault_role_id \
+        -v $PWD/vault_secret_id.txt:/etc/certs/vault_secret_id \
+        -e GLUU_CONFIG_CONSUL_HOST=consul \
+        -e GLUU_SECRET_VAULT_HOST=vault \
         gluufederation/config-init:$GLUU_VERSION \
-        generate \
-        --admin-pw $ADMIN_PW \
-        --email $EMAIL \
-        --domain $DOMAIN \
-        --org-name "$ORG_NAME" \
-        --country-code $COUNTRY_CODE \
-        --state $STATE \
-        --city "$CITY" \
-        --ldap-type opendj
+            generate \
+            --admin-pw $ADMIN_PW \
+            --email $EMAIL \
+            --domain $DOMAIN \
+            --org-name "$ORG_NAME" \
+            --country-code $COUNTRY_CODE \
+            --state $STATE \
+            --city "$CITY" \
+            --ldap-type opendj
 }
 
 # ==========
@@ -194,11 +195,16 @@ check_docker
 check_docker_compose
 
 mkdir -p $CONFIG_DIR
+touch vault_role_id.txt
+touch vault_secret_id.txt
+touch gcp_kms_stanza.hcl
+touch gcp_kms_creds.json
 
 gather_ip
 until confirm_ip; do : ; done
 
-prepare_config
+prepare_config_secret
+
 load_services
 
 case $INIT_CONFIG_CMD in
