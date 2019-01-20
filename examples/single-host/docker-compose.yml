@@ -55,7 +55,6 @@ services:
     image: gluufederation/opendj:3.1.5_dev
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
-      - GLUU_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
       - GLUU_LDAP_INIT=true
       - GLUU_LDAP_INIT_HOST=ldap
@@ -83,7 +82,6 @@ services:
   nginx:
     image: gluufederation/nginx:3.1.5_dev
     environment:
-      - GLUU_CONSUL_HOST=consul
       - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
     ports:
@@ -101,7 +99,6 @@ services:
     image: gluufederation/oxauth:3.1.5_dev
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
-      - GLUU_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
       - GLUU_LDAP_URL=ldap:1636
     extra_hosts:
@@ -125,7 +122,6 @@ services:
   oxtrust:
     image: gluufederation/oxtrust:3.1.5_dev
     environment:
-      - GLUU_CONSUL_HOST=consul
       - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
       - GLUU_LDAP_URL=ldap:1636
@@ -153,7 +149,6 @@ services:
     image: gluufederation/oxshibboleth:3.1.5_dev
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
-      - GLUU_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
       - GLUU_LDAP_URL=ldap:1636
     extra_hosts:
@@ -175,7 +170,6 @@ services:
     image: gluufederation/oxpassport:3.1.5_dev
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
-      - GLUU_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
     extra_hosts:
       - "${DOMAIN}:${HOST_IP}"
