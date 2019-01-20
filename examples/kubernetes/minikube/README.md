@@ -34,15 +34,6 @@
 
         kubectl apply -f generate-config.yaml
 
-### Redis (optional)
-
-Note: this pod is optional and used only when `GLUU_CACHE_TYPE` is set to `REDIS`.
-
-Deploy Redis pod:
-
-    cd ../redis
-    kubectl apply -f redis.yaml
-
 ### OpenDJ (LDAP)
 
 1.  Go to `ldap` directory:

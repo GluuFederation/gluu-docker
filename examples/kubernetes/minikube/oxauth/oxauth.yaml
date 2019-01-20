@@ -32,7 +32,7 @@ spec:
       containers:
       - name: oxauth
         imagePullPolicy: Always
-        image: gluufederation/oxauth:3.1.4_01
+        image: gluufederation/oxauth:3.1.5_dev
         resources:
           requests:
             memory: "1000Mi"
@@ -42,6 +42,8 @@ spec:
         - containerPort: 8080
         env:
           - name: GLUU_CONFIG_ADAPTER
+            value: "kubernetes"
+          - name: GLUU_SECRET_ADAPTER
             value: "kubernetes"
           - name: GLUU_LDAP_URL
             value: "opendj:1636"
