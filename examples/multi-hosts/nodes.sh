@@ -147,16 +147,16 @@ csync2_repl() {
 prepare_volumes() {
     echo "[I] Creating directories for mounted volumes in manager node"
     docker-machine ssh manager mkdir -p /opt/config-init/db \
-        /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs /opt/opendj/flag \
+        /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs /opt/opendj/backup /opt/opendj/flag \
         /opt/consul \
-        /opt/redis \
+        /opt/vault/config /opt/vault/data /opt/vault/logs \
         /opt/shared-shibboleth-idp
 
     for node in worker-1 worker-2; do
         echo "[I] Creating directories for mounted volumes in $node node"
-        docker-machine ssh $node mkdir -p /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs \
+        docker-machine ssh $node mkdir -p /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs /opt/opendj/backup \
             /opt/consul \
-            /opt/redis \
+            /opt/vault/config /opt/vault/data /opt/vault/logs \
             /opt/shared-shibboleth-idp
     done
 }
@@ -197,7 +197,11 @@ main() {
     case $1 in
         "up")
             driver=digitalocean
-            DO_TOKEN_FILE=$PWD/volumes/digitalocean-access-token
+            DO_TOKEN_FILE=$PWD/digitalocean-access-token
+
+            if [[ -f $PWD/volumes/digitalocean-access-token ]]; then
+                mv $PWD/volumes/digitalocean-access-token .
+            fi
 
             if [[ ! -f $DO_TOKEN_FILE ]]; then
                 echo "[E] Requires DigitalOcean token saved in $DO_TOKEN_FILE file"
