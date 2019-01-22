@@ -14,9 +14,9 @@ For futher reading, please see the [Gluu Server Docker Edition Documentation](ht
 
 -   Get the source code:
 
-        wget -q https://github.com/GluuFederation/gluu-docker/archive/3.1.4.zip
-        unzip 3.1.4.zip
-        cd gluu-docker-3.1.4/examples/multi-hosts/
+        wget -q https://github.com/GluuFederation/gluu-docker/archive/3.1.5.zip
+        unzip 3.1.5.zip
+        cd gluu-docker-3.1.5/examples/multi-hosts/
 
 ## Provisioning Cluster Nodes
 
@@ -33,7 +33,7 @@ Refer to https://docs.docker.com/engine/swarm/key-concepts/#nodes for an overvie
 
 We need to create a file containing DigitalOcean access token:
 
-    echo $DO_TOKEN > $PWD/volumes/digitalocean-access-token
+    echo $DO_TOKEN > digitalocean-access-token
 
 To set up nodes, execute the command below:
 
@@ -86,11 +86,6 @@ This will return the network information:
         }
     ]
 
-The `gluu` network has the `attachable` option set to `true`.
-This means that any container deployed outside the Swarm cluster can be _attached_ to the `gluu` network.
-For example, running `docker run --rm --network=gluu gluufederation/config-init`
-will enable this container to talk to other containers within the `gluu` network.
-
 ### Tear Down Nodes
 
 To destroy nodes, simply execute the command below (regardless of the nodes driver):
@@ -109,8 +104,9 @@ Refer to https://docs.docker.com/engine/swarm/key-concepts/#services-and-tasks f
 In this example, the following services/containers are used to deploy the Gluu stack:
 
 - Consul service
+- Vault service
+- Registrator service
 - config-init container
-- Redis as caching service
 - OpenDJ container
 - oxAuth service
 - oxTrust service
@@ -120,37 +116,86 @@ In this example, the following services/containers are used to deploy the Gluu s
 
 ### 1 - Deploying Consul
 
-Consul service is divided into two parts to achieve HA/cluster setup:
-
-- `consul_manager` deployed to `manager` node
-- `consul_worker` deployed to `worker-1` and `worker-2` node
-
 To deploy the service:
 
     # connect to remote docker engine in manager node
     eval $(docker-machine env manager)
     docker stack deploy -c consul.yml gluu
 
-### 2 - Prepare cluster-wide configuration
+### 2 - Deploying Vault
 
-Cluster-wide configurations are saved into Consul KV storage. All Gluu containers pull these to self-configure themselves.
+The following files are required for Vault auto-unseal process using GCP KMS service:
 
-Run the following command to prepare the configuration:
+- `gcp_kms_creds.json`
+- `gcp_kms_stanza.hcl`
+
+Obtain Google Cloud Platform KMS credentials JSON file, save it as `gcp_kms_creds.json`. Save the content as Docker secret.
+
+    docker secret create gcp_kms_creds gcp_kms_creds.json
+
+Create `gcp_kms_stanza.hcl`:
+
+    seal "gcpckms" {
+        credentials = "/vault/config/creds.json"
+        project     = "<PROJECT_NAME>"
+        region      = "<REGION_NAME>"
+        key_ring    = "<KEYRING_NAME>"
+        crypto_key  = "<KEY_NAME>"
+    }
+
+Make sure to adjust the values above, then save the content as Docker secret.
+
+    docker secret create gcp_kms_stanza gcp_kms_stanza.hcl
+
+Create Docker config for custom Vault policy:
+
+    docker config create vault_gluu_policy vault_gluu_policy.hcl
+
+To deploy the service:
+
+    docker stack deploy -c vault.yml gluu
+
+Vault must be initialized (once) and configured to allow containers accessing the secrets:
+
+    export VAULT_MANAGER=$(docker ps --filter name=vault --format '{{.Names}}')
+
+    # the output is redirected to a file; securet this file as it contains recovery key and root token
+    docker exec $VAULT_MANAGER vault operator init \
+        -key-shares=1 \
+        -key-threshold=1 \
+        -recovery-shares=1 \
+        -recovery-threshold=1 > vault_key_token.txt
+
+    # when prompted for token, enter the root token from file above
+    docker exec -ti $VAULT_MANAGER vault login -no-print
+
+    # enable approle
+    docker exec $VAULT_MANAGER vault auth enable approle
+    docker exec $VAULT_MANAGER vault write auth/approle/role/gluu policies=gluu
+    docker exec $VAULT_MANAGER vault write auth/approle/role/gluu \
+        secret_id_ttl=0 \
+        token_num_uses=0 \
+        token_ttl=20m \
+        token_max_ttl=30m \
+        secret_id_num_uses=0
+
+    # generate RoleID
+    docker exec $VAULT_MANAGER vault read -field=role_id auth/approle/role/gluu/role-id > vault_role_id.txt
+    docker secret create vault_role_id vault_role_id.txt
+
+    # generate SecretID
+    docker exec $VAULT_MANAGER vault write -f -field=secret_id auth/approle/role/gluu/secret-id > vault_secret_id.txt
+    docker secret create vault_secret_id vault_secret_id.txt
+
+### 3 - Prepare cluster-wide config and secret
+
+Cluster-wide config are saved into Consul KV storage and secrets are saved into Vault. All Gluu containers pull these to self-configure themselves.
+
+Run the following command to prepare the config and secrets:
 
     ./config.sh
 
-If there's no configuration saved in Consul KV, the script will ask the user whether to import configuration from a backup file or to generate new ones (we only need to input required parameters and the configuration will be generated, saved to Consul, and export them to local file for backup purpose).
-
 **NOTE:** this process may take some time, please wait until the process completed.
-
-### 3 - Deploy Cache Storage
-
-For a Gluu cluster with multiple oxAuth instances, we need a cache storage as a single place to read and write sessions.
-In this case, we're using Redis.
-
-Run the following command to deploy cache service:
-
-    docker stack deploy -c redis.yml gluu
 
 ### 4 - Deploy LDAP
 
