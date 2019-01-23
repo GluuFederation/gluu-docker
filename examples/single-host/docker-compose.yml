@@ -107,7 +107,8 @@ services:
     volumes:
       - ./volumes/oxauth/custom/pages:/opt/gluu/jetty/oxauth/custom/pages
       - ./volumes/oxauth/custom/static:/opt/gluu/jetty/oxauth/custom/static
-      - ./volumes/oxauth/lib/ext:/opt/gluu/jetty/oxauth/lib/ext
+      - ./volumes/oxauth/custom/libs:/opt/gluu/jetty/oxauth/custom/libs
+      - ./volumes/oxauth/custom/i18n:/opt/gluu/jetty/oxauth/custom/i18n
       - ./volumes/oxauth/logs:/opt/gluu/jetty/oxauth/logs
       - ./vault_role_id.txt:/etc/certs/vault_role_id
       - ./vault_secret_id.txt:/etc/certs/vault_secret_id
@@ -132,7 +133,8 @@ services:
     volumes:
       - ./volumes/oxtrust/custom/pages:/opt/gluu/jetty/identity/custom/pages
       - ./volumes/oxtrust/custom/static:/opt/gluu/jetty/identity/custom/static
-      - ./volumes/oxtrust/lib/ext:/opt/gluu/jetty/identity/lib/ext
+      - ./volumes/oxtrust/custom/libs:/opt/gluu/jetty/identity/custom/libs
+      - ./volumes/oxtrust/custom/i18n:/opt/gluu/jetty/identity/custom/i18n
       - ./volumes/oxtrust/logs:/opt/gluu/jetty/identity/logs
       - ./volumes/shared-shibboleth-idp:/opt/shared-shibboleth-idp
       - ./vault_role_id.txt:/etc/certs/vault_role_id
