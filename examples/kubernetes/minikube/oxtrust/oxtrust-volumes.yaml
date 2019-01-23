@@ -98,7 +98,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-      path: "/data/oxtrust/lib/ext"
+      path: "/data/oxtrust/custom/libs"
 
 ---
 
