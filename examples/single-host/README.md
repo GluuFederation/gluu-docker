@@ -113,4 +113,4 @@ This is an example of running Gluu Server Docker Edition on a single VM.
 
 ## Documentation
 
-Please refer to the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/ce/3.1.5/docker/intro/) for further reading on Docker image implementations.
+Please refer to the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/de/3.1.5) for further reading on Docker image implementations.
