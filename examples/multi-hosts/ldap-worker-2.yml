@@ -41,10 +41,17 @@ services:
       - /opt/opendj/config:/opt/opendj/config
       - /opt/opendj/ldif:/opt/opendj/ldif
       - /opt/opendj/logs:/opt/opendj/logs
-    secrets:
-      vault_role_id:
-        file: /etc/certs/vault_role_id
-      vault_secret_id:
-        file: /etc/certs/vault_secret_id
+      - /opt/opendj/backup:/opt/opendj/bak
     labels:
       - "SERVICE_IGNORE=yes"
+    secrets:
+      - source: vault_role_id
+        target: /etc/certs/vault_role_id
+      - source: vault_secret_id
+        target: /etc/certs/vault_secret_id
+
+secrets:
+  vault_role_id:
+    external: true
+  vault_secret_id:
+    external: true
