@@ -169,6 +169,9 @@ Vault must be initialized (once) and configured to allow containers accessing th
     # when prompted for token, enter the root token from file above
     docker exec -ti $VAULT_MANAGER vault login -no-print
 
+    # custom policy
+    docker exec $VAULT_MANAGER vault policy write gluu /vault/config/policy.hcl
+
     # enable approle
     docker exec $VAULT_MANAGER vault auth enable approle
     docker exec $VAULT_MANAGER vault write auth/approle/role/gluu policies=gluu
@@ -186,6 +189,9 @@ Vault must be initialized (once) and configured to allow containers accessing th
     # generate SecretID
     docker exec $VAULT_MANAGER vault write -f -field=secret_id auth/approle/role/gluu/secret-id > vault_secret_id.txt
     docker secret create vault_secret_id vault_secret_id.txt
+
+    # re-establish Vault cluster by restarting all Vault containers
+    docker service update --force gluu_vault
 
 ### 3 - Prepare cluster-wide config and secret
 
@@ -250,12 +256,3 @@ Run the following commands to deploy oxAuth, oxTrust, oxShibboleth, and NGINX:
 ### 7 - Enabling oxPassport
 
 Enable Passport support by following the official docs [here](https://gluu.org/docs/ce/authn-guide/passport/#setup-passportjs-with-gluu).
-
-Afterwards, run the following commands to deploy restart oxPassport:
-
-    # this will force gluu_oxpassport to reload all of its containers
-    # in order to load strategies properly
-    docker service update --force gluu_oxpassport
-
-    # disconnect from remote docker engine in manager node
-    eval $(docker-machine env -u)

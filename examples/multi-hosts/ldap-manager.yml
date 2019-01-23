@@ -13,6 +13,7 @@ services:
       - GLUU_LDAP_INIT_HOST=ldap.server
       - GLUU_CACHE_TYPE=NATIVE_PERSISTENCE
       - GLUU_CONFIG_CONSUL_HOST=consul.server
+      - GLUU_CONFIG_CONSUL_CONSISTENCY=default
       - GLUU_SECRET_VAULT_HOST=vault.server
       - GLUU_OXTRUST_CONFIG_GENERATION=true
       # the value must match network alias `ldap.server` because other containers
@@ -44,13 +45,13 @@ services:
       - /opt/opendj/logs:/opt/opendj/logs
       - /opt/opendj/backup:/opt/opendj/bak
       - /opt/opendj/flag:/flag
+    labels:
+      - "SERVICE_IGNORE=yes"
     secrets:
       - source: vault_role_id
         target: /etc/certs/vault_role_id
       - source: vault_secret_id
         target: /etc/certs/vault_secret_id
-    labels:
-      - "SERVICE_IGNORE=yes"
 
 secrets:
   vault_role_id:
