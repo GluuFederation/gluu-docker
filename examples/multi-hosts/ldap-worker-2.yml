@@ -12,8 +12,7 @@ services:
       - GLUU_LDAP_INIT=false
       - GLUU_CONFIG_CONSUL_HOST=consul.server
       - GLUU_SECRET_VAULT_HOST=vault.server
-      # - GLUU_LDAP_ADDR_INTERFACE=eth0
-      # - GLUU_LDAP_ADVERTISE_ADDR=ldap.worker-2
+      - GLUU_LDAP_ADVERTISE_ADDR=ldap.worker-2
       # the value must match network alias `ldap.server` because other containers
       # use this value as LDAP hostname
       - GLUU_CERT_ALT_NAME=ldap.server
