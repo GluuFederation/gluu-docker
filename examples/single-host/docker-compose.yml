@@ -59,7 +59,6 @@ services:
       - GLUU_LDAP_INIT=true
       - GLUU_LDAP_INIT_HOST=ldap
       - GLUU_LDAP_INIT_PORT=1636
-      - GLUU_LDAP_ADDR_INTERFACE=eth0
       - GLUU_OXTRUST_CONFIG_GENERATION=true
       - GLUU_CACHE_TYPE=NATIVE_PERSISTENCE
       # the value must match service name `ldap` because other containers
