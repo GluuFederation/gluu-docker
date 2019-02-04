@@ -75,7 +75,7 @@ confirm_ip() {
 }
 
 check_docker() {
-    if [ -z $(which $DOCKER) ]; then
+    if [ -z "$(which $DOCKER)" ]; then
         echo "[E] Unable to detect docker executable"
         echo "[W] Make sure docker is installed and available in PATH or explictly passed as DOCKER environment variable"
         exit 1
@@ -83,7 +83,7 @@ check_docker() {
 }
 
 check_docker_compose() {
-    if [ -z $(which $DOCKER_COMPOSE) ]; then
+    if [ -z "$(which $DOCKER_COMPOSE)" ]; then
         echo "[E] Unable to detect docker-compose executable"
         echo "[W] Make sure docker-compose is installed and available in PATH or explictly passed as DOCKER_COMPOSE environment variable"
         exit 1
