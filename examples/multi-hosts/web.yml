@@ -100,7 +100,7 @@ services:
     init: true
 
   oxpassport:
-    image: gluufederation/oxpassport:3.1.4_01
+    image: gluufederation/oxpassport:3.1.4_02
     environment:
       - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul.server
