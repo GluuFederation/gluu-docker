@@ -5,7 +5,7 @@ DE includes Linux container assets for Gluu Server Community Edition (CE). DE is
 
 ## Docs
 
-Visit the official [Gluu Server DE documentation](https://gluu.org/docs/ce/3.1.3/docker/intro/). 
+Visit the official [Gluu Server DE documentation](https://gluu.org/docs/de). 
 
 ## Code Repositories
 
