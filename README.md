@@ -1,6 +1,8 @@
 # Gluu Server Docker Edition (DE)
 
-[Gluu Server Docker Edition Documentation](https://gluu.org/docs/ce/3.1.3/docker/intro/)
+## Docs
+
+Visit the official [Gluu Server DE documentation](https://gluu.org/docs/ce/3.1.3/docker/intro/). 
 
 ## Code Repositories
 
