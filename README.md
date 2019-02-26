@@ -1,5 +1,8 @@
 # Gluu Server Docker Edition (DE)
 
+## Overview
+DE includes Linux container assets for Gluu Server Community Edition (CE). DE is compatible with Docker, Kubernetes, and other container environments.
+
 ## Docs
 
 Visit the official [Gluu Server DE documentation](https://gluu.org/docs/ce/3.1.3/docker/intro/). 
