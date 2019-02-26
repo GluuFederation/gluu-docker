@@ -1,14 +1,18 @@
-# Gluu Server Docker Edition
+# Gluu Server Docker Edition (DE)
 
-[Gluu Server Docker Edition Documentation](https://gluu.org/docs/ce/3.1.3/docker/intro/)
+## Overview
+DE includes Linux container assets for Gluu Server Community Edition (CE). DE is compatible with Docker, Kubernetes, and other container environments.
+
+## Docs
+
+Visit the official [Gluu Server DE documentation](https://gluu.org/docs/de/). 
 
 ## Code Repositories
 
 Repositories for supported images are shown below:
 
 - [config-init](http://github.com/GluuFederation/docker-config-init)
-- [openldap](http://github.com/GluuFederation/docker-openldap)
-- [opendj](http://github.com/GluuFederation/docker-opendj) (Recommended for replication)
+- [opendj](http://github.com/GluuFederation/docker-opendj)
 - [oxauth](http://github.com/GluuFederation/docker-oxauth)
 - [oxtrust](http://github.com/GluuFederation/docker-oxtrust)
 - [nginx](http://github.com/GluuFederation/docker-nginx)
@@ -38,7 +42,7 @@ Images are hosted at Docker Hub:
 
 - The directory contains `README.md` as a guide to deploy a basic single-host Gluu server stack.
 
-[Swarm](./examples/multi-host/)
+[Swarm](./examples/multi-hosts/)
 
 - The directory contains `README.md` as a guide to deploy a basic multi-hosts Gluu server stack.
 
@@ -49,3 +53,7 @@ Images are hosted at Docker Hub:
 [Minikube](./examples/kubernetes/minikube)
 
 - The directory contains `README.md` as a guide to deploy a basic Gluu server stack on Minikube.
+
+## License
+
+Gluu Server DE is available under the [GLUU SUPPORT license](./LICENSE).
