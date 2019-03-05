@@ -1,6 +1,11 @@
-# Gluu Server Docker Edition
+# Gluu Server Docker Edition (DE)
 
-[Gluu Server Docker Edition Documentation](https://gluu.org/docs/ce/3.1.3/docker/intro/)
+## Overview
+DE includes Linux container assets for Gluu Server Community Edition (CE). DE is compatible with Docker, Kubernetes, and other container environments.
+
+## Docs
+
+Visit the official [Gluu Server DE documentation](https://gluu.org/docs/de/3.1.4). 
 
 ## Code Repositories
 
@@ -49,6 +54,6 @@ Images are hosted at Docker Hub:
 
 - The directory contains `README.md` as a guide to deploy a basic Gluu server stack on Minikube.
 
-## Issues
+## License
 
-If you find any issues, please post them on the customer support portal, [support.gluu.org](https://support.gluu.org).
+Gluu Server DE is available under the [GLUU SUPPORT license](./LICENSE).
