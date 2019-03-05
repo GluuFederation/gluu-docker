@@ -6,7 +6,7 @@ networks:
 
 services:
   oxauth:
-    image: gluufederation/oxauth:3.1.4_02
+    image: gluufederation/oxauth:3.1.4_03
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
       - GLUU_CONFIG_ADAPTER=consul
