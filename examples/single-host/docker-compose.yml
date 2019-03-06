@@ -167,3 +167,36 @@ services:
       - "SERVICE_8090_CHECK_HTTP=/passport"
       - "SERVICE_8090_CHECK_INTERVAL=15s"
       - "SERVICE_8090_CHECK_TIMEOUT=5s"
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:6.6.1
+    command: filebeat -e -strict.perms=false
+    container_name: filebeat
+    restart: unless-stopped
+    user: root
+    volumes:
+      - ./volumes/filebeat/data:/usr/share/filebeat/data:rw
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    container_name: elasticsearch
+    restart: unless-stopped
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "TAKE_FILE_OWNERSHIP=true"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./volumes/elasticsearch/data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.6.1
+    container_name: kibana
+    restart: unless-stopped

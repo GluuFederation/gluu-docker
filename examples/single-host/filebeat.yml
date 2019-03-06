@@ -1,0 +1,82 @@
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+output.elasticsearch:
+  hosts: '${ELASTICSEARCH_HOSTS:elasticsearch:9200}'
+  # username: '${ELASTICSEARCH_USERNAME:}'
+  # password: '${ELASTICSEARCH_PASSWORD:}'
+
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      templates:
+        - condition:
+            regexp:
+              docker.container.image: "ox[auth|trust|shibboleth]"
+          config:
+            - type: docker
+              containers.ids:
+                - "${data.docker.container.id}"
+              encoding: utf-8
+              json.keys_under_root: true
+              json.message_key: log
+              enabled: true
+              document_type: docker
+              multiline.pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
+              multiline.negate: true
+              multiline.match: after
+        - condition:
+            contains:
+              docker.container.image: opendj
+          config:
+            - type: docker
+              containers.ids:
+                - "${data.docker.container.id}"
+              encoding: utf-8
+              json.keys_under_root: true
+              json.message_key: log
+              enabled: true
+              document_type: docker
+              include_lines: ['^\[']
+        - condition:
+            contains:
+              docker.container.image: oxpassport
+          config:
+            - type: docker
+              containers.ids:
+                - "${data.docker.container.id}"
+              encoding: utf-8
+              json.keys_under_root: true
+              json.message_key: log
+              enabled: true
+              document_type: docker
+              include_lines: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
+        - condition:
+            contains:
+              docker.container.image: nginx
+          config:
+            - type: docker
+              containers.ids:
+                - "${data.docker.container.id}"
+              encoding: utf-8
+              json.keys_under_root: true
+              json.message_key: log
+              enabled: true
+              document_type: docker
+              exclude_files: ['\.gz$']
+
+processors:
+# decode the log field (sub JSON document) if JSONencoded, then maps it's fields to elasticsearch fields
+- decode_json_fields:
+    fields: ["log"]
+    target: ""
+    # overwrite existing target elasticsearch fields while decoding json fields
+    overwrite_keys: true
+- add_docker_metadata: ~
+- add_cloud_metadata: ~
+
+# Write Filebeat own logs only to file to avoid catching them with itself in docker log files
+logging.to_files: true
+logging.to_syslog: false
