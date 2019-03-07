@@ -1,6 +1,6 @@
 The Gluu Support License (GLUU-SUPPORT)
 
-Copyright (c) 2018 Gluu
+Copyright (c) 2019 Gluu
 
 Permission is hereby granted to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -12,8 +12,9 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-The end-user person or organization using this software has an active support
-subscription while the software is in use in production.
+The end-user person or organization using this software has an active support 
+subscription with either Gluu or one of Gluu's OEM partners after using the 
+software for more than 30 days.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
