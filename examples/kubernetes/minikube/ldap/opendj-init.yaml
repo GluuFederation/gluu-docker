@@ -79,6 +79,12 @@ spec:
             value: "true"
           - name: GLUU_CACHE_TYPE
             value: "NATIVE_PERSISTENCE"
+          # - name: GLUU_CACHE_TYPE
+          #   value: "REDIS"
+          # - name: GLUU_REDIS_TYPE
+          #   value: "STANDALONE"
+          # - name: GLUU_REDIS_URL
+          #   value: "redis:6379"
           # the value must match serviceName `opendj` because other containers use this as LDAP hostname
           - name: GLUU_CERT_ALT_NAME
             value: "opendj"

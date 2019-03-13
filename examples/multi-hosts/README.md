@@ -203,7 +203,24 @@ Run the following command to prepare the config and secrets:
 
 **NOTE:** this process may take some time, please wait until the process completed.
 
-### 4 - Deploy LDAP
+### 4 - Deploy Cache Storage
+
+By default, the cache storage is set to `NATIVE_PERSISTENCE`. To use `REDIS`, deploy the service first:
+
+    docker stack deploy -c redis.yml gluu
+
+Make sure to change `ldap-manager.yml` file:
+
+```
+services:
+  ldap_manager:
+    environment:
+      - GLUU_CACHE_TYPE=REDIS  # don't forget to enable redis service
+      - GLUU_REDIS_URL=redis:6379
+      - GLUU_REDIS_TYPE=STANDALONE
+```
+
+### 5 - Deploy LDAP
 
 LDAP containers are divided into two roles:
 
@@ -237,7 +254,7 @@ LDAP containers are divided into two roles:
 __NOTE__: OpenDJ containers are not deployed as service tasks because each of these containers requires a reachable unique address for establishing replication.
 Due to how the Docker service works, there's no guarantee that the address will still be unique after restart, hence OpenDJ containers are deployed via a plain `docker run` command.
 
-### 5 - Deploy Registrator
+### 6 - Deploy Registrator
 
 [Registrator](https://gliderlabs.com/registrator/) acts a service registry bridge to watch oxAuth/oxTrust/oxShibboleth/oxPassport container events. The event will be watched and data will be saved into Consul.
 This is needed because the NGINX container needs to reconfigure its config whenever those containers are added or removed into/from the cluster.
@@ -246,13 +263,13 @@ Run the following command to deploy `registrator` service:
 
     docker stack deploy -c registrator.yml gluu
 
-### 6 - Deploy oxAuth, oxTrust, oxShibboleth, and NGINX
+### 7 - Deploy oxAuth, oxTrust, oxShibboleth, and NGINX
 
 Run the following commands to deploy oxAuth, oxTrust, oxShibboleth, and NGINX:
 
     # $DOMAIN is the domain value that's entered when running `./config.sh`
     DOMAIN=$DOMAIN docker stack deploy -c web.yml gluu
 
-### 7 - Enabling oxPassport
+### 8 - Enabling oxPassport
 
 Enable Passport support by following the official docs [here](https://gluu.org/docs/ce/authn-guide/passport/#setup-passportjs-with-gluu).
