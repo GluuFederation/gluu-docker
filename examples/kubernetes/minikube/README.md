@@ -36,7 +36,21 @@
 
 ### Redis (optional)
 
-Note: this pod is optional and used only when `GLUU_CACHE_TYPE` is set to `REDIS`.
+Note: this pod is optional and used only when `GLUU_CACHE_TYPE` is set to `REDIS`. If `REDIS` is selected, make sure to change the `ldap/opendj-init.yaml` file:
+
+```
+containers:
+  - name: opendj
+    env:
+      # - name: GLUU_CACHE_TYPE
+      #   value: "NATIVE_PERSISTENCE"
+      - name: GLUU_CACHE_TYPE
+        value: "REDIS"
+      - name: GLUU_REDIS_TYPE
+        value: "STANDALONE"
+      - name: GLUU_REDIS_URL
+        value: "redis:6379"
+```
 
 Deploy Redis pod:
 
@@ -128,3 +142,27 @@ Afterwards, deploy oxPassport pod:
 
     cd ../oxpassport
     NGINX_IP=$(minikube ip) sh deploy-pod.sh
+
+## Scaling Containers
+
+To scale containers, run the following command:
+
+```
+kubectl scale --replicas=<number> <resource> <name>
+```
+
+In this case, `<resource>` could be Deployment or Statefulset and `<name>` is the resource name.
+
+Examples:
+
+-   Scaling oxAuth:
+
+    ```
+    kubectl scale --replicas=2 deployment oxauth
+    ```
+
+-   Scaling oxTrust:
+
+    ```
+    kubectl scale --replicas=2 statefulset oxtrust
+    ```
