@@ -51,6 +51,29 @@ services:
     depends_on:
       - consul
 
+  # redis:
+  #   image: redis:alpine
+  #   # run cluster-enabled redis-server
+  #   # command: redis-server --port 6379 --cluster-enabled yes --cluster-config-file nodes.conf --appendonly yes --cluster-node-timeout 5000
+  #   container_name: redis
+  #   labels:
+  #     - "SERVICE_IGNORE=yes"
+  #   restart: unless-stopped
+
+  nginx:
+    image: gluufederation/nginx:3.1.5_dev
+    environment:
+      - GLUU_CONFIG_ADAPTER=consul
+      - GLUU_CONSUL_HOST=consul
+      - GLUU_CONSUL_PORT=8500
+    ports:
+      - "80:80"
+      - "443:443"
+    container_name: nginx
+    restart: unless-stopped
+    labels:
+      - "SERVICE_IGNORE=yes"
+
   ldap:
     image: gluufederation/opendj:3.1.5_dev
     environment:
@@ -61,6 +84,9 @@ services:
       - GLUU_LDAP_INIT_PORT=1636
       - GLUU_OXTRUST_CONFIG_GENERATION=true
       - GLUU_CACHE_TYPE=NATIVE_PERSISTENCE
+      # - GLUU_CACHE_TYPE=REDIS  # don't forget to enable redis service
+      # - GLUU_REDIS_URL=redis:6379
+      # - GLUU_REDIS_TYPE=STANDALONE
       # the value must match service name `ldap` because other containers
       # use this value as LDAP hostname
       - GLUU_CERT_ALT_NAME=ldap
@@ -74,22 +100,6 @@ services:
       - ./volumes/opendj/backup:/opt/opendj/bak
       - ./vault_role_id.txt:/etc/certs/vault_role_id
       - ./vault_secret_id.txt:/etc/certs/vault_secret_id
-    restart: unless-stopped
-    labels:
-      - "SERVICE_IGNORE=yes"
-
-  nginx:
-    image: gluufederation/nginx:3.1.5_dev
-    environment:
-      - GLUU_CONFIG_CONSUL_HOST=consul
-      - GLUU_SECRET_VAULT_HOST=vault
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./vault_role_id.txt:/etc/certs/vault_role_id
-      - ./vault_secret_id.txt:/etc/certs/vault_secret_id
-    container_name: nginx
     restart: unless-stopped
     labels:
       - "SERVICE_IGNORE=yes"
