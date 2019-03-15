@@ -179,13 +179,15 @@ services:
       - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    labels:
+      - "SERVICE_IGNORE=yes"
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
     container_name: elasticsearch
     restart: unless-stopped
     environment:
-      - cluster.name=docker-cluster
+      - cluster.name=gluu-cluster
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "TAKE_FILE_OWNERSHIP=true"
@@ -195,8 +197,12 @@ services:
         hard: -1
     volumes:
       - ./volumes/elasticsearch/data:/usr/share/elasticsearch/data
+    labels:
+      - "SERVICE_IGNORE=yes"
 
   kibana:
     image: docker.elastic.co/kibana/kibana:6.6.1
     container_name: kibana
     restart: unless-stopped
+    labels:
+      - "SERVICE_IGNORE=yes"

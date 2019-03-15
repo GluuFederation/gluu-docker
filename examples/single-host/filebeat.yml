@@ -20,8 +20,6 @@ filebeat.autodiscover:
               containers.ids:
                 - "${data.docker.container.id}"
               encoding: utf-8
-              json.keys_under_root: true
-              json.message_key: log
               enabled: true
               document_type: docker
               multiline.pattern: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
@@ -35,8 +33,6 @@ filebeat.autodiscover:
               containers.ids:
                 - "${data.docker.container.id}"
               encoding: utf-8
-              json.keys_under_root: true
-              json.message_key: log
               enabled: true
               document_type: docker
               include_lines: ['^\[']
@@ -48,8 +44,6 @@ filebeat.autodiscover:
               containers.ids:
                 - "${data.docker.container.id}"
               encoding: utf-8
-              json.keys_under_root: true
-              json.message_key: log
               enabled: true
               document_type: docker
               include_lines: '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
@@ -61,8 +55,6 @@ filebeat.autodiscover:
               containers.ids:
                 - "${data.docker.container.id}"
               encoding: utf-8
-              json.keys_under_root: true
-              json.message_key: log
               enabled: true
               document_type: docker
               exclude_files: ['\.gz$']
@@ -80,3 +72,4 @@ processors:
 # Write Filebeat own logs only to file to avoid catching them with itself in docker log files
 logging.to_files: true
 logging.to_syslog: false
+logging.level: warning
