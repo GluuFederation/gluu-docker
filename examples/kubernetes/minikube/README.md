@@ -43,6 +43,33 @@ Deploy Redis pod:
     cd ../redis
     kubectl apply -f redis.yaml
 
+### Logging
+
+The logging services will collect all containers log, parse and save them into Elasticsearch. The captured logs can be viewed on Kibana UI.
+
+1.  Go to `logging` directory:
+
+        cd ../logging
+
+2.  Deploy Filebeat:
+
+    ```
+    kubectl create cm filebeat-config --from-file=filebeat.yml
+    kubectl apply -f filebeat-ds.yaml
+    ```
+
+3.  Set `vm.max_map_count` kernel setting to at least 262144 for production use. Refer to the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-cli-run-prod-mode).
+
+4.  Deploy Elasticsearch:
+
+        kubectl apply -f elasticsearch.yaml
+
+5.  Deploy Kibana:
+
+        kubectl apply -f kibana.yaml
+
+    Note: Kibana is not exposed to public. To access the UI, use `kubectl port-forward $KIBANA_POD_NAME --address $ADDRESS_OR_IP 5601:5601`
+
 ### OpenDJ (LDAP)
 
 1.  Go to `ldap` directory:
