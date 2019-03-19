@@ -6,3 +6,5 @@ vault_role_id.txt
 vault_secret_id.txt
 vault_key_token.txt
 setup-vault.sh
+101-ox.ldif
+log4j2.*
