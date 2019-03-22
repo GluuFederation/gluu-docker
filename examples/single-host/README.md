@@ -85,7 +85,7 @@ This is an example of running Gluu Server Docker Edition on a single VM.
             --network container:consul \
             -e GLUU_CONFIG_ADAPTER=consul \
             -e GLUU_CONSUL_HOST=consul \
-            gluufederation/config-init:3.1.5_dev \
+            gluufederation/config-init:3.1.5_01 \
             generate \
             --ldap-type "${GLUU_LDAP_TYPE}" \
             --domain $domain \
