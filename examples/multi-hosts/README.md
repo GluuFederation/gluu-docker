@@ -72,7 +72,7 @@ This will return the network information:
                 "Config": []
             },
             "Internal": false,
-            "Attachable": true,
+            "Attachable": false,
             "Ingress": false,
             "ConfigFrom": {
                 "Network": ""
