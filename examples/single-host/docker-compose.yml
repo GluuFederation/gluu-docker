@@ -61,7 +61,7 @@ services:
   #   restart: unless-stopped
 
   nginx:
-    image: gluufederation/nginx:3.1.5_01
+    image: gluufederation/nginx:3.1.6_dev
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
@@ -77,7 +77,7 @@ services:
       - ./vault_secret_id.txt:/etc/certs/vault_secret_id
 
   ldap:
-    image: gluufederation/opendj:3.1.5_01
+    image: gluufederation/opendj:3.1.6_dev
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
@@ -108,7 +108,7 @@ services:
       - "SERVICE_IGNORE=yes"
 
   oxauth:
-    image: gluufederation/oxauth:3.1.5_01
+    image: gluufederation/oxauth:3.1.6_dev
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
@@ -133,7 +133,7 @@ services:
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxtrust:
-    image: gluufederation/oxtrust:3.1.5_01
+    image: gluufederation/oxtrust:3.1.6_dev
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
@@ -160,7 +160,7 @@ services:
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxshibboleth:
-    image: gluufederation/oxshibboleth:3.1.5_01
+    image: gluufederation/oxshibboleth:3.1.6_dev
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
@@ -181,7 +181,7 @@ services:
       - "SERVICE_8086_CHECK_TIMEOUT=5s"
 
   oxpassport:
-    image: gluufederation/oxpassport:3.1.5_01
+    image: gluufederation/oxpassport:3.1.6_dev
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
