@@ -99,10 +99,26 @@ prepare_config_secret() {
     echo "[I] Preparing cluster-wide config and secrets"
 
     # guess if config already in Consul
-    if [[ ! -z $($DOCKER ps --filter name=consul -q) ]]; then
+    if [[ -z $($DOCKER ps --filter name=consul -q) ]]; then
+        $DOCKER_COMPOSE up -d consul
+    fi
+
+    echo "[I] Checking existing config in Consul"
+    retry=1
+    while [[ $retry -le 3 ]]; do
+        sleep 5
         consul_ip=$($DOCKER inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul)
         DOMAIN=$(curl $consul_ip:8500/v1/kv/gluu/config/hostname?raw -s)
-    fi
+
+        if [[ $DOMAIN != "" ]]; then
+            break
+        fi
+
+        echo "[W] Unable to get config in Consul; retrying ..."
+
+        retry=$(($retry+1))
+        sleep 5
+    done
 
     # if there's no config in Consul, ask users whether they want to load from previously saved config
     if [[ -z $DOMAIN ]]; then
