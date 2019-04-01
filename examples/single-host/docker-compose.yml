@@ -37,11 +37,12 @@ services:
   #   restart: unless-stopped
 
   nginx:
-    image: gluufederation/nginx:3.1.4_01
+    image: gluufederation/nginx:3.1.4_dev
     environment:
       - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul
       - GLUU_CONSUL_PORT=8500
+      - "GLUU_AUTO_ACCEPT_LICENSE=${ACCEPT_LICENSE}"
     ports:
       - "80:80"
       - "443:443"
@@ -51,7 +52,7 @@ services:
       - "SERVICE_IGNORE=yes"
 
   ldap:
-    image: gluufederation/opendj:3.1.4_04
+    image: gluufederation/opendj:3.1.4_dev
     environment:
       - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul
@@ -68,6 +69,7 @@ services:
       # the value must match service name `ldap` because other containers
       # use this value as LDAP hostname
       - GLUU_CERT_ALT_NAME=ldap
+      - "GLUU_AUTO_ACCEPT_LICENSE=${ACCEPT_LICENSE}"
     container_name: ldap
     volumes:
       - ./volumes/opendj/config:/opt/opendj/config
@@ -81,12 +83,13 @@ services:
       - "SERVICE_IGNORE=yes"
 
   oxauth:
-    image: gluufederation/oxauth:3.1.4_03
+    image: gluufederation/oxauth:3.1.4_dev
     environment:
       - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul
       - GLUU_CONSUL_PORT=8500
       - GLUU_LDAP_URL=ldap:1636
+      - "GLUU_AUTO_ACCEPT_LICENSE=${ACCEPT_LICENSE}"
     extra_hosts:
       - "${DOMAIN}:${HOST_IP}"
     container_name: oxauth
@@ -104,13 +107,14 @@ services:
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxtrust:
-    image: gluufederation/oxtrust:3.1.4_02
+    image: gluufederation/oxtrust:3.1.4_dev
     environment:
       - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul
       - GLUU_CONSUL_PORT=8500
       - GLUU_LDAP_URL=ldap:1636
       - GLUU_OXAUTH_BACKEND=oxauth:8080
+      - "GLUU_AUTO_ACCEPT_LICENSE=${ACCEPT_LICENSE}"
     extra_hosts:
       - "${DOMAIN}:${HOST_IP}"
     container_name: oxtrust
@@ -129,12 +133,13 @@ services:
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxshibboleth:
-    image: gluufederation/oxshibboleth:3.1.4_01
+    image: gluufederation/oxshibboleth:3.1.4_dev
     environment:
       - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul
       - GLUU_CONSUL_PORT=8500
       - GLUU_LDAP_URL=ldap:1636
+      - "GLUU_AUTO_ACCEPT_LICENSE=${ACCEPT_LICENSE}"
     extra_hosts:
       - "${DOMAIN}:${HOST_IP}"
     container_name: oxshibboleth
@@ -149,7 +154,7 @@ services:
       - "SERVICE_8086_CHECK_TIMEOUT=5s"
 
   oxpassport:
-    image: gluufederation/oxpassport:3.1.4_02
+    image: gluufederation/oxpassport:3.1.4_dev
     environment:
       - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul
@@ -158,6 +163,7 @@ services:
       # required by wait-for-it script
       - GLUU_OXAUTH_BACKEND=oxauth:8080
       - GLUU_OXTRUST_BACKEND=oxtrust:8080
+      - "GLUU_AUTO_ACCEPT_LICENSE=${ACCEPT_LICENSE}"
     extra_hosts:
       - "${DOMAIN}:${HOST_IP}"
     container_name: oxpassport

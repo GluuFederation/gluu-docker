@@ -3,7 +3,7 @@
 set -e
 
 CONFIG_DIR=$PWD/volumes/config-init/db
-GLUU_VERSION=3.1.4_03
+GLUU_VERSION=3.1.4_dev
 INIT_CONFIG_CMD=""
 DOMAIN=""
 ADMIN_PW=""
@@ -95,7 +95,7 @@ check_docker_compose() {
 # deploy service defined in docker-compose.yml
 load_services() {
     echo "[I] Deploying containers"
-    DOMAIN=$DOMAIN HOST_IP=$HOST_IP $DOCKER_COMPOSE up -d
+    DOMAIN=$DOMAIN HOST_IP=$HOST_IP ACCEPT_LICENSE=$ACCEPT_LICENSE $DOCKER_COMPOSE up -d
 }
 
 prepare_config() {
@@ -163,6 +163,7 @@ load_config() {
         -v $CONFIG_DIR:/opt/config-init/db/ \
         -e GLUU_CONFIG_ADAPTER=consul \
         -e GLUU_CONSUL_HOST=consul \
+        -e GLUU_AUTO_ACCEPT_LICENSE=$ACCEPT_LICENSE \
         gluufederation/config-init:$GLUU_VERSION \
         load
 }
@@ -175,6 +176,7 @@ generate_config() {
         -v $CONFIG_DIR:/opt/config-init/db/ \
         -e GLUU_CONFIG_ADAPTER=consul \
         -e GLUU_CONSUL_HOST=consul \
+        -e GLUU_AUTO_ACCEPT_LICENSE=$ACCEPT_LICENSE \
         gluufederation/config-init:$GLUU_VERSION \
         generate \
         --admin-pw $ADMIN_PW \
@@ -187,9 +189,36 @@ generate_config() {
         --ldap-type opendj
 }
 
+check_license() {
+    if [ ! -f volumes/license_ack ]; then
+        echo "Gluu License Agreement: https://github.com/GluuFederation/gluu-docker/blob/3.1.4/LICENSE"
+        echo ""
+        read -p "Do you acknowledge that use of Gluu Server Docker Edition is subject to the Gluu Support License [y/N]: " ACCEPT_LICENSE
+
+        case $ACCEPT_LICENSE in
+            y|Y)
+                ACCEPT_LICENSE="true"
+                echo ""
+                touch volumes/license_ack
+                ;;
+            n|N|"")
+                ACCEPT_LICENSE="false"
+                exit 1
+                ;;
+            *)
+                echo "Error: invalid input"
+                exit 1
+        esac
+    else
+        ACCEPT_LICENSE="true"
+    fi
+}
+
 # ==========
 # entrypoint
 # ==========
+check_license
+
 check_docker
 check_docker_compose
 
