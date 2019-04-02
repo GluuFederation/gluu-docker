@@ -34,7 +34,7 @@ spec:
       containers:
       - name: oxtrust
         imagePullPolicy: Always
-        image: gluufederation/oxtrust:3.1.4_02
+        image: gluufederation/oxtrust:3.1.4_dev
         resources:
           requests:
             memory: "1000Mi"
@@ -51,6 +51,11 @@ spec:
             value: "oxauth:8080"
           - name: GLUU_MAX_RAM_FRACTION
             value: "1"
+          - name: GLUU_AUTO_ACK_LICENSE
+            valueFrom:
+              configMapKeyRef:
+                name: gluu-license
+                key: license_ack
         volumeMounts:
           # name must match the volume name below
           - name: shared-shib

@@ -63,7 +63,7 @@ spec:
       containers:
       - name: opendj
         imagePullPolicy: Always
-        image: 'gluufederation/opendj:3.1.4_04'
+        image: 'gluufederation/opendj:3.1.4_dev'
         env:
           - name: GLUU_CONFIG_ADAPTER
             value: "kubernetes"
@@ -87,6 +87,11 @@ spec:
           # use this value as LDAP hostname
           - name: GLUU_CERT_ALT_NAME
             value: "opendj"
+          - name: GLUU_AUTO_ACK_LICENSE
+            valueFrom:
+              configMapKeyRef:
+                name: gluu-license
+                key: license_ack
         ports:
           - containerPort: 1636
             name: ldaps

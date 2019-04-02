@@ -32,7 +32,7 @@ spec:
       containers:
       - name: oxauth
         imagePullPolicy: Always
-        image: gluufederation/oxauth:3.1.4_03
+        image: gluufederation/oxauth:3.1.4_dev
         resources:
           requests:
             memory: "1000Mi"
@@ -47,6 +47,11 @@ spec:
             value: "opendj:1636"
           - name: GLUU_MAX_RAM_FRACTION
             value: "1"
+          - name: GLUU_AUTO_ACK_LICENSE
+            valueFrom:
+              configMapKeyRef:
+                name: gluu-license
+                key: license_ack
         volumeMounts:
           - mountPath: /opt/gluu/jetty/oxauth/logs
             name: oxauth-logs

@@ -16,6 +16,10 @@
 
 ## Deploying Containers
 
+### License
+
+Run `sh license.sh` to acknowledge and accept GLUU SUPPORT LICENSE.
+
 ### Config
 
 1.  Go to `config` directory:

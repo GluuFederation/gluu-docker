@@ -35,7 +35,7 @@ spec:
       containers:
       - name: oxpassport
         imagePullPolicy: Always
-        image: gluufederation/oxpassport:3.1.4_02
+        image: gluufederation/oxpassport:3.1.4_dev
         ports:
         - containerPort: 8090
         env:
@@ -47,6 +47,11 @@ spec:
             value: "oxauth:8080"
           - name: GLUU_OXTRUST_BACKEND
             value: "oxtrust:8080"
+          - name: GLUU_AUTO_ACK_LICENSE
+            valueFrom:
+              configMapKeyRef:
+                name: gluu-license
+                key: license_ack
         livenessProbe:
           httpGet:
             path: /passport

@@ -15,11 +15,16 @@ spec:
             claimName: config-volume-claim
       containers:
         - name: config-init-load
-          image: 'gluufederation/config-init:3.1.4_03'
+          image: 'gluufederation/config-init:3.1.4_dev'
           volumeMounts:
             - mountPath: /opt/config-init/db/
               name: config
           env:
             - name: GLUU_CONFIG_ADAPTER
               value: kubernetes
+            - name: GLUU_AUTO_ACK_LICENSE
+              valueFrom:
+                configMapKeyRef:
+                  name: gluu-license
+                  key: license_ack
           command: ["python", "/opt/config-init/scripts/entrypoint.py", "load"]
