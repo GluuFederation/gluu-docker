@@ -42,7 +42,7 @@ services:
       - GLUU_CONFIG_ADAPTER=consul
       - GLUU_CONSUL_HOST=consul
       - GLUU_CONSUL_PORT=8500
-      - "GLUU_AUTO_ACCEPT_LICENSE=${ACCEPT_LICENSE}"
+      - "GLUU_AUTO_ACK_LICENSE=${ACCEPT_LICENSE}"
     ports:
       - "80:80"
       - "443:443"
@@ -69,7 +69,7 @@ services:
       # the value must match service name `ldap` because other containers
       # use this value as LDAP hostname
       - GLUU_CERT_ALT_NAME=ldap
-      - "GLUU_AUTO_ACCEPT_LICENSE=${ACCEPT_LICENSE}"
+      - "GLUU_AUTO_ACK_LICENSE=${ACCEPT_LICENSE}"
     container_name: ldap
     volumes:
       - ./volumes/opendj/config:/opt/opendj/config
@@ -89,7 +89,7 @@ services:
       - GLUU_CONSUL_HOST=consul
       - GLUU_CONSUL_PORT=8500
       - GLUU_LDAP_URL=ldap:1636
-      - "GLUU_AUTO_ACCEPT_LICENSE=${ACCEPT_LICENSE}"
+      - "GLUU_AUTO_ACK_LICENSE=${ACCEPT_LICENSE}"
     extra_hosts:
       - "${DOMAIN}:${HOST_IP}"
     container_name: oxauth
@@ -114,7 +114,7 @@ services:
       - GLUU_CONSUL_PORT=8500
       - GLUU_LDAP_URL=ldap:1636
       - GLUU_OXAUTH_BACKEND=oxauth:8080
-      - "GLUU_AUTO_ACCEPT_LICENSE=${ACCEPT_LICENSE}"
+      - "GLUU_AUTO_ACK_LICENSE=${ACCEPT_LICENSE}"
     extra_hosts:
       - "${DOMAIN}:${HOST_IP}"
     container_name: oxtrust
@@ -139,7 +139,7 @@ services:
       - GLUU_CONSUL_HOST=consul
       - GLUU_CONSUL_PORT=8500
       - GLUU_LDAP_URL=ldap:1636
-      - "GLUU_AUTO_ACCEPT_LICENSE=${ACCEPT_LICENSE}"
+      - "GLUU_AUTO_ACK_LICENSE=${ACCEPT_LICENSE}"
     extra_hosts:
       - "${DOMAIN}:${HOST_IP}"
     container_name: oxshibboleth
@@ -163,7 +163,7 @@ services:
       # required by wait-for-it script
       - GLUU_OXAUTH_BACKEND=oxauth:8080
       - GLUU_OXTRUST_BACKEND=oxtrust:8080
-      - "GLUU_AUTO_ACCEPT_LICENSE=${ACCEPT_LICENSE}"
+      - "GLUU_AUTO_ACK_LICENSE=${ACCEPT_LICENSE}"
     extra_hosts:
       - "${DOMAIN}:${HOST_IP}"
     container_name: oxpassport

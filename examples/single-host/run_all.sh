@@ -163,7 +163,7 @@ load_config() {
         -v $CONFIG_DIR:/opt/config-init/db/ \
         -e GLUU_CONFIG_ADAPTER=consul \
         -e GLUU_CONSUL_HOST=consul \
-        -e GLUU_AUTO_ACCEPT_LICENSE=$ACCEPT_LICENSE \
+        -e GLUU_AUTO_ACK_LICENSE=$ACCEPT_LICENSE \
         gluufederation/config-init:$GLUU_VERSION \
         load
 }
@@ -176,7 +176,7 @@ generate_config() {
         -v $CONFIG_DIR:/opt/config-init/db/ \
         -e GLUU_CONFIG_ADAPTER=consul \
         -e GLUU_CONSUL_HOST=consul \
-        -e GLUU_AUTO_ACCEPT_LICENSE=$ACCEPT_LICENSE \
+        -e GLUU_AUTO_ACK_LICENSE=$ACCEPT_LICENSE \
         gluufederation/config-init:$GLUU_VERSION \
         generate \
         --admin-pw $ADMIN_PW \
