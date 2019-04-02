@@ -1,2 +1,8 @@
+digitalocean-access-token
+gcp_kms_creds.json
+gcp_kms_stanza.hcl
+vault_key_token.txt
+vault_role_id.txt
+vault_secret_id.txt
 volumes/*
 !volumes/README.md
