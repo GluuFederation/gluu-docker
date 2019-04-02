@@ -89,6 +89,7 @@ csync2_repl() {
         echo "[I] csync2 in manager node has been installed"
     else
         echo "[I] Installing and configuring csync2 in manager node"
+        docker-machine ssh manager apt-get update
         docker-machine ssh manager apt-get install -y csync2
 
         docker-machine scp volumes/manager.gluu manager:/etc/
@@ -121,6 +122,7 @@ csync2_repl() {
             echo "[I] csync2 in $node node has been installed"
         else
             echo "[I] Installing and configuring csync2 in $node node"
+            docker-machine ssh $node apt-get update
             docker-machine ssh $node apt-get install -y csync2
 
             docker-machine scp volumes/manager.gluu $node:/etc/
