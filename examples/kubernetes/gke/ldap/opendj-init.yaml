@@ -77,7 +77,7 @@ spec:
         env:
           - name: GLUU_CONFIG_ADAPTER
             value: "kubernetes"
-          - name: GLUU_CONFIG_ADAPTER
+          - name: GLUU_SECRET_ADAPTER
             value: "kubernetes"
           - name: GLUU_LDAP_INIT
             value: "true"

@@ -41,7 +41,7 @@ spec:
         env:
           - name: GLUU_CONFIG_ADAPTER
             value: "kubernetes"
-          - name: GLUU_SECREt_ADAPTER
+          - name: GLUU_SECRET_ADAPTER
             value: "kubernetes"
         livenessProbe:
           httpGet:
