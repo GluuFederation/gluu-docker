@@ -3,7 +3,7 @@
 set -e
 
 CONFIG_DIR=$PWD/volumes/config-init/db
-GLUU_VERSION=3.1.4_dev
+GLUU_VERSION=3.1.4_04
 INIT_CONFIG_CMD=""
 DOMAIN=""
 ADMIN_PW=""
@@ -163,7 +163,6 @@ load_config() {
         -v $CONFIG_DIR:/opt/config-init/db/ \
         -e GLUU_CONFIG_ADAPTER=consul \
         -e GLUU_CONSUL_HOST=consul \
-        -e GLUU_AUTO_ACK_LICENSE=$ACCEPT_LICENSE \
         gluufederation/config-init:$GLUU_VERSION \
         load
 }
@@ -176,7 +175,6 @@ generate_config() {
         -v $CONFIG_DIR:/opt/config-init/db/ \
         -e GLUU_CONFIG_ADAPTER=consul \
         -e GLUU_CONSUL_HOST=consul \
-        -e GLUU_AUTO_ACK_LICENSE=$ACCEPT_LICENSE \
         gluufederation/config-init:$GLUU_VERSION \
         generate \
         --admin-pw $ADMIN_PW \
@@ -202,15 +200,12 @@ check_license() {
                 touch volumes/license_ack
                 ;;
             n|N|"")
-                ACCEPT_LICENSE="false"
                 exit 1
                 ;;
             *)
                 echo "Error: invalid input"
                 exit 1
         esac
-    else
-        ACCEPT_LICENSE="true"
     fi
 }
 

@@ -22,7 +22,7 @@ metadata:
   labels:
     app: oxpassport
 spec:
-  # serviceName: oxpassport
+  serviceName: oxpassport
   replicas: 1
   selector:
     matchLabels:
@@ -35,7 +35,7 @@ spec:
       containers:
       - name: oxpassport
         imagePullPolicy: Always
-        image: gluufederation/oxpassport:3.1.4_02
+        image: gluufederation/oxpassport:3.1.4_03
         ports:
         - containerPort: 8090
         env:

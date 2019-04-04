@@ -38,7 +38,7 @@ spec:
             claimName: opendj-db-volume-claim
       containers:
         - name: opendj
-          image: 'gluufederation/opendj:3.1.4_04'
+          image: 'gluufederation/opendj:3.1.4_05'
           env:
             - name: GLUU_CONFIG_ADAPTER
               value: "kubernetes"
