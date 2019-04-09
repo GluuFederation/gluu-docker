@@ -89,6 +89,7 @@ csync2_repl() {
         echo "[I] csync2 in manager node has been installed"
     else
         echo "[I] Installing and configuring csync2 in manager node"
+        docker-machine ssh manager apt-get update
         docker-machine ssh manager apt-get install -y csync2
 
         docker-machine scp volumes/manager.gluu manager:/etc/
@@ -121,6 +122,7 @@ csync2_repl() {
             echo "[I] csync2 in $node node has been installed"
         else
             echo "[I] Installing and configuring csync2 in $node node"
+            docker-machine ssh $node apt-get update
             docker-machine ssh $node apt-get install -y csync2
 
             docker-machine scp volumes/manager.gluu $node:/etc/
@@ -147,16 +149,16 @@ csync2_repl() {
 prepare_volumes() {
     echo "[I] Creating directories for mounted volumes in manager node"
     docker-machine ssh manager mkdir -p /opt/config-init/db \
-        /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs /opt/opendj/flag \
+        /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs /opt/opendj/backup /opt/opendj/flag \
         /opt/consul \
-        /opt/redis \
+        /opt/vault/config /opt/vault/data /opt/vault/logs \
         /opt/shared-shibboleth-idp
 
     for node in worker-1 worker-2; do
         echo "[I] Creating directories for mounted volumes in $node node"
-        docker-machine ssh $node mkdir -p /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs \
+        docker-machine ssh $node mkdir -p /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs /opt/opendj/backup \
             /opt/consul \
-            /opt/redis \
+            /opt/vault/config /opt/vault/data /opt/vault/logs \
             /opt/shared-shibboleth-idp
     done
 }
@@ -197,7 +199,11 @@ main() {
     case $1 in
         "up")
             driver=digitalocean
-            DO_TOKEN_FILE=$PWD/volumes/digitalocean-access-token
+            DO_TOKEN_FILE=$PWD/digitalocean-access-token
+
+            if [[ -f $PWD/volumes/digitalocean-access-token ]]; then
+                mv $PWD/volumes/digitalocean-access-token .
+            fi
 
             if [[ ! -f $DO_TOKEN_FILE ]]; then
                 echo "[E] Requires DigitalOcean token saved in $DO_TOKEN_FILE file"
@@ -221,4 +227,27 @@ main() {
     esac
 }
 
+check_license() {
+    if [ ! -f volumes/license_ack ]; then
+        echo "Gluu License Agreement: https://github.com/GluuFederation/gluu-docker/blob/3.1.5/LICENSE"
+        echo ""
+        read -p "Do you acknowledge that use of Gluu Server Docker Edition is subject to the Gluu Support License [y/N]: " ACCEPT_LICENSE
+
+        case $ACCEPT_LICENSE in
+            y|Y)
+                ACCEPT_LICENSE="true"
+                echo ""
+                touch volumes/license_ack
+                ;;
+            n|N|"")
+                exit 1
+                ;;
+            *)
+                echo "Error: invalid input"
+                exit 1
+        esac
+    fi
+}
+
+check_license
 main "$@"

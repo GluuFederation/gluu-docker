@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.7"
 
 networks:
   gluu:
@@ -6,11 +6,11 @@ networks:
 
 services:
   oxauth:
-    image: gluufederation/oxauth:latest
+    image: gluufederation/oxauth:3.1.5_02
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
-      - GLUU_CONFIG_ADAPTER=consul
-      - GLUU_CONSUL_HOST=consul.server
+      - GLUU_CONFIG_CONSUL_HOST=consul.server
+      - GLUU_SECRET_VAULT_HOST=vault.server
     networks:
       gluu:
         aliases:
@@ -33,13 +33,18 @@ services:
       - "SERVICE_8080_CHECK_HTTP=/oxauth/.well-known/openid-configuration"
       - "SERVICE_8080_CHECK_INTERVAL=15s"
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
+    secrets:
+      - source: vault_role_id
+        target: /etc/certs/vault_role_id
+      - source: vault_secret_id
+        target: /etc/certs/vault_secret_id
 
   oxtrust:
-    image: gluufederation/oxtrust:latest
+    image: gluufederation/oxtrust:3.1.5_02
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
-      - GLUU_CONFIG_ADAPTER=consul
-      - GLUU_CONSUL_HOST=consul.server
+      - GLUU_CONFIG_CONSUL_HOST=consul.server
+      - GLUU_SECRET_VAULT_HOST=vault.server
       - GLUU_OXAUTH_BACKEND=oxauth.server:8080
     networks:
       gluu:
@@ -65,13 +70,18 @@ services:
       - "SERVICE_8080_CHECK_HTTP=/identity/restv1/scim-configuration"
       - "SERVICE_8080_CHECK_INTERVAL=15s"
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
+    secrets:
+      - source: vault_role_id
+        target: /etc/certs/vault_role_id
+      - source: vault_secret_id
+        target: /etc/certs/vault_secret_id
 
   oxshibboleth:
-    image: gluufederation/oxshibboleth:latest
+    image: gluufederation/oxshibboleth:3.1.5_02
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
-      - GLUU_CONFIG_ADAPTER=consul
-      - GLUU_CONSUL_HOST=consul.server
+      - GLUU_CONFIG_CONSUL_HOST=consul.server
+      - GLUU_SECRET_VAULT_HOST=vault.server
     networks:
       gluu:
         aliases:
@@ -96,15 +106,17 @@ services:
       - "SERVICE_8086_CHECK_HTTP=/idp"
       - "SERVICE_8086_CHECK_INTERVAL=15s"
       - "SERVICE_8086_CHECK_TIMEOUT=5s"
+    secrets:
+      - source: vault_role_id
+        target: /etc/certs/vault_role_id
+      - source: vault_secret_id
+        target: /etc/certs/vault_secret_id
 
   oxpassport:
-    image: gluufederation/oxpassport:latest
+    image: gluufederation/oxpassport:3.1.5_02
     environment:
-      - GLUU_CONFIG_ADAPTER=consul
-      - GLUU_CONSUL_HOST=consul.server
-      - GLUU_LDAP_URL=ldap.server:1636
-      - GLUU_OXAUTH_BACKEND=oxauth.server:8080
-      - GLUU_OXTRUST_BACKEND=oxtrust.server:8080
+      - GLUU_CONFIG_CONSUL_HOST=consul.server
+      - GLUU_SECRET_VAULT_HOST=vault.server
     networks:
       gluu:
         aliases:
@@ -124,13 +136,17 @@ services:
       - "SERVICE_8090_CHECK_HTTP=/passport"
       - "SERVICE_8090_CHECK_INTERVAL=15s"
       - "SERVICE_8090_CHECK_TIMEOUT=5s"
+    secrets:
+      - source: vault_role_id
+        target: /etc/certs/vault_role_id
+      - source: vault_secret_id
+        target: /etc/certs/vault_secret_id
 
   nginx:
-    image: gluufederation/nginx:latest
+    image: gluufederation/nginx:3.1.5_02
     environment:
-      - GLUU_CONFIG_ADAPTER=consul
-      - GLUU_CONSUL_HOST=consul.server
-      - GLUU_CONSUL_PORT=8500
+      - GLUU_CONFIG_CONSUL_HOST=consul.server
+      - GLUU_SECRET_VAULT_HOST=vault.server
     networks:
       gluu:
         aliases:
@@ -155,3 +171,14 @@ services:
         mode: host
     labels:
       - "SERVICE_IGNORE=yes"
+    secrets:
+      - source: vault_role_id
+        target: /etc/certs/vault_role_id
+      - source: vault_secret_id
+        target: /etc/certs/vault_secret_id
+
+secrets:
+  vault_role_id:
+    external: true
+  vault_secret_id:
+    external: true

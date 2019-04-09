@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.7"
 
 networks:
   gluu:
@@ -6,19 +6,20 @@ networks:
 
 services:
   ldap_manager:
-    image: gluufederation/opendj:latest
+    image: gluufederation/opendj:3.1.5_02
     hostname: ldap.manager
     environment:
       - GLUU_LDAP_INIT=true
       - GLUU_LDAP_INIT_HOST=ldap.server
-      - GLUU_CACHE_TYPE=REDIS
-      - GLUU_REDIS_URL=redis.server:6379
-      - GLUU_REDIS_TYPE=STANDALONE
-      - GLUU_CONFIG_ADAPTER=consul
-      - GLUU_CONSUL_HOST=consul.server
+      - GLUU_CACHE_TYPE=NATIVE_PERSISTENCE
+      - GLUU_CONFIG_CONSUL_HOST=consul.server
+      - GLUU_CONFIG_CONSUL_CONSISTENCY=default
+      - GLUU_SECRET_VAULT_HOST=vault.server
       - GLUU_OXTRUST_CONFIG_GENERATION=true
-      - GLUU_LDAP_ADDR_INTERFACE=eth0
       - GLUU_LDAP_ADVERTISE_ADDR=ldap.manager
+      # - GLUU_CACHE_TYPE=REDIS  # don't forget to enable redis service
+      # - GLUU_REDIS_URL=redis:6379
+      # - GLUU_REDIS_TYPE=STANDALONE
       # the value must match network alias `ldap.server` because other containers
       # use this value as LDAP hostname
       - GLUU_CERT_ALT_NAME=ldap.server
@@ -46,6 +47,18 @@ services:
       - /opt/opendj/config:/opt/opendj/config
       - /opt/opendj/ldif:/opt/opendj/ldif
       - /opt/opendj/logs:/opt/opendj/logs
+      - /opt/opendj/backup:/opt/opendj/bak
       - /opt/opendj/flag:/flag
     labels:
       - "SERVICE_IGNORE=yes"
+    secrets:
+      - source: vault_role_id
+        target: /etc/certs/vault_role_id
+      - source: vault_secret_id
+        target: /etc/certs/vault_secret_id
+
+secrets:
+  vault_role_id:
+    external: true
+  vault_secret_id:
+    external: true

@@ -63,9 +63,11 @@ spec:
       containers:
       - name: opendj
         imagePullPolicy: Always
-        image: 'gluufederation/opendj:latest'
+        image: gluufederation/opendj:3.1.5_02
         env:
           - name: GLUU_CONFIG_ADAPTER
+            value: "kubernetes"
+          - name: GLUU_SECRET_ADAPTER
             value: "kubernetes"
           - name: GLUU_LDAP_INIT
             value: "true"
@@ -76,13 +78,14 @@ spec:
           - name: GLUU_OXTRUST_CONFIG_GENERATION
             value: "true"
           - name: GLUU_CACHE_TYPE
-            value: "REDIS"
-          - name: GLUU_REDIS_TYPE
-            value: "STANDALONE"
-          - name: GLUU_REDIS_URL
-            value: "redis:6379"
-          # the value must match serviceName `opendj` because other containers
-          # use this value as LDAP hostname
+            value: "NATIVE_PERSISTENCE"
+          # - name: GLUU_CACHE_TYPE
+          #   value: "REDIS"
+          # - name: GLUU_REDIS_TYPE
+          #   value: "STANDALONE"
+          # - name: GLUU_REDIS_URL
+          #   value: "redis:6379"
+          # the value must match serviceName `opendj` because other containers use this as LDAP hostname
           - name: GLUU_CERT_ALT_NAME
             value: "opendj"
         ports:
@@ -105,3 +108,13 @@ spec:
             name: opendj-db
           - mountPath: /flag
             name: opendj-flag
+        readinessProbe:
+          tcpSocket:
+            port: 1636
+          initialDelaySeconds: 25
+          periodSeconds: 25
+        livenessProbe:
+          tcpSocket:
+            port: 1636
+          initialDelaySeconds: 30
+          periodSeconds: 30

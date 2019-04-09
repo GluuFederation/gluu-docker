@@ -34,7 +34,7 @@ spec:
       containers:
       - name: oxtrust
         imagePullPolicy: Always
-        image: gluufederation/oxtrust:latest
+        image: gluufederation/oxtrust:3.1.5_02
         resources:
           requests:
             memory: "1000Mi"
@@ -44,6 +44,8 @@ spec:
         - containerPort: 8080
         env:
           - name: GLUU_CONFIG_ADAPTER
+            value: "kubernetes"
+          - name: GLUU_SECRET_ADAPTER
             value: "kubernetes"
           - name: GLUU_LDAP_URL
             value: "opendj:1636"
@@ -63,6 +65,18 @@ spec:
             name: oxtrust-custom-static
           - mountPath: /opt/gluu/jetty/identity/custom/pages
             name: oxtrust-custom-pages
+        livenessProbe:
+          httpGet:
+            path: /identity/restv1/scim-configuration
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /identity/restv1/scim-configuration
+            port: 8080
+          initialDelaySeconds: 25
+          periodSeconds: 25
       hostAliases:
       - ip: NGINX_IP
         hostnames:

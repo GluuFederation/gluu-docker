@@ -5,7 +5,7 @@ DE includes Linux container assets for Gluu Server Community Edition (CE). DE is
 
 ## Docs
 
-Visit the official [Gluu Server DE documentation](https://gluu.org/docs/de/). 
+Visit the official [Gluu Server DE documentation](https://gluu.org/docs/de/).
 
 ## Code Repositories
 
@@ -24,10 +24,7 @@ Repositories for supported images are shown below:
 
 Images are hosted at Docker Hub:
 
-`<image>:latest` are the latest builds currently.
-
 - [config-init](https://hub.docker.com/r/gluufederation/config-init)
-- [openldap](https://hub.docker.com/r/gluufederation/openldap)
 - [opendj](https://hub.docker.com/r/gluufederation/opendj)
 - [oxauth](https://hub.docker.com/r/gluufederation/oxauth)
 - [oxtrust](https://hub.docker.com/r/gluufederation/oxtrust)
@@ -57,3 +54,7 @@ Images are hosted at Docker Hub:
 ## License
 
 Gluu Server DE is available under the [GLUU SUPPORT license](./LICENSE).
+
+## Issues
+
+If you find any issues, please post them on the customer support portal, [support.gluu.org](https://support.gluu.org).

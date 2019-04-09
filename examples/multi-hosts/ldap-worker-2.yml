@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.7"
 
 networks:
   gluu:
@@ -6,13 +6,12 @@ networks:
 
 services:
   ldap_worker_2:
-    image: gluufederation/opendj:latest
+    image: gluufederation/opendj:3.1.5_02
     hostname: ldap.worker-2
     environment:
       - GLUU_LDAP_INIT=false
-      - GLUU_CONFIG_ADAPTER=consul
-      - GLUU_CONSUL_HOST=consul.server
-      - GLUU_LDAP_ADDR_INTERFACE=eth0
+      - GLUU_CONFIG_CONSUL_HOST=consul.server
+      - GLUU_SECRET_VAULT_HOST=vault.server
       - GLUU_LDAP_ADVERTISE_ADDR=ldap.worker-2
       # the value must match network alias `ldap.server` because other containers
       # use this value as LDAP hostname
@@ -41,5 +40,17 @@ services:
       - /opt/opendj/config:/opt/opendj/config
       - /opt/opendj/ldif:/opt/opendj/ldif
       - /opt/opendj/logs:/opt/opendj/logs
+      - /opt/opendj/backup:/opt/opendj/bak
     labels:
       - "SERVICE_IGNORE=yes"
+    secrets:
+      - source: vault_role_id
+        target: /etc/certs/vault_role_id
+      - source: vault_secret_id
+        target: /etc/certs/vault_secret_id
+
+secrets:
+  vault_role_id:
+    external: true
+  vault_secret_id:
+    external: true

@@ -1,0 +1,57 @@
+version: "3.7"
+
+networks:
+  gluu:
+    external: true
+
+services:
+  vault:
+    image: vault:1.0.1
+    # will be used as vault node name (alphanum and dash only)
+    hostname: "vault-{{.Node.Hostname}}"
+    command: vault server -config=/vault/config
+    networks:
+      gluu:
+        aliases:
+          - vault.server
+    deploy:
+      mode: global
+      endpoint_mode: dnsrr
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+    volumes:
+      - /opt/vault/config:/vault/config
+      - /opt/vault/data:/vault/data
+      - /opt/vault/logs:/vault/logs
+    environment:
+      - VAULT_REDIRECT_INTERFACE=eth0
+      - VAULT_CLUSTER_INTERFACE=eth0
+      - VAULT_ADDR=http://0.0.0.0:8200
+      - VAULT_LOCAL_CONFIG={"disable_mlock":true,"backend":{"consul":{"address":"consul.server:8500","path":"vault/"}},"listener":{"tcp":{"address":"0.0.0.0:8200","tls_disable":1}}}
+      - SKIP_SETCAP=1
+    labels:
+      - "SERVICE_IGNORE=yes"
+    configs:
+      - source: vault_gluu_policy
+        target: /vault/config/policy.hcl
+    secrets:
+      - source: gcp_kms_creds
+        target: /vault/config/creds.json
+      - source: gcp_kms_stanza
+        target: /vault/config/stanza.hcl
+
+configs:
+  vault_gluu_policy:
+    external: true
+
+secrets:
+  gcp_kms_stanza:
+    external: true
+  gcp_kms_creds:
+    external: true
