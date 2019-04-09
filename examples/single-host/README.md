@@ -24,9 +24,9 @@ This is an example of running Gluu Server Docker Edition on a single VM.
 
         mkdir docker-gluu-server
         cd docker-gluu-server
-        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.5/examples/single-host/run_all.sh
-        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.5/examples/single-host/docker-compose.yml
-        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.5/examples/single-host/vault_gluu_policy.hcl
+        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/examples/single-host/run_all.sh
+        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/examples/single-host/docker-compose.yml
+        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/examples/single-host/vault_gluu_policy.hcl
         chmod +x run_all.sh
 
 1)  Run the following command inside the `/path/to/docker-gluu-server/` directory and follow the prompts:
@@ -103,7 +103,7 @@ This is an example of running Gluu Server Docker Edition on a single VM.
 
     Firstly, [consul](https://www.consul.io/), which is our key value store, as well as service discovery container.
 
-    Secondly, [config-init](https://github.com/GluuFederation/docker-config-init/tree/3.1.5), which will load all of the necessary keys, configuration settings, templates and other requirements, into consul. This container will run to completion and then exit and remove itself. All services hereinafter will use consul to pull their necessary configuration.
+    Secondly, [config-init](https://github.com/GluuFederation/docker-config-init/tree/3.1.6), which will load all of the necessary keys, configuration settings, templates and other requirements, into consul. This container will run to completion and then exit and remove itself. All services hereinafter will use consul to pull their necessary configuration.
 
     Next is our OpenDJ container. OpenDJ will install and configure itself inside the container as well as create volumes inside of the current directory as `/volumes/` for necessary persistent data, like db, schema, etc..
 
@@ -113,4 +113,4 @@ This is an example of running Gluu Server Docker Edition on a single VM.
 
 ## Documentation
 
-Please refer to the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/de/3.1.5) for further reading on Docker image implementations.
+Please refer to the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/de/3.1.6) for further reading on Docker image implementations.
