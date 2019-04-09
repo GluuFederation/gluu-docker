@@ -188,9 +188,32 @@ generate_config() {
             --ldap-type opendj
 }
 
+check_license() {
+    if [ ! -f volumes/license_ack ]; then
+        echo "Gluu License Agreement: https://github.com/GluuFederation/gluu-docker/blob/3.1.5/LICENSE"
+        echo ""
+        read -p "Do you acknowledge that use of Gluu Server Docker Edition is subject to the Gluu Support License [y/N]: " ACCEPT_LICENSE
+
+        case $ACCEPT_LICENSE in
+            y|Y)
+                ACCEPT_LICENSE="true"
+                echo ""
+                touch volumes/license_ack
+                ;;
+            n|N|"")
+                exit 1
+                ;;
+            *)
+                echo "Error: invalid input"
+                exit 1
+        esac
+    fi
+}
+
 # ==========
 # entrypoint
 # ==========
+check_license
 check_docker
 check_docker_compose
 
