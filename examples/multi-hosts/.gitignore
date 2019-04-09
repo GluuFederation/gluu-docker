@@ -5,4 +5,3 @@ vault_key_token.txt
 vault_role_id.txt
 vault_secret_id.txt
 volumes/*
-!volumes/README.md
