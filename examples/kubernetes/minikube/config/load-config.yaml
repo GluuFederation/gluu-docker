@@ -15,7 +15,7 @@ spec:
             claimName: config-volume-claim
       containers:
         - name: config-init-load
-          image: gluufederation/config-init:3.1.5_03
+          image: gluufederation/config-init:3.1.5_04
           volumeMounts:
             - mountPath: /opt/config-init/db/
               name: config

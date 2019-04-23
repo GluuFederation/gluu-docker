@@ -108,7 +108,7 @@ services:
       - "SERVICE_IGNORE=yes"
 
   oxauth:
-    image: gluufederation/oxauth:3.1.5_02
+    image: gluufederation/oxauth:3.1.5_03
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
@@ -197,3 +197,19 @@ services:
       - "SERVICE_8090_CHECK_HTTP=/passport"
       - "SERVICE_8090_CHECK_INTERVAL=15s"
       - "SERVICE_8090_CHECK_TIMEOUT=5s"
+
+  # key_rotation:
+  #   image: gluufederation/key-rotation:3.1.5_03
+  #   environment:
+  #     - GLUU_CONFIG_CONSUL_HOST=consul
+  #     - GLUU_SECRET_VAULT_HOST=vault
+  #     - GLUU_LDAP_URL=ldap:1636
+  #     - GLUU_KEY_ROTATION_INTERVAL=2  # interval to regenerate keys if needed (in hours)
+  #     - GLUU_KEY_ROTATION_CHECK=30    # interval to check whether keys should be checked (in seconds)
+  #   volumes:
+  #     - ./vault_role_id.txt:/etc/certs/vault_role_id
+  #     - ./vault_secret_id.txt:/etc/certs/vault_secret_id
+  #   container_name: key-rotation
+  #   restart: unless-stopped
+  #   labels:
+  #     - "SERVICE_IGNORE=yes"
