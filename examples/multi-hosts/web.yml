@@ -6,7 +6,7 @@ networks:
 
 services:
   oxauth:
-    image: gluufederation/oxauth:3.1.5_02
+    image: gluufederation/oxauth:3.1.5_03
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
       - GLUU_CONFIG_CONSUL_HOST=consul.server
@@ -176,6 +176,33 @@ services:
         target: /etc/certs/vault_role_id
       - source: vault_secret_id
         target: /etc/certs/vault_secret_id
+
+  # key_rotation:
+  #   image: gluufederation/key-rotation:3.1.5_03
+  #   environment:
+  #     - GLUU_CONFIG_CONSUL_HOST=consul.server
+  #     - GLUU_SECRET_VAULT_HOST=vault.server
+  #     - GLUU_LDAP_URL=ldap.server:1636
+  #   networks:
+  #     gluu:
+  #       aliases:
+  #         - key_rotation.server
+  #   deploy:
+  #     update_config:
+  #       parallelism: 1
+  #       failure_action: rollback
+  #       delay: 30s
+  #     restart_policy:
+  #       condition: any
+  #       delay: 5s
+  #       window: 120s
+  #   labels:
+  #     - "SERVICE_IGNORE=yes"
+  #   secrets:
+  #     - source: vault_role_id
+  #       target: /etc/certs/vault_role_id
+  #     - source: vault_secret_id
+  #       target: /etc/certs/vault_secret_id
 
 secrets:
   vault_role_id:
