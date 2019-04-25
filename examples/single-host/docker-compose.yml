@@ -158,6 +158,7 @@ services:
       - "SERVICE_8080_CHECK_HTTP=/identity/restv1/scim-configuration"
       - "SERVICE_8080_CHECK_INTERVAL=15s"
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
+      - "APP_NAME=oxtrust"
 
   oxshibboleth:
     image: gluufederation/oxshibboleth:3.1.5_02
@@ -210,6 +211,22 @@ services:
   #     - ./vault_role_id.txt:/etc/certs/vault_role_id
   #     - ./vault_secret_id.txt:/etc/certs/vault_secret_id
   #   container_name: key-rotation
+  #   restart: unless-stopped
+  #   labels:
+  #     - "SERVICE_IGNORE=yes"
+
+  # cr_rotate:
+  #   image: gluufederation/cr-rotate:3.1.5_01
+  #   environment:
+  #     - GLUU_CONFIG_CONSUL_HOST=consul
+  #     - GLUU_SECRET_VAULT_HOST=vault
+  #     - GLUU_LDAP_URL=ldap:1636
+  #     - GLUU_CR_ROTATION_CHECK=60
+  #   volumes:
+  #     - ./vault_role_id.txt:/etc/certs/vault_role_id
+  #     - ./vault_secret_id.txt:/etc/certs/vault_secret_id
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   container_name: cr-rotate
   #   restart: unless-stopped
   #   labels:
   #     - "SERVICE_IGNORE=yes"
