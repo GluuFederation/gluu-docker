@@ -143,6 +143,21 @@ Afterwards, deploy oxPassport pod:
     cd ../oxpassport
     NGINX_IP=$(minikube ip) sh deploy-pod.sh
 
+### key-rotation (OPTIONAL)
+
+Deploy key-rotation pod:
+
+    cd ../key-rotation
+    kubectl apply -f key-rotation.yaml
+
+### cr-rotate (OPTIONAL)
+
+Deploy cr-rotate pod:
+
+    cd ../cr-rotate
+    kubectl apply -f cr-rotate-roles.yaml
+    kubectl apply -f cr-rotate.yaml
+
 ## Scaling Containers
 
 To scale containers, run the following command:

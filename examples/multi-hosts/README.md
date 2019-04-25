@@ -203,7 +203,7 @@ Run the following command to prepare the config and secrets:
 
 **NOTE:** this process may take some time, please wait until the process completed.
 
-### 4 - Deploy Cache Storage
+### 4 - Deploy Cache Storage (OPTIONAL)
 
 By default, the cache storage is set to `NATIVE_PERSISTENCE`. To use `REDIS`, deploy the service first:
 
@@ -273,3 +273,9 @@ Run the following commands to deploy oxAuth, oxTrust, oxShibboleth, and NGINX:
 ### 8 - Enabling oxPassport
 
 Enable Passport support by following the official docs [here](https://gluu.org/docs/ce/authn-guide/passport/#setup-passportjs-with-gluu).
+
+### 9 - Enabling key-rotation and cr-rotate (OPTIONAL)
+
+To enable key rotation for oxAuth keys (useful when we have RP) and cr-rotate (to monitor cycled IP address of oxTrust container used for cache refresh), run the following command:
+
+    docker stack deploy -c utils.yml gluu

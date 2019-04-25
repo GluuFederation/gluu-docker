@@ -1,0 +1,63 @@
+version: "3.7"
+
+networks:
+  gluu:
+    external: true
+
+services:
+  key_rotation:
+    image: gluufederation/key-rotation:3.1.5_03
+    environment:
+      - GLUU_CONFIG_CONSUL_HOST=consul.server
+      - GLUU_SECRET_VAULT_HOST=vault.server
+      - GLUU_LDAP_URL=ldap.server:1636
+    deploy:
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+    labels:
+      - "SERVICE_IGNORE=yes"
+    secrets:
+      - source: vault_role_id
+        target: /etc/certs/vault_role_id
+      - source: vault_secret_id
+        target: /etc/certs/vault_secret_id
+
+  cr_rotate:
+    image: gluufederation/cr-rotate:3.1.5_01
+    environment:
+      - GLUU_CONFIG_CONSUL_HOST=consul.server
+      - GLUU_SECRET_VAULT_HOST=vault.server
+      - GLUU_LDAP_URL=ldap.server:1636
+      - GLUU_CR_ROTATION_CHECK=60
+    deploy:
+      mode: global
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+    labels:
+      - "SERVICE_IGNORE=yes"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    secrets:
+      - source: vault_role_id
+        target: /etc/certs/vault_role_id
+      - source: vault_secret_id
+        target: /etc/certs/vault_secret_id
+
+
+secrets:
+  vault_role_id:
+    external: true
+  vault_secret_id:
+    external: true
