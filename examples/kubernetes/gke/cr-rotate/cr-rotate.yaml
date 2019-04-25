@@ -36,3 +36,5 @@ spec:
             value: "kubernetes"
           - name: GLUU_LDAP_URL
             value: "opendj:1636"
+          - name: GLUU_CONTAINER_METADATA
+            value: "kubernetes"
