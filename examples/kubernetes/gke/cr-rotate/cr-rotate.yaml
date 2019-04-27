@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cr_rotate
+  labels:
+    app: cr_rotate
+spec:
+  selector:
+    app: cr_rotate
+
+---
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: cr_rotate
+  labels:
+    app: cr_rotate
+spec:
+  selector:
+    matchLabels:
+      app:
+  template:
+    metadata:
+      labels:
+        app: cr_rotate
+    spec:
+      containers:
+      - name: cr_rotate
+        imagePullPolicy: Always
+        image: gluufederation/cr-rotate:3.1.6_dev
+        env:
+          - name: GLUU_CONFIG_ADAPTER
+            value: "kubernetes"
+          - name: GLUU_SECRET_ADAPTER
+            value: "kubernetes"
+          - name: GLUU_LDAP_URL
+            value: "opendj:1636"
+          - name: GLUU_CONTAINER_METADATA
+            value: "kubernetes"
