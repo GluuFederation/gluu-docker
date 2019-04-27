@@ -20,6 +20,7 @@ metadata:
   name: oxtrust
   labels:
     app: oxtrust
+    APP_NAME: oxtrust
 spec:
   serviceName: oxtrust
   replicas: 1

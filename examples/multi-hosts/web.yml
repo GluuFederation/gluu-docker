@@ -70,6 +70,7 @@ services:
       - "SERVICE_8080_CHECK_HTTP=/identity/restv1/scim-configuration"
       - "SERVICE_8080_CHECK_INTERVAL=15s"
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
+      - "APP_NAME=oxtrust" # required for CacheRefresh
     secrets:
       - source: vault_role_id
         target: /etc/certs/vault_role_id

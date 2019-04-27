@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: key_rotation
+  labels:
+    app: key_rotation
+spec:
+  selector:
+    app: key_rotation
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: key_rotation
+  labels:
+    app: key_rotation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app:
+  template:
+    metadata:
+      labels:
+        app: key_rotation
+    spec:
+      containers:
+      - name: key_rotation
+        imagePullPolicy: Always
+        image: gluufederation/key-rotation:3.1.6_dev
+        env:
+          - name: GLUU_CONFIG_ADAPTER
+            value: "kubernetes"
+          - name: GLUU_SECRET_ADAPTER
+            value: "kubernetes"
+          - name: GLUU_LDAP_URL
+            value: "opendj:1636"

@@ -214,6 +214,7 @@ check_license() {
             y|Y)
                 ACCEPT_LICENSE="true"
                 echo ""
+                mkdir -p volumes
                 touch volumes/license_ack
                 ;;
             n|N|"")
