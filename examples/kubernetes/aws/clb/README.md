@@ -19,7 +19,7 @@
 
 -   Get the source code:
 
-        wget -q https://github.com/GluuFederation/gluu-docker/archive/3.1.6.zip
+        wget -q https://github.com/GluuFederation/gluu-docker/archive/3.1.5.zip
         unzip 3.1.5.zip
         cd gluu-docker-3.1.5/examples/kubernetes/aws/clb
 
