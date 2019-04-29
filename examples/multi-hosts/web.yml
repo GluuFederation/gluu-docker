@@ -6,7 +6,7 @@ networks:
 
 services:
   oxauth:
-    image: gluufederation/oxauth:3.1.6_dev
+    image: gluufederation/oxauth:3.1.6_01
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
       - GLUU_CONFIG_CONSUL_HOST=consul.server
@@ -40,7 +40,7 @@ services:
         target: /etc/certs/vault_secret_id
 
   oxtrust:
-    image: gluufederation/oxtrust:3.1.6_dev
+    image: gluufederation/oxtrust:3.1.6_01
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
       - GLUU_CONFIG_CONSUL_HOST=consul.server
@@ -78,7 +78,7 @@ services:
         target: /etc/certs/vault_secret_id
 
   oxshibboleth:
-    image: gluufederation/oxshibboleth:3.1.6_dev
+    image: gluufederation/oxshibboleth:3.1.6_01
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
       - GLUU_CONFIG_CONSUL_HOST=consul.server
@@ -114,7 +114,7 @@ services:
         target: /etc/certs/vault_secret_id
 
   oxpassport:
-    image: gluufederation/oxpassport:3.1.6_dev
+    image: gluufederation/oxpassport:3.1.6_01
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul.server
       - GLUU_SECRET_VAULT_HOST=vault.server
@@ -144,7 +144,7 @@ services:
         target: /etc/certs/vault_secret_id
 
   nginx:
-    image: gluufederation/nginx:3.1.6_dev
+    image: gluufederation/nginx:3.1.6_01
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul.server
       - GLUU_SECRET_VAULT_HOST=vault.server

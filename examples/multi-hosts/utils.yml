@@ -6,7 +6,7 @@ networks:
 
 services:
   key_rotation:
-    image: gluufederation/key-rotation:3.1.6_dev
+    image: gluufederation/key-rotation:3.1.6_01
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul.server
       - GLUU_SECRET_VAULT_HOST=vault.server
@@ -29,7 +29,7 @@ services:
         target: /etc/certs/vault_secret_id
 
   cr_rotate:
-    image: gluufederation/cr-rotate:3.1.6_dev
+    image: gluufederation/cr-rotate:3.1.6_01
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul.server
       - GLUU_SECRET_VAULT_HOST=vault.server

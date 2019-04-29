@@ -6,7 +6,7 @@ networks:
 
 services:
   ldap_worker_2:
-    image: gluufederation/opendj:3.1.6_dev
+    image: gluufederation/opendj:3.1.6_01
     hostname: ldap.worker-2
     environment:
       - GLUU_LDAP_INIT=false

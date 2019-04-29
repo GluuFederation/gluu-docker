@@ -28,7 +28,7 @@ spec:
       containers:
       - name: cr_rotate
         imagePullPolicy: Always
-        image: gluufederation/cr-rotate:3.1.6_dev
+        image: gluufederation/cr-rotate:3.1.6_01
         env:
           - name: GLUU_CONFIG_ADAPTER
             value: "kubernetes"

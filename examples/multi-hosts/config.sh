@@ -40,7 +40,7 @@ bootstrap_config() {
                 -v /opt/vault/vault_secret_id.txt:/etc/certs/vault_secret_id \
                 -e GLUU_CONFIG_CONSUL_HOST=consul.server \
                 -e GLUU_SECRET_VAULT_HOST=vault.server \
-                gluufederation/config-init:3.1.6_dev load
+                gluufederation/config-init:3.1.6_01 load
         else
             generate_config
         fi
@@ -79,7 +79,7 @@ generate_config() {
         -v /opt/vault/vault_secret_id.txt:/etc/certs/vault_secret_id \
         -e GLUU_CONFIG_CONSUL_HOST=consul.server \
         -e GLUU_SECRET_VAULT_HOST=vault.server \
-        gluufederation/config-init:3.1.6_dev generate \
+        gluufederation/config-init:3.1.6_01 generate \
             --admin-pw secret \
             --email $email \
             --domain $domain \

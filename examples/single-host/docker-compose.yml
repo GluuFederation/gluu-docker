@@ -61,7 +61,7 @@ services:
   #   restart: unless-stopped
 
   nginx:
-    image: gluufederation/nginx:3.1.6_dev
+    image: gluufederation/nginx:3.1.6_01
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
@@ -77,7 +77,7 @@ services:
       - ./vault_secret_id.txt:/etc/certs/vault_secret_id
 
   ldap:
-    image: gluufederation/opendj:3.1.6_dev
+    image: gluufederation/opendj:3.1.6_01
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
@@ -108,7 +108,7 @@ services:
       - "SERVICE_IGNORE=yes"
 
   oxauth:
-    image: gluufederation/oxauth:3.1.6_dev
+    image: gluufederation/oxauth:3.1.6_01
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
@@ -133,7 +133,7 @@ services:
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
   oxtrust:
-    image: gluufederation/oxtrust:3.1.6_dev
+    image: gluufederation/oxtrust:3.1.6_01
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
@@ -161,7 +161,7 @@ services:
       - "APP_NAME=oxtrust"
 
   oxshibboleth:
-    image: gluufederation/oxshibboleth:3.1.6_dev
+    image: gluufederation/oxshibboleth:3.1.6_01
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
@@ -182,7 +182,7 @@ services:
       - "SERVICE_8086_CHECK_TIMEOUT=5s"
 
   oxpassport:
-    image: gluufederation/oxpassport:3.1.6_dev
+    image: gluufederation/oxpassport:3.1.6_01
     environment:
       - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
@@ -200,7 +200,7 @@ services:
       - "SERVICE_8090_CHECK_TIMEOUT=5s"
 
   # key_rotation:
-  #   image: gluufederation/key-rotation:3.1.6_dev
+  #   image: gluufederation/key-rotation:3.1.6_01
   #   environment:
   #     - GLUU_CONFIG_CONSUL_HOST=consul
   #     - GLUU_SECRET_VAULT_HOST=vault
@@ -216,7 +216,7 @@ services:
   #     - "SERVICE_IGNORE=yes"
 
   # cr_rotate:
-  #   image: gluufederation/cr-rotate:3.1.6_dev
+  #   image: gluufederation/cr-rotate:3.1.6_01
   #   environment:
   #     - GLUU_CONFIG_CONSUL_HOST=consul
   #     - GLUU_SECRET_VAULT_HOST=vault
