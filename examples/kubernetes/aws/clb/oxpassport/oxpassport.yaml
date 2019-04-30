@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: oxpassport
+  labels:
+    app: oxpassport
+spec:
+  ports:
+  - port: 8090
+    name: oxpassport
+  selector:
+    app: oxpassport
+  # type: NodePort
+  # clusterIP: None
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oxpassport
+  labels:
+    app: oxpassport
+spec:
+  # serviceName: oxpassport
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oxpassport
+  template:
+    metadata:
+      labels:
+        app: oxpassport
+    spec:
+      containers:
+      - name: oxpassport
+        imagePullPolicy: Always
+        image: gluufederation/oxpassport:3.1.6_01
+        command:
+          - /bin/sh
+          - -c
+          - |
+              /usr/bin/python /scripts/update-clb-ip.py &
+              /opt/scripts/entrypoint.sh
+        ports:
+        - containerPort: 8090
+        env:
+          - name: LB_ADDR
+            value: ""
+          - name: DOMAIN
+            value: "kube.gluu.local"
+          - name: GLUU_CONFIG_ADAPTER
+            value: "kubernetes"
+          - name: GLUU_SECRET_ADAPTER
+            value: "kubernetes"
+        volumeMounts:
+          # name must match the volume name below
+          - mountPath: /scripts
+            name: update-clb-ip
+        livenessProbe:
+          httpGet:
+            path: /passport
+            port: 8090
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /passport
+            port: 8090
+          initialDelaySeconds: 25
+          periodSeconds: 25
+      hostAliases:
+      - ip: NGINX_IP
+        hostnames:
+        - kube.gluu.local
+      volumes:
+      - name: update-clb-ip
+        persistentVolumeClaim:
+          claimName: update-clb-ip-volume-claim
