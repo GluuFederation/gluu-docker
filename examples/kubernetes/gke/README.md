@@ -237,3 +237,18 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
        NGINX_IP=NGINX_CLUSTER_IP sh deploy-pod.sh
 
 1. Enable Passport support by following the official docs [here](https://gluu.org/docs/ce/authn-guide/passport/#setup-passportjs-with-gluu).
+
+### key-rotation (OPTIONAL)
+
+Deploy key-rotation pod:
+
+    cd ../key-rotation
+    kubectl apply -f key-rotation.yaml
+
+### cr-rotate (OPTIONAL)
+
+Deploy cr-rotate pod:
+
+    cd ../cr-rotate
+    kubectl apply -f cr-rotate-roles.yaml
+    kubectl apply -f cr-rotate.yaml
