@@ -14,6 +14,8 @@ Repositories for supported images are shown below:
 - [key-rotation](https://github.com/GluuFederation/docker-key-rotation)
 - [oxshibboleth](https://github.com/GluuFederation/docker-oxshibboleth)
 - [oxpassport](https://github.com/GluuFederation/docker-oxPassport)
+- [cr-rotate](https://github.com/GluuFederation/docker-cr-rotate)
+- [upgrade](https://github.com/GluuFederation/docker-upgrade)
 
 ## Image Repositories
 
@@ -27,6 +29,8 @@ Images are hosted at Docker Hub:
 - [key-rotation](https://hub.docker.com/r/gluufederation/key-rotation)
 - [oxshibboleth](https://hub.docker.com/r/gluufederation/oxshibboleth)
 - [oxpassport](https://hub.docker.com/r/gluufederation/oxpassport)
+- [cr-rotate](https://hub.docker.com/r/gluufederation/cr-rotate)
+- [upgrade](https://hub.docker.com/r/gluufederation/upgrade)
 
 ## Examples
 
@@ -45,6 +49,10 @@ Images are hosted at Docker Hub:
 [Minikube](./examples/kubernetes/minikube)
 
 - The directory contains `README.md` as a guide to deploy a basic Gluu server stack on Minikube.
+
+[AWS CLB](./examples/kubernetes/aws/clb)
+
+- The directory contains `README.md` as a guide to deploy a basic Gluu server stack on on AWS using a classic load balancer.
 
 ## Issues
 
