@@ -32,6 +32,43 @@ This is an example of running Gluu Server Docker Edition on a single VM.
 1)  Run the following command inside the `/path/to/docker-gluu-server/` directory and follow the prompts:
 
         ./run_all.sh
+    
+    Do not be alarmed for the `warnings` alerts that may show up. Wait until  it prompts you for information or loads the previous configuration found. In the case where this is a fresh install you may see something like this :
+    
+        ./run_all.sh
+        [I] Determining OS Type and Attempting to Gather External IP Address
+        Host is detected as Linux
+        Is this the correct external IP Address: 172.189.222.111 [Y/n]? y
+        [I] Preparing cluster-wide config and secrets
+        WARNING: The DOMAIN variable is not set. Defaulting to a blank string.
+        WARNING: The HOST_IP variable is not set. Defaulting to a blank string.
+        Pulling consul (consul:)...
+        latest: Pulling from library/consul
+        bdf0201b3a05: Pull complete
+        af3d1f90fc60: Pull complete
+        d3a756372895: Pull complete
+        54efc599d7c7: Pull complete
+        73d2c234fe14: Pull complete
+        cbf8018e609a: Pull complete
+        Digest: sha256:bce60e9bf3e5bbbb943b13b87077635iisdksdf993579d8a6d05f2ea69bccd
+        Status: Downloaded newer image for consul:latest
+        Creating consul ... done
+        [I] Checking existing config in Consul
+        [W] Unable to get config in Consul; retrying ...
+        [W] Unable to get config in Consul; retrying ...
+        [W] Unable to get config in Consul; retrying ...
+        [W] Configuration not found in Consul
+        [I] Creating new configuration, please input the following parameters
+        Enter Domain:                 yourdomain
+        Enter Country Code:           US
+        Enter State:                  TX
+        Enter City:                   Austin
+        Enter Email:                  email@example.com
+        Enter Organization:           Gluu Inc
+        Enter Admin/LDAP Password:      
+        Confirm Admin/LDAP Password:
+        Continue with the above settings? [Y/n]y
+
 
     The startup process may take some time. You can keep track of the deployment by using the following command:
 
