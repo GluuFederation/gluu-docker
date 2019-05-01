@@ -33,7 +33,7 @@ This is an example of running Gluu Server Docker Edition on a single VM.
 
         ./run_all.sh
     
-    Do not be alarmed for the `warnings` alerts that may show up. Wait until  it prompts you for information or loads the previous configuration found. In the case where this is a fresh install you may see something like this :
+    Do not be alarmed for the `warning` alerts that may show up. Wait until  it prompts you for information or loads the previous configuration found. In the case where this is a fresh install you may see something like this :
     
         ./run_all.sh
         [I] Determining OS Type and Attempting to Gather External IP Address
