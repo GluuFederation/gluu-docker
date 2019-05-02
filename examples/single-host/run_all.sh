@@ -3,7 +3,7 @@
 set -e
 
 CONFIG_DIR=$PWD/volumes/config-init/db
-GLUU_VERSION=3.1.6_01
+GLUU_VERSION=4.0.0_dev
 INIT_CONFIG_CMD=""
 DOMAIN=""
 ADMIN_PW=""
@@ -206,7 +206,7 @@ generate_config() {
 
 check_license() {
     if [ ! -f volumes/license_ack ]; then
-        echo "Gluu License Agreement: https://github.com/GluuFederation/gluu-docker/blob/3.1.6/LICENSE"
+        echo "Gluu License Agreement: https://github.com/GluuFederation/gluu-docker/blob/4.0.0/LICENSE"
         echo ""
         read -p "Do you acknowledge that use of Gluu Server Docker Edition is subject to the Gluu Support License [y/N]: " ACCEPT_LICENSE
 
