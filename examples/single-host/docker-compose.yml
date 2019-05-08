@@ -60,21 +60,21 @@ services:
   #     - "SERVICE_IGNORE=yes"
   #   restart: unless-stopped
 
-  # nginx:
-  #   image: gluufederation/nginx:3.1.6_01
-  #   environment:
-  #     - GLUU_CONFIG_CONSUL_HOST=consul
-  #     - GLUU_SECRET_VAULT_HOST=vault
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   container_name: nginx
-  #   restart: unless-stopped
-  #   labels:
-  #     - "SERVICE_IGNORE=yes"
-  #   volumes:
-  #     - ./vault_role_id.txt:/etc/certs/vault_role_id
-  #     - ./vault_secret_id.txt:/etc/certs/vault_secret_id
+  nginx:
+    image: gluufederation/nginx:4.0.0_dev
+    environment:
+      - GLUU_CONFIG_CONSUL_HOST=consul
+      - GLUU_SECRET_VAULT_HOST=vault
+    ports:
+      - "80:80"
+      - "443:443"
+    container_name: nginx
+    restart: unless-stopped
+    labels:
+      - "SERVICE_IGNORE=yes"
+    volumes:
+      - ./vault_role_id.txt:/etc/certs/vault_role_id
+      - ./vault_secret_id.txt:/etc/certs/vault_secret_id
 
   ldap:
     image: gluufederation/opendj:4.0.0_dev
@@ -132,36 +132,36 @@ services:
       - "SERVICE_8080_CHECK_INTERVAL=15s"
       - "SERVICE_8080_CHECK_TIMEOUT=5s"
 
-  # oxtrust:
-  #   image: gluufederation/oxtrust:3.1.6_01
-  #   environment:
-  #     - GLUU_CONFIG_CONSUL_HOST=consul
-  #     - GLUU_SECRET_VAULT_HOST=vault
-  #     - GLUU_LDAP_URL=ldap:1636
-  #     - GLUU_OXAUTH_BACKEND=oxauth:8080
-  #   extra_hosts:
-  #     - "${DOMAIN}:${HOST_IP}"
-  #   container_name: oxtrust
-  #   volumes:
-  #     - ./volumes/oxtrust/custom/pages:/opt/gluu/jetty/identity/custom/pages
-  #     - ./volumes/oxtrust/custom/static:/opt/gluu/jetty/identity/custom/static
-  #     - ./volumes/oxtrust/custom/libs:/opt/gluu/jetty/identity/custom/libs
-  #     - ./volumes/oxtrust/custom/i18n:/opt/gluu/jetty/identity/custom/i18n
-  #     - ./volumes/oxtrust/logs:/opt/gluu/jetty/identity/logs
-  #     - ./volumes/shared-shibboleth-idp:/opt/shared-shibboleth-idp
-  #     - ./vault_role_id.txt:/etc/certs/vault_role_id
-  #     - ./vault_secret_id.txt:/etc/certs/vault_secret_id
-  #   mem_limit: 1536M
-  #   restart: unless-stopped
-  #   labels:
-  #     - "SERVICE_NAME=oxtrust"
-  #     - "SERVICE_8080_CHECK_HTTP=/identity/restv1/scim-configuration"
-  #     - "SERVICE_8080_CHECK_INTERVAL=15s"
-  #     - "SERVICE_8080_CHECK_TIMEOUT=5s"
-  #     - "APP_NAME=oxtrust"
+  oxtrust:
+    image: gluufederation/oxtrust:4.0.0_dev
+    environment:
+      - GLUU_CONFIG_CONSUL_HOST=consul
+      - GLUU_SECRET_VAULT_HOST=vault
+      - GLUU_LDAP_URL=ldap:1636
+      - GLUU_OXAUTH_BACKEND=oxauth:8080
+    extra_hosts:
+      - "${DOMAIN}:${HOST_IP}"
+    container_name: oxtrust
+    volumes:
+      - ./volumes/oxtrust/custom/pages:/opt/gluu/jetty/identity/custom/pages
+      - ./volumes/oxtrust/custom/static:/opt/gluu/jetty/identity/custom/static
+      - ./volumes/oxtrust/custom/libs:/opt/gluu/jetty/identity/custom/libs
+      - ./volumes/oxtrust/custom/i18n:/opt/gluu/jetty/identity/custom/i18n
+      - ./volumes/oxtrust/logs:/opt/gluu/jetty/identity/logs
+      - ./volumes/shared-shibboleth-idp:/opt/shared-shibboleth-idp
+      - ./vault_role_id.txt:/etc/certs/vault_role_id
+      - ./vault_secret_id.txt:/etc/certs/vault_secret_id
+    mem_limit: 1536M
+    restart: unless-stopped
+    labels:
+      - "SERVICE_NAME=oxtrust"
+      - "SERVICE_8080_CHECK_HTTP=/identity/restv1/scim-configuration"
+      - "SERVICE_8080_CHECK_INTERVAL=15s"
+      - "SERVICE_8080_CHECK_TIMEOUT=5s"
+      - "APP_NAME=oxtrust"
 
   # oxshibboleth:
-  #   image: gluufederation/oxshibboleth:3.1.6_01
+  #   image: gluufederation/oxshibboleth:4.0.0_dev
   #   environment:
   #     - GLUU_CONFIG_CONSUL_HOST=consul
   #     - GLUU_SECRET_VAULT_HOST=vault
@@ -182,7 +182,7 @@ services:
   #     - "SERVICE_8086_CHECK_TIMEOUT=5s"
 
   # oxpassport:
-  #   image: gluufederation/oxpassport:3.1.6_01
+  #   image: gluufederation/oxpassport:4.0.0_dev
   #   environment:
   #     - GLUU_CONFIG_CONSUL_HOST=consul
   #     - GLUU_SECRET_VAULT_HOST=vault
@@ -199,34 +199,34 @@ services:
   #     - "SERVICE_8090_CHECK_INTERVAL=15s"
   #     - "SERVICE_8090_CHECK_TIMEOUT=5s"
 
-  # # key_rotation:
-  # #   image: gluufederation/key-rotation:3.1.6_01
-  # #   environment:
-  # #     - GLUU_CONFIG_CONSUL_HOST=consul
-  # #     - GLUU_SECRET_VAULT_HOST=vault
-  # #     - GLUU_LDAP_URL=ldap:1636
-  # #     - GLUU_KEY_ROTATION_INTERVAL=2  # interval to regenerate keys if needed (in hours)
-  # #     - GLUU_KEY_ROTATION_CHECK=30    # interval to check whether keys should be checked (in seconds)
-  # #   volumes:
-  # #     - ./vault_role_id.txt:/etc/certs/vault_role_id
-  # #     - ./vault_secret_id.txt:/etc/certs/vault_secret_id
-  # #   container_name: key-rotation
-  # #   restart: unless-stopped
-  # #   labels:
-  # #     - "SERVICE_IGNORE=yes"
+  # key_rotation:
+  #   image: gluufederation/key-rotation:4.0.0_dev
+  #   environment:
+  #     - GLUU_CONFIG_CONSUL_HOST=consul
+  #     - GLUU_SECRET_VAULT_HOST=vault
+  #     - GLUU_LDAP_URL=ldap:1636
+  #     - GLUU_KEY_ROTATION_INTERVAL=2  # interval to regenerate keys if needed (in hours)
+  #     - GLUU_KEY_ROTATION_CHECK=30    # interval to check whether keys should be checked (in seconds)
+  #   volumes:
+  #     - ./vault_role_id.txt:/etc/certs/vault_role_id
+  #     - ./vault_secret_id.txt:/etc/certs/vault_secret_id
+  #   container_name: key-rotation
+  #   restart: unless-stopped
+  #   labels:
+  #     - "SERVICE_IGNORE=yes"
 
-  # # cr_rotate:
-  # #   image: gluufederation/cr-rotate:3.1.6_01
-  # #   environment:
-  # #     - GLUU_CONFIG_CONSUL_HOST=consul
-  # #     - GLUU_SECRET_VAULT_HOST=vault
-  # #     - GLUU_LDAP_URL=ldap:1636
-  # #     - GLUU_CR_ROTATION_CHECK=60
-  # #   volumes:
-  # #     - ./vault_role_id.txt:/etc/certs/vault_role_id
-  # #     - ./vault_secret_id.txt:/etc/certs/vault_secret_id
-  # #     - /var/run/docker.sock:/var/run/docker.sock
-  # #   container_name: cr-rotate
-  # #   restart: unless-stopped
-  # #   labels:
-  # #     - "SERVICE_IGNORE=yes"
+  # cr_rotate:
+  #   image: gluufederation/cr-rotate:4.0.0_dev
+  #   environment:
+  #     - GLUU_CONFIG_CONSUL_HOST=consul
+  #     - GLUU_SECRET_VAULT_HOST=vault
+  #     - GLUU_LDAP_URL=ldap:1636
+  #     - GLUU_CR_ROTATION_CHECK=60
+  #   volumes:
+  #     - ./vault_role_id.txt:/etc/certs/vault_role_id
+  #     - ./vault_secret_id.txt:/etc/certs/vault_secret_id
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   container_name: cr-rotate
+  #   restart: unless-stopped
+  #   labels:
+  #     - "SERVICE_IGNORE=yes"
