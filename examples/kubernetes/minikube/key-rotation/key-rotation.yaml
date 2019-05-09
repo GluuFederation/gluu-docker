@@ -29,7 +29,7 @@ spec:
       containers:
       - name: key_rotation
         imagePullPolicy: Always
-        image: gluufederation/key-rotation:3.1.5_03
+        image: gluufederation/key-rotation:3.1.5_04
         env:
           - name: GLUU_CONFIG_ADAPTER
             value: "kubernetes"

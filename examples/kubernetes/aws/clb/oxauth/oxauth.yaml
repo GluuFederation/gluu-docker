@@ -32,13 +32,13 @@ spec:
       containers:
       - name: oxauth
         imagePullPolicy: Always
-        image: gluufederation/oxauth:3.1.5_03
+        image: gluufederation/oxauth:3.1.5_04
         command:
           - /bin/sh
           - -c
           - |
               /usr/bin/python /scripts/update-clb-ip.py &
-              /opt/scripts/entrypoint.sh        
+              /opt/scripts/entrypoint.sh
         resources:
           requests:
             memory: "1000Mi"
