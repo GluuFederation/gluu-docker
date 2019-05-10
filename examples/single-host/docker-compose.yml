@@ -19,7 +19,7 @@ services:
 
   vault:
     container_name: vault
-    image: vault:1.0.1
+    image: vault:1.0.3
     command: vault server -config=/vault/config
     volumes:
       - ./volumes/vault/config:/vault/config
