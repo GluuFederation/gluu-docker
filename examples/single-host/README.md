@@ -32,9 +32,9 @@ This is an example of running Gluu Server Docker Edition on a single VM.
 1)  Run the following command inside the `/path/to/docker-gluu-server/` directory and follow the prompts:
 
         ./run_all.sh
-    
+
     Do not be alarmed for the `warning` alerts that may show up. Wait until  it prompts you for information or loads the previous configuration found. In the case where this is a fresh install you may see something like this :
-    
+
         ./run_all.sh
         [I] Determining OS Type and Attempting to Gather External IP Address
         Host is detected as Linux
@@ -65,7 +65,7 @@ This is an example of running Gluu Server Docker Edition on a single VM.
         Enter City:                   Austin
         Enter Email:                  email@example.com
         Enter Organization:           Gluu Inc
-        Enter Admin/LDAP Password:      
+        Enter Admin/LDAP Password:
         Confirm Admin/LDAP Password:
         Continue with the above settings? [Y/n]y
 
@@ -122,7 +122,7 @@ This is an example of running Gluu Server Docker Edition on a single VM.
             --network container:consul \
             -e GLUU_CONFIG_ADAPTER=consul \
             -e GLUU_CONSUL_HOST=consul \
-            gluufederation/config-init:3.1.6_01 \
+            gluufederation/config-init:3.1.6_02 \
             generate \
             --ldap-type "${GLUU_LDAP_TYPE}" \
             --domain $domain \
