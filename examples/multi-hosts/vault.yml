@@ -6,7 +6,7 @@ networks:
 
 services:
   vault:
-    image: vault:1.0.1
+    image: vault:1.0.3
     # will be used as vault node name (alphanum and dash only)
     hostname: "vault-{{.Node.Hostname}}"
     command: vault server -config=/vault/config
