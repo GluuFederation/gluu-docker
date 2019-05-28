@@ -4,7 +4,7 @@ This is an example of running Gluu Server Docker Edition on a single VM.
 
 ## Requirements:
 
-1)  Follow the [Docker installation instructions](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) or use the [convenience installation script](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-convenience-script)
+1)  Follow the [Docker installation instructions](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-repository) or use the [convenient installation script](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-using-the-convenience-script)
 
 1)  [docker-compose](https://docs.docker.com/compose/install/#install-compose).
 
