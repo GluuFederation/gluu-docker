@@ -100,5 +100,5 @@ spec:
         persistentVolumeClaim:
           claimName: oxauth-custom-pages-volume-claim
       - name: update-clb-ip
-        persistentVolumeClaim:
-          claimName: update-clb-ip-volume-claim
+        configMap:
+          name: updateclbip
