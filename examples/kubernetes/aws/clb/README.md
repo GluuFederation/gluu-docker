@@ -121,12 +121,11 @@ Deploy Redis pod:
 
 ### Update scripts folder
 
-1.  SSH into all your nodes. Create a folder  called `/data` in the root directory if it does not exist already.
-
-        [ec2-user@ip-of-node-1 /]$ ls
-        bin  boot  data  dev  etc  home  lib  lib64  local  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
-
-1.  Copy the `/scripts` folder  inside `/data` folder
+1.  Create configmap for the update clb ip script.
+        
+        cd ../update-clb-ip
+        
+        kubectl create -f update-clb-configmap.yaml
 
 ### oxAuth
 
