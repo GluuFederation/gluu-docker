@@ -219,8 +219,8 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 
 1.  Adjust the hostname from `kube.gluu.local` in `oxshibboleth.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxShibboleth pod:
 
-       cd ../oxshibboleth
-       NGINX_IP=35.240.221.38P sh deploy-pod.sh
+        cd ../oxshibboleth
+        NGINX_IP=35.240.221.38P sh deploy-pod.sh
 
 ### oxPassport
 
