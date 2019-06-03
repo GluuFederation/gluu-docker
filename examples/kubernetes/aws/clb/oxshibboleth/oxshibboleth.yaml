@@ -88,5 +88,5 @@ spec:
         persistentVolumeClaim:
           claimName: shared-shib-volume-claim
       - name: update-clb-ip
-        persistentVolumeClaim:
-          claimName: update-clb-ip-volume-claim
+        configMap:
+          name: updateclbip
