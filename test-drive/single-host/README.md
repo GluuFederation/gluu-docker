@@ -1,6 +1,6 @@
 # Gluu Server Docker Edition Test Drive Single-host 
 
-This is an example of running Gluu Server demo Docker Edition on a single VM.
+This is an example of running Gluu Server demo Docker Edition on a single VM. Its three steps get the zip, unzip the zip, and run it!
 
 ## Requirements:
 
@@ -10,9 +10,12 @@ This is an example of running Gluu Server demo Docker Edition on a single VM.
 
 1)  Obtain files for deployment:
 
-        mkdir docker-gluu-server
-        cd docker-gluu-server
-        chmod +x run_all.sh
+        wget https://github.com/GluuFederation/gluu-docker/raw/3.1.6/test-drive/single-host/test-drive-single-host.zip
+        
+1)  unzip file and enter the directory:
+
+        unzip test-drive-single-host.zip
+        cd test-drive-single-host.zip
 
 1)  Run the following command inside the `/path/to/docker-gluu-server/` directory and follow the prompts:
 
