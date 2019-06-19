@@ -188,6 +188,7 @@ generate_config() {
         --rm \
         --network container:consul \
         -v $CONFIG_DIR:/opt/config-init/db/ \
+        -v $PWD/volumes/config-init/certs:/etc/certs \
         -v $PWD/vault_role_id.txt:/etc/certs/vault_role_id \
         -v $PWD/vault_secret_id.txt:/etc/certs/vault_secret_id \
         -e GLUU_CONFIG_CONSUL_HOST=consul \
