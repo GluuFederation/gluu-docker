@@ -4,13 +4,13 @@ These are fast deployments of Gluu for demonstration , exploration, and testing 
 
 ## Examples
 
-[Single Host](./test_drive/single-host/)
+[Single Host](./single-host/)
 
 - This is test driving Gluu broken down into microservices in containers at a single node instance using docker and docker-compose.
 
 - The directory contains `README.md` as a guide to deploy a basic single-host Gluu server stack
 
-[One Container](./test_drive/one_container/)
+[One Container](./one_container/)
 
 - This is a fast deployment of the community edition gluu but inside one docker container.
 
