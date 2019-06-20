@@ -15,6 +15,11 @@ CITY=""
 DOCKER_COMPOSE=${DOCKER_COMPOSE:-docker-compose}
 DOCKER=${DOCKER:-docker}
 
+get_files(){
+    wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/test-drive/single-host/docker-compose.yml
+    wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/test-drive/single-host/vault_gluu_policy.hcl
+}
+
 gather_ip() {
     echo "[I] Determining OS Type and Attempting to Gather External IP Address"
     unameOut="$(uname -s)"
@@ -316,6 +321,7 @@ unseal_vault() {
 check_license
 check_docker
 check_docker_compose
+get_files
 
 mkdir -p $CONFIG_DIR
 touch vault_role_id.txt
