@@ -246,8 +246,8 @@ check_docker_compose
 mkdir -p $CONFIG_DIR
 touch vault_role_id.txt
 touch vault_secret_id.txt
-touch gcp_kms_stanza.hcl
-touch gcp_kms_creds.json
+# touch gcp_kms_stanza.hcl
+# touch gcp_kms_creds.json
 
 gather_ip
 until confirm_ip; do : ; done
