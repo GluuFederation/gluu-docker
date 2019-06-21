@@ -291,7 +291,6 @@ enable_approle() {
 }
 
 write_policy() {
-    sleep 5
     docker exec vault vault login -no-print $(get_root_token)
 
     policy_created=$(docker exec vault vault policy list | grep gluu || :)
@@ -311,14 +310,38 @@ get_unseal_key() {
 }
 
 unseal_vault() {
-    sleep 5
-
     vault_sealed=$(docker exec vault vault status | grep 'Sealed' | awk -F ' ' '{print $2}' || :)
     if [ "${vault_sealed}" = "false" ]; then
         echo "[I] Vault already unsealed"
     else
         docker exec vault vault operator unseal $(get_unseal_key)
     fi
+}
+
+setup_vault() {
+    echo "[I] Checking seal status in Vault"
+    retry=1
+
+    while [[ $retry -le 3 ]]; do
+        sleep 5
+        vault_id=$(docker ps -q --filter name=vault)
+        if [ ! -z $vault_id ]; then
+            vault_status=$(docker exec vault vault status -format yaml | grep 'sealed' | awk -F ': ' '{print $2}')
+            if [ ! -z "$vault_status" ]; then
+                break
+            fi
+        fi
+
+        echo "[W] Unable to get seal status in Vault; retrying ..."
+        retry=$(($retry+1))
+        sleep 5
+    done
+
+    init_vault
+    sleep 5
+    unseal_vault
+    write_policy
+    enable_approle
 }
 
 # ==========
@@ -342,10 +365,7 @@ prepare_config_secret
 
 load_services
 
-init_vault
-unseal_vault
-write_policy
-enable_approle
+setup_vault
 
 case $INIT_CONFIG_CMD in
     "load")
