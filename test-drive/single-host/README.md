@@ -11,6 +11,11 @@ This is an example of running Gluu Server demo Docker Edition on a single VM. It
 
 ## Steps
 
+1) Create a directory for the bash script
+   
+        mkdir gluu-demo
+        cd gluu-demo
+
 1)  Obtain bash script for gluu single host installation:
 
         wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/test-drive/single-host/run_all.sh && chmod +x run_all.sh
@@ -60,8 +65,17 @@ This is an example of running Gluu Server demo Docker Edition on a single VM. It
     The startup process may take some time. You can keep track of the deployment by using the following command:
 
         docker-compose logs -f
+        
+## uninstall gluu demo
 
-
+1) In the same directory where `run_all.sh` was placed, here `gluu-demo` run:
+        
+        docker-compose down
+        
+2) Delete the folder holding your installation configuration files, here `gluu-demo`:
+ 
+        rm -rf gluu-demo
+  
 ## FAQ
 
 1) What network is Gluu Server Docker Edition running on?
