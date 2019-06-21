@@ -51,12 +51,12 @@ This is an example of running Gluu Server demo Docker Edition on a single VM. It
         [W] Unable to get config in Consul; retrying ...
         [W] Configuration not found in Consul
         [I] Creating new configuration, please input the following parameters
-        Enter Domain:                 yourdomain
-        Enter Country Code:           US
-        Enter State:                  TX
-        Enter City:                   Austin
-        Enter Email:                  email@example.com
-        Enter Organization:           Gluu Inc
+        Enter Hostname (demoexample.gluu.org):                 demoexample.gluu.org
+        Enter Country Code:                                    US
+        Enter State:                                           TX
+        Enter City:                                            Austin
+        Enter Email:                                           email@example.com
+        Enter Organization:                                    Gluu Inc
         Enter Admin/LDAP Password:
         Confirm Admin/LDAP Password:
         Continue with the above settings? [Y/n]y
