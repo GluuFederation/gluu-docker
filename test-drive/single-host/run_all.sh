@@ -142,12 +142,16 @@ prepare_config_secret() {
     # config is not loaded from previously saved configuration
     if [[ -z $DOMAIN ]]; then
         echo "[I] Creating new configuration, please input the following parameters"
-        read -p "Enter Domain:                 " DOMAIN
-        read -p "Enter Country Code:           " COUNTRY_CODE
-        read -p "Enter State:                  " STATE
-        read -p "Enter City:                   " CITY
-        read -p "Enter Email:                  " EMAIL
-        read -p "Enter Organization:           " ORG_NAME
+        read -p "Enter Hostname (demoexample.gluu.org):                 " DOMAIN
+        if ! [[$DOMAIN == *"."*"."* ]]; then
+            echo "[E] Hostname provided is invalid. Please enter a FQDN with the format demoexample.gluu.org" 
+            exit 1
+        fi
+        read -p "Enter Country Code:                                    " COUNTRY_CODE
+        read -p "Enter State:                                           " STATE
+        read -p "Enter City:                                            " CITY
+        read -p "Enter Email:                                           " EMAIL
+        read -p "Enter Organization:                                    " ORG_NAME
         while true; do
             read -s -p "Enter Admin/LDAP Password:    " ADMIN_PW
             echo
