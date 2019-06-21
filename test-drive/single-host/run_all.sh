@@ -16,8 +16,12 @@ DOCKER_COMPOSE=${DOCKER_COMPOSE:-docker-compose}
 DOCKER=${DOCKER:-docker}
 
 get_files(){
-    wget -q https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/test-drive/single-host/docker-compose.yml -O ./docker-compose.yml
-    wget -q https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/test-drive/single-host/vault_gluu_policy.hcl -O ./vault_gluu_policy.hcl
+    if [ ! -f docker-compose.yml ]; then
+        wget -q https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/test-drive/single-host/docker-compose.yml -O ./docker-compose.yml
+    fi
+    if [ ! -f vault_gluu_policy.hcl ]; then
+        wget -q https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/test-drive/single-host/vault_gluu_policy.hcl -O ./vault_gluu_policy.hcl
+    fi
 }
 
 gather_ip() {
@@ -144,7 +148,7 @@ prepare_config_secret() {
         echo "[I] Creating new configuration, please input the following parameters"
         read -p "Enter Hostname (demoexample.gluu.org):                 " DOMAIN
         if ! [[ $DOMAIN == *"."*"."* ]]; then
-            echo "[E] Hostname provided is invalid. Please enter a FQDN with the format demoexample.gluu.org" 
+            echo "[E] Hostname provided is invalid. Please enter a FQDN with the format demoexample.gluu.org"
             exit 1
         fi
         read -p "Enter Country Code:                                    " COUNTRY_CODE
@@ -259,7 +263,6 @@ get_root_token() {
     fi
 }
 
-
 enable_approle() {
     docker exec vault vault login -no-print $(get_root_token)
 
@@ -306,7 +309,6 @@ get_unseal_key() {
         cat $PWD/vault_key_token.txt | grep "Unseal Key 1" | awk -F ': ' '{print $2}'
     fi
 }
-
 
 unseal_vault() {
     sleep 5
