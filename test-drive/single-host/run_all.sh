@@ -16,8 +16,8 @@ DOCKER_COMPOSE=${DOCKER_COMPOSE:-docker-compose}
 DOCKER=${DOCKER:-docker}
 
 get_files(){
-    wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/test-drive/single-host/docker-compose.yml
-    wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/test-drive/single-host/vault_gluu_policy.hcl
+    wget -q https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/test-drive/single-host/docker-compose.yml -O 
+    wget -q https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/test-drive/single-host/vault_gluu_policy.hcl -O 
 }
 
 gather_ip() {
