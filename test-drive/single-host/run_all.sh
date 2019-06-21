@@ -143,7 +143,7 @@ prepare_config_secret() {
     if [[ -z $DOMAIN ]]; then
         echo "[I] Creating new configuration, please input the following parameters"
         read -p "Enter Hostname (demoexample.gluu.org):                 " DOMAIN
-        if ! [[$DOMAIN == *"."*"."* ]]; then
+        if ! [[ $DOMAIN == *"."*"."* ]]; then
             echo "[E] Hostname provided is invalid. Please enter a FQDN with the format demoexample.gluu.org" 
             exit 1
         fi
