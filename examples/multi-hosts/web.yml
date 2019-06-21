@@ -40,7 +40,7 @@ services:
         target: /etc/certs/vault_secret_id
 
   oxtrust:
-    image: gluufederation/oxtrust:3.1.6_03
+    image: gluufederation/oxtrust:3.1.6_04
     environment:
       - GLUU_LDAP_URL=ldap.server:1636
       - GLUU_CONFIG_CONSUL_HOST=consul.server
