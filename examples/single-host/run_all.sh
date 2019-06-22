@@ -42,7 +42,7 @@ check_health(){
     echo -n "Installing"
     echo "$HOST_IP $DOMAIN" >> /etc/hosts
     while true; do
-        status_code=$(timeout 5s curl -o /dev/null --silent -k --head --write-out '%{http_code}\n' $DOMAIN)
+        status_code=$(timeout 5s curl -o /dev/null --silent -k --head --write-out '%{http_code}\n' https://$DOMAIN)
         if [ "$status_code" -ne "302" ] &>/dev/null
         then
                 echo "Installed Successfully"
