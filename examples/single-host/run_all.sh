@@ -24,6 +24,20 @@ get_files(){
     fi
 }
 
+mask_password(){
+    password=''
+    while IFS= read -r -s -n1 char; do
+      [[ -z $char ]] && { printf '\n'; break; } 
+      if [[ $char == $'\b' ]]; then
+          [[ -n $password ]] && password=${password%?}
+          printf '\b \b'
+      else
+        password+=$char
+        printf '*'
+      fi
+done
+}
+
 gather_ip() {
     echo "[I] Determining OS Type and Attempting to Gather External IP Address"
     unameOut="$(uname -s)"
