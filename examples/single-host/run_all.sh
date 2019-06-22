@@ -39,13 +39,13 @@ done
 }
 
 check_health(){
-    echo -n "Installing"
+    echo -n "Getting ready"
     echo "$HOST_IP $DOMAIN" >> /etc/hosts
     while true; do
-        status_code=$(timeout 5s curl -o /dev/null --silent -k --head --write-out '%{http_code}\n' https://$DOMAIN)
+        status_code=$(timeout 5s curl -o /dev/null --silent -k --head --write-out '%{http_code}\n' https://"$DOMAIN")
         if [ "$status_code" -ne "302" ] &>/dev/null
         then
-                echo "Installed Successfully"
+                echo "\nInstalled Successfully"
                 break
         fi
         echo -n "."
@@ -223,6 +223,7 @@ load_config() {
         -e GLUU_SECRET_VAULT_HOST=vault \
         gluufederation/config-init:$GLUU_VERSION \
             load
+    check_health
 }
 
 generate_config() {
@@ -245,6 +246,7 @@ generate_config() {
             --state $STATE \
             --city "$CITY" \
             --ldap-type opendj
+    check_health
 }
 
 check_license() {
@@ -298,5 +300,3 @@ case $INIT_CONFIG_CMD in
         generate_config
         ;;
 esac
-
-check_health
