@@ -172,10 +172,12 @@ prepare_config_secret() {
         read -p "Enter Email:                                           " EMAIL
         read -p "Enter Organization:                                    " ORG_NAME
         while true; do
-            read -s -p "Enter Admin/LDAP Password:    " ADMIN_PW
-            echo
-            read -s -p "Confirm Admin/LDAP Password:    " password2
-            echo
+            echo "Enter Admin/LDAP Password:"
+            mask_password
+            ADMIN_PW=$password
+            echo "Confirm Admin/LDAP Password:"
+            mask_password
+            password2=$password
             [ "$ADMIN_PW" = "$password2" ] && break || echo "Please try again"
         done
 
