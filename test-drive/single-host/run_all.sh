@@ -39,16 +39,17 @@ done
 }
 
 check_health(){
-    echo -n "Getting ready"
+    echo -n "Launching"
     echo "$HOST_IP $DOMAIN" >> /etc/hosts
     while true; do
         status_code=""
         status_code=$(timeout 5s curl -o /dev/null --silent -k --head --write-out '%{http_code}\n' https://"$DOMAIN" || true)
         if [ "$status_code" -eq "302" ] &>/dev/null
         then
-                echo "\nInstalled Successfully"
+                printf "\nInstalled Successfully"
                 break
         fi
+        sleep 5
         echo -n "."
     done
 }
