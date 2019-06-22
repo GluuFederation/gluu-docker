@@ -44,7 +44,7 @@ check_health(){
     while true; do
         status_code=""
         status_code=$(timeout 5s curl -o /dev/null --silent -k --head --write-out '%{http_code}\n' https://"$DOMAIN" || true)
-        if [ "$status_code" -eq"302" ] &>/dev/null
+        if [ "$status_code" -eq "302" ] &>/dev/null
         then
                 echo "\nInstalled Successfully"
                 break
