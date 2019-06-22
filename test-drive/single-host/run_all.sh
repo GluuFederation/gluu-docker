@@ -38,6 +38,19 @@ mask_password(){
 done
 }
 
+check_health(){
+    echo -n "Installing"
+    echo "$HOST_IP $DOMAIN" >> /etc/hosts
+    while true; do
+        status_code=$(timeout 5s curl -o /dev/null --silent --head --write-out '%{http_code}\n' $DOMAIN)
+        if [ "$status_code" -ne "302" ] &>/dev/null
+        then
+                echo "Installed Successfully"
+                break
+        fi
+        echo -n "."
+    done
+}
 
 gather_ip() {
     echo "[I] Determining OS Type and Attempting to Gather External IP Address"
@@ -392,3 +405,5 @@ case $INIT_CONFIG_CMD in
         generate_config
         ;;
 esac
+
+check_health
