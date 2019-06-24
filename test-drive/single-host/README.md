@@ -20,7 +20,6 @@ This is an example of running Gluu Server demo Docker Edition on a single VM. It
 
         wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/test-drive/single-host/run_all.sh && chmod +x run_all.sh
         
-
 1)  Run the following command inside the `/path/to/docker-gluu-server/` directory and follow the prompts:
 
         ./run_all.sh
@@ -122,6 +121,7 @@ This is an example of running Gluu Server demo Docker Edition on a single VM. It
 # docker start $(docker ps -aq)
 
 ```
+
 
 1) How to use ldapsearch
 
