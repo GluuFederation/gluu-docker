@@ -123,6 +123,13 @@ This is an example of running Gluu Server demo Docker Edition on a single VM. It
 
 ```
 
+1) How to use ldapsearch
+
+```
+# docker exec -ti ldap /opt/opendj/bin/ldapsearch -h localhost -p 1636 -Z -X -D "cn=directory manager" -b "o=gluu" -s base -T "objectClass=*"
+
+```
+
 ## Documentation
 
 Please refer to the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/de/3.1.6) for further reading on Docker image implementations.
