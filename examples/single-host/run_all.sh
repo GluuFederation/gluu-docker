@@ -285,13 +285,13 @@ check_license() {
 
 ### unselaing the vault
 init_vault() {
-    vault_initialized=$(docker exec vault vault status -format=yaml | grep initialized | awk -F ': ' '{print $2}')
+    vault_initialized=$($DOCKER exec vault vault status -format=yaml | grep initialized | awk -F ': ' '{print $2}')
 
     if [ "${vault_initialized}" = "true" ]; then
         echo "[I] Vault already initialized"
     else
         echo "[W] Vault is not initialized; trying to initialize Vault with 1 recovery key and root token"
-        docker exec vault vault operator init \
+        $DOCKER exec vault vault operator init \
             -key-shares=1 \
             -key-threshold=1 \
             -recovery-shares=1 \
@@ -307,15 +307,15 @@ get_root_token() {
 }
 
 enable_approle() {
-    docker exec vault vault login -no-print $(get_root_token)
+    $DOCKER exec vault vault login -no-print $(get_root_token)
 
-    approle_enabled=$(docker exec vault vault auth list | grep 'approle' || :)
+    approle_enabled=$($DOCKER exec vault vault auth list | grep 'approle' || :)
 
     if [ -z "${approle_enabled}" ]; then
         echo "[W] AppRole is not enabled; trying to enable AppRole"
-        docker exec vault vault auth enable approle
-        docker exec vault vault write auth/approle/role/gluu policies=gluu
-        docker exec vault \
+        $DOCKER exec vault vault auth enable approle
+        $DOCKER exec vault vault write auth/approle/role/gluu policies=gluu
+        $DOCKER exec vault \
             vault write auth/approle/role/gluu \
                 secret_id_ttl=0 \
                 token_num_uses=0 \
@@ -323,10 +323,10 @@ enable_approle() {
                 token_max_ttl=30m \
                 secret_id_num_uses=0
 
-        docker exec vault \
+        $DOCKER exec vault \
             vault read -field=role_id auth/approle/role/gluu/role-id > vault_role_id.txt
 
-        docker exec vault \
+        $DOCKER exec vault \
             vault write -f -field=secret_id auth/approle/role/gluu/secret-id > vault_secret_id.txt
     else
         echo "[I] AppRole already enabled"
@@ -334,13 +334,13 @@ enable_approle() {
 }
 
 write_policy() {
-    docker exec vault vault login -no-print $(get_root_token)
+    $DOCKER exec vault vault login -no-print $(get_root_token)
 
-    policy_created=$(docker exec vault vault policy list | grep gluu || :)
+    policy_created=$($DOCKER exec vault vault policy list | grep gluu || :)
 
     if [ -z "${policy_created}" ]; then
         echo "[W] Gluu policy is not created; trying to create one"
-        docker exec vault vault policy write gluu /vault/config/policy.hcl
+        $DOCKER exec vault vault policy write gluu /vault/config/policy.hcl
     else
         echo "[I] Gluu policy already created"
     fi
@@ -353,14 +353,14 @@ get_unseal_key() {
 }
 
 unseal_vault() {
-    vault_sealed=$(docker exec vault vault status -format yaml | grep 'sealed' | awk -F ' ' '{print $2}' || :)
+    vault_sealed=$($DOCKER exec vault vault status -format yaml | grep 'sealed' | awk -F ' ' '{print $2}' || :)
     if [ "${vault_sealed}" = "false" ]; then
         echo "[I] Vault already unsealed"
     else
         has_gcp=$(cat gcp_kms_creds.json|wc -l)
         if [ "$has_gcp" = "0" ]; then
             echo "[I] Unsealing Vault manually"
-            docker exec vault vault operator unseal $(get_unseal_key)
+            $DOCKER exec vault vault operator unseal $(get_unseal_key)
         fi
     fi
 }
@@ -371,9 +371,9 @@ setup_vault() {
 
     while [[ $retry -le 3 ]]; do
         sleep 5
-        vault_id=$(docker ps -q --filter name=vault)
+        vault_id=$($DOCKER ps -q --filter name=vault)
         if [ ! -z $vault_id ]; then
-            vault_status=$(docker exec vault vault status -format yaml | grep 'sealed' | awk -F ': ' '{print $2}')
+            vault_status=$($DOCKER exec vault vault status -format yaml | grep 'sealed' | awk -F ': ' '{print $2}')
             if [ ! -z "$vault_status" ]; then
                 break
             fi
