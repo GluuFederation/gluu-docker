@@ -15,19 +15,29 @@ CITY=""
 DOCKER_COMPOSE=${DOCKER_COMPOSE:-docker-compose}
 DOCKER=${DOCKER:-docker}
 
+# @TODO: remove this function when we have .zip/.tar.gz for distribution
 get_files(){
+    has_gcp=$(cat gcp_kms_creds.json|wc -l)
+
+    # we're in test-drive
+    if [ "$has_gcp" = "0" ]; then
+        folder="test-drive"
+    else
+        folder="examples"
+    fi
+
     if [ ! -f docker-compose.yml ]; then
-        wget -q https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/examples/single-host/docker-compose.yml -O ./docker-compose.yml
+        wget -q https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/$folder/single-host/docker-compose.yml -O ./docker-compose.yml
     fi
     if [ ! -f vault_gluu_policy.hcl ]; then
-        wget -q https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/examples/single-host/vault_gluu_policy.hcl -O ./vault_gluu_policy.hcl
+        wget -q https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/$folder/single-host/vault_gluu_policy.hcl -O ./vault_gluu_policy.hcl
     fi
 }
 
 mask_password(){
     password=''
     while IFS= read -r -s -n1 char; do
-      [[ -z $char ]] && { printf '\n'; break; } 
+      [[ -z $char ]] && { printf '\n'; break; }
       if [[ $char == $'\b' ]]; then
           [[ -n $password ]] && password=${password%?}
           printf '\b \b'
@@ -39,16 +49,15 @@ done
 }
 
 check_health(){
-    echo -n "Launching"
-    echo "$HOST_IP $DOMAIN" >> /etc/hosts
+    echo -n "[I] Launching "
     timeout="10 minute"
     endtime=$(date -ud "$timeout" +%s)
     while [[ $(date -u +%s) -le $endtime ]]; do
-        status_code=""
-        status_code=$(timeout 5s curl -o /dev/null --silent -k --head --write-out '%{http_code}\n' https://"$DOMAIN" || true)
+        nginx_ip=$($DOCKER inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nginx)
+        status_code=$(timeout 5s curl -o /dev/null --silent -k --head --write-out '%{http_code}\n' https://"$nginx_ip" || true)
         if [ "$status_code" -eq "302" ] &>/dev/null
         then
-                printf "\nInstalled Successfully\n"
+                printf "\n[I] Gluu Server installed successfully; please visit https://$DOMAIN\n"
                 break
         fi
         sleep 5
@@ -274,12 +283,121 @@ check_license() {
     fi
 }
 
+### unselaing the vault
+init_vault() {
+    vault_initialized=$(docker exec vault vault status -format=yaml | grep initialized | awk -F ': ' '{print $2}')
+
+    if [ "${vault_initialized}" = "true" ]; then
+        echo "[I] Vault already initialized"
+    else
+        echo "[W] Vault is not initialized; trying to initialize Vault with 1 recovery key and root token"
+        docker exec vault vault operator init \
+            -key-shares=1 \
+            -key-threshold=1 \
+            -recovery-shares=1 \
+            -recovery-threshold=1 > $PWD/vault_key_token.txt
+        echo "[I] Vault recovery key and root token saved to $PWD/vault_key_token.txt"
+    fi
+}
+
+get_root_token() {
+    if [ -f $PWD/vault_key_token.txt ]; then
+        cat $PWD/vault_key_token.txt | grep "Initial Root Token" | awk -F ': ' '{print $2}'
+    fi
+}
+
+enable_approle() {
+    docker exec vault vault login -no-print $(get_root_token)
+
+    approle_enabled=$(docker exec vault vault auth list | grep 'approle' || :)
+
+    if [ -z "${approle_enabled}" ]; then
+        echo "[W] AppRole is not enabled; trying to enable AppRole"
+        docker exec vault vault auth enable approle
+        docker exec vault vault write auth/approle/role/gluu policies=gluu
+        docker exec vault \
+            vault write auth/approle/role/gluu \
+                secret_id_ttl=0 \
+                token_num_uses=0 \
+                token_ttl=20m \
+                token_max_ttl=30m \
+                secret_id_num_uses=0
+
+        docker exec vault \
+            vault read -field=role_id auth/approle/role/gluu/role-id > vault_role_id.txt
+
+        docker exec vault \
+            vault write -f -field=secret_id auth/approle/role/gluu/secret-id > vault_secret_id.txt
+    else
+        echo "[I] AppRole already enabled"
+    fi
+}
+
+write_policy() {
+    docker exec vault vault login -no-print $(get_root_token)
+
+    policy_created=$(docker exec vault vault policy list | grep gluu || :)
+
+    if [ -z "${policy_created}" ]; then
+        echo "[W] Gluu policy is not created; trying to create one"
+        docker exec vault vault policy write gluu /vault/config/policy.hcl
+    else
+        echo "[I] Gluu policy already created"
+    fi
+}
+
+get_unseal_key() {
+    if [ -f $PWD/vault_key_token.txt ]; then
+        cat $PWD/vault_key_token.txt | grep "Unseal Key 1" | awk -F ': ' '{print $2}'
+    fi
+}
+
+unseal_vault() {
+    vault_sealed=$(docker exec vault vault status -format yaml | grep 'sealed' | awk -F ' ' '{print $2}' || :)
+    if [ "${vault_sealed}" = "false" ]; then
+        echo "[I] Vault already unsealed"
+    else
+        has_gcp=$(cat gcp_kms_creds.json|wc -l)
+        if [ "$has_gcp" = "0" ]; then
+            echo "[I] Unsealing Vault manually"
+            docker exec vault vault operator unseal $(get_unseal_key)
+        fi
+    fi
+}
+
+setup_vault() {
+    echo "[I] Checking seal status in Vault"
+    retry=1
+
+    while [[ $retry -le 3 ]]; do
+        sleep 5
+        vault_id=$(docker ps -q --filter name=vault)
+        if [ ! -z $vault_id ]; then
+            vault_status=$(docker exec vault vault status -format yaml | grep 'sealed' | awk -F ': ' '{print $2}')
+            if [ ! -z "$vault_status" ]; then
+                break
+            fi
+        fi
+
+        echo "[W] Unable to get seal status in Vault; retrying ..."
+        retry=$(($retry+1))
+        sleep 5
+    done
+
+    init_vault
+    sleep 5
+    unseal_vault
+    write_policy
+    enable_approle
+}
+
 # ==========
 # entrypoint
 # ==========
 check_license
 check_docker
 check_docker_compose
+get_files
 
 mkdir -p $CONFIG_DIR
 touch vault_role_id.txt
@@ -293,6 +411,8 @@ until confirm_ip; do : ; done
 prepare_config_secret
 
 load_services
+
+setup_vault
 
 case $INIT_CONFIG_CMD in
     "load")

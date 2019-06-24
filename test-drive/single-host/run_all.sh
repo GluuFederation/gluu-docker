@@ -15,12 +15,22 @@ CITY=""
 DOCKER_COMPOSE=${DOCKER_COMPOSE:-docker-compose}
 DOCKER=${DOCKER:-docker}
 
+# @TODO: remove this function when we have .zip/.tar.gz for distribution
 get_files(){
+    has_gcp=$(cat gcp_kms_creds.json|wc -l)
+
+    # we're in test-drive
+    if [ "$has_gcp" = "0" ]; then
+        folder="test-drive"
+    else
+        folder="examples"
+    fi
+
     if [ ! -f docker-compose.yml ]; then
-        wget -q https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/test-drive/single-host/docker-compose.yml -O ./docker-compose.yml
+        wget -q https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/$folder/single-host/docker-compose.yml -O ./docker-compose.yml
     fi
     if [ ! -f vault_gluu_policy.hcl ]; then
-        wget -q https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/test-drive/single-host/vault_gluu_policy.hcl -O ./vault_gluu_policy.hcl
+        wget -q https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/$folder/single-host/vault_gluu_policy.hcl -O ./vault_gluu_policy.hcl
     fi
 }
 
@@ -39,16 +49,15 @@ done
 }
 
 check_health(){
-    echo -n "Launching"
-    echo "$HOST_IP $DOMAIN" >> /etc/hosts
+    echo -n "[I] Launching "
     timeout="10 minute"
     endtime=$(date -ud "$timeout" +%s)
     while [[ $(date -u +%s) -le $endtime ]]; do
-        status_code=""
-        status_code=$(timeout 5s curl -o /dev/null --silent -k --head --write-out '%{http_code}\n' https://"$DOMAIN" || true)
+        nginx_ip=$($DOCKER inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nginx)
+        status_code=$(timeout 5s curl -o /dev/null --silent -k --head --write-out '%{http_code}\n' https://"$nginx_ip" || true)
         if [ "$status_code" -eq "302" ] &>/dev/null
         then
-                printf "\nInstalled Successfully\n"
+                printf "\n[I] Gluu Server installed successfully; please visit https://$DOMAIN\n"
                 break
         fi
         sleep 5
@@ -183,11 +192,11 @@ prepare_config_secret() {
             echo "[E] Hostname provided is invalid. Please enter a FQDN with the format demoexample.gluu.org"
             exit 1
         fi
-        read -p "Enter Country Code:                                    " COUNTRY_CODE
-        read -p "Enter State:                                           " STATE
-        read -p "Enter City:                                            " CITY
-        read -p "Enter Email:                                           " EMAIL
-        read -p "Enter Organization:                                    " ORG_NAME
+        read -p "Enter Country Code:           " COUNTRY_CODE
+        read -p "Enter State:                  " STATE
+        read -p "Enter City:                   " CITY
+        read -p "Enter Email:                  " EMAIL
+        read -p "Enter Organization:           " ORG_NAME
         while true; do
             echo "Enter Admin/LDAP Password:"
             mask_password
@@ -344,11 +353,15 @@ get_unseal_key() {
 }
 
 unseal_vault() {
-    vault_sealed=$(docker exec vault vault status | grep 'Sealed' | awk -F ' ' '{print $2}' || :)
+    vault_sealed=$(docker exec vault vault status -format yaml | grep 'sealed' | awk -F ' ' '{print $2}' || :)
     if [ "${vault_sealed}" = "false" ]; then
         echo "[I] Vault already unsealed"
     else
-        docker exec vault vault operator unseal $(get_unseal_key)
+        has_gcp=$(cat gcp_kms_creds.json|wc -l)
+        if [ "$has_gcp" = "0" ]; then
+            echo "[I] Unsealing Vault manually"
+            docker exec vault vault operator unseal $(get_unseal_key)
+        fi
     fi
 }
 
