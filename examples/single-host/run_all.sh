@@ -397,13 +397,14 @@ setup_vault() {
 check_license
 check_docker
 check_docker_compose
-get_files
 
 mkdir -p $CONFIG_DIR
 touch vault_role_id.txt
 touch vault_secret_id.txt
 touch gcp_kms_stanza.hcl
 touch gcp_kms_creds.json
+
+get_files
 
 gather_ip
 until confirm_ip; do : ; done
