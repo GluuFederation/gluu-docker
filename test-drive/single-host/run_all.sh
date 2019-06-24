@@ -41,7 +41,9 @@ done
 check_health(){
     echo -n "Launching"
     echo "$HOST_IP $DOMAIN" >> /etc/hosts
-    while true; do
+    timeout="10 minute"
+    endtime=$(date -ud "$timeout" +%s)
+    while [[ $(date -u +%s) -le $endtime ]]; do
         status_code=""
         status_code=$(timeout 5s curl -o /dev/null --silent -k --head --write-out '%{http_code}\n' https://"$DOMAIN" || true)
         if [ "$status_code" -eq "302" ] &>/dev/null
