@@ -113,6 +113,15 @@ This is an example of running Gluu Server demo Docker Edition on a single VM. It
     After that oxAuth, NGINX, then oxTrust, which relies on the `/.well-known/openid-configuration/` to properly set it's own configuration. These containers can be restarted at any time from that point on.
 
     Currently all of the images, with the exception of the `consul` and `registrator` containers, have wait-for-it scripts designed to prevent them from trying to start, before the necessary launch procedure is accomplished. This mitigates failure during the build process.
+    
+1) How do I stop and start the containers without uninstalling them?
+
+```
+# docker stop $(docker ps -aq)
+
+# docker start $(docker ps -aq)
+
+```
 
 ## Documentation
 
