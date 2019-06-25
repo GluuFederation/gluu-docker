@@ -26,6 +26,7 @@ This is an example of running Gluu Server Docker Edition on a single VM.
         cd docker-gluu-server
         wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/examples/single-host/run_all.sh
         wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/examples/single-host/docker-compose.yml
+        wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/examples/single-host/docker-compose.override.yml
         wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/examples/single-host/vault_gluu_policy.hcl
         chmod +x run_all.sh
 
@@ -74,41 +75,7 @@ This is an example of running Gluu Server Docker Edition on a single VM.
 
         docker-compose logs -f
 
-1)  On initial deployment, since Vault has not been configured yet, each service (other than Consul, Vault, and Registrator) will wait for Vault readiness.
-
-    -   Initialize Vault:
-
-            docker exec vault vault operator init -key-shares=1 -key-threshold=1 -recovery-shares=1 -recovery-threshold=1 > vault_key_token.txt
-
-        The output of this command is redirected to a file `vault_key_token.txt`. Secure this file as it contains recovery key and root token.
-
-    -   Login to Vault using root token:
-
-            docker exec -ti vault vault login -no-print
-
-        A prompt will appear to enter the root token.
-
-    -   Write policy to access Vault's secrets:
-
-            docker exec vault vault policy write gluu /vault/config/policy.hcl
-
-    -   Enable Vault AppRole for containers:
-
-            docker exec vault vault auth enable approle
-            docker exec vault vault write auth/approle/role/gluu policies=gluu
-            docker exec vault vault write auth/approle/role/gluu \
-                secret_id_ttl=0 \
-                token_num_uses=0 \
-                token_ttl=20m \
-                token_max_ttl=30m \
-                secret_id_num_uses=0
-
-    -   Generate RoleID and SecretID for containers:
-
-            docker exec vault vault read -field=role_id auth/approle/role/gluu/role-id > vault_role_id.txt
-            docker exec vault vault write -f -field=secret_id auth/approle/role/gluu/secret-id > vault_secret_id.txt
-
-    Afterwards, check the logs to see the progress of deployment after Vault has been initialized and configured properly.
+1)  On initial deployment, since Vault has not been configured yet, the `run_all.sh` will generate root token and key to interact with Vault API, saved as `vault_key_token.txt`. Secure this file as it contains recovery key and root token.
 
 ## FAQ
 
