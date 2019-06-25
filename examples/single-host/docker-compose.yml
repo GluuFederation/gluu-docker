@@ -26,8 +26,6 @@ services:
       - ./volumes/vault/data:/vault/data
       - ./volumes/vault/logs:/vault/logs
       - ./vault_gluu_policy.hcl:/vault/config/policy.hcl
-      - ./gcp_kms_stanza.hcl:/vault/config/stanza.hcl
-      - ./gcp_kms_creds.json:/vault/config/creds.json
     cap_add:
       - IPC_LOCK
     environment:
@@ -76,39 +74,39 @@ services:
       - ./vault_role_id.txt:/etc/certs/vault_role_id
       - ./vault_secret_id.txt:/etc/certs/vault_secret_id
 
-  # ldap:
-  #   image: gluufederation/opendj:4.0.0_dev
-  #   environment:
-  #     - GLUU_CONFIG_CONSUL_HOST=consul
-  #     - GLUU_SECRET_VAULT_HOST=vault
-  #     - GLUU_LDAP_INIT=true
-  #     - GLUU_LDAP_INIT_HOST=ldap
-  #     - GLUU_LDAP_INIT_PORT=1636
-  #     - GLUU_OXTRUST_CONFIG_GENERATION=true
-  #     - GLUU_CACHE_TYPE=NATIVE_PERSISTENCE
-  #     # - GLUU_CACHE_TYPE=REDIS  # don't forget to enable redis service
-  #     # - GLUU_REDIS_URL=redis:6379
-  #     # - GLUU_REDIS_TYPE=STANDALONE
-  #     # the value must match service name `ldap` because other containers
-  #     # use this value as LDAP hostname
-  #     - GLUU_CERT_ALT_NAME=ldap
-  #     - GLUU_LDAP_ADVERTISE_ADDR=ldap
-  #     # - GLUU_PERSISTENCE_TYPE=hybrid
-  #     # - GLUU_PERSISTENCE_LDAP_MAPPING=user
-  #   container_name: ldap
-  #   volumes:
-  #     - ./volumes/opendj/config:/opt/opendj/config
-  #     - ./volumes/opendj/ldif:/opt/opendj/ldif
-  #     - ./volumes/opendj/logs:/opt/opendj/logs
-  #     - ./volumes/opendj/db:/opt/opendj/db
-  #     - ./volumes/opendj/flag:/flag
-  #     - ./volumes/opendj/backup:/opt/opendj/bak
-  #     - ./vault_role_id.txt:/etc/certs/vault_role_id
-  #     - ./vault_secret_id.txt:/etc/certs/vault_secret_id
-  #     # - ./101-ox.ldif:/opt/opendj/config/schema/101-ox.ldif
-  #   restart: unless-stopped
-  #   labels:
-  #     - "SERVICE_IGNORE=yes"
+  ldap:
+    image: gluufederation/opendj:4.0.0_dev
+    environment:
+      - GLUU_CONFIG_CONSUL_HOST=consul
+      - GLUU_SECRET_VAULT_HOST=vault
+      - GLUU_LDAP_INIT=true
+      - GLUU_LDAP_INIT_HOST=ldap
+      - GLUU_LDAP_INIT_PORT=1636
+      - GLUU_OXTRUST_CONFIG_GENERATION=true
+      - GLUU_CACHE_TYPE=NATIVE_PERSISTENCE
+      # - GLUU_CACHE_TYPE=REDIS  # don't forget to enable redis service
+      # - GLUU_REDIS_URL=redis:6379
+      # - GLUU_REDIS_TYPE=STANDALONE
+      # the value must match service name `ldap` because other containers
+      # use this value as LDAP hostname
+      - GLUU_CERT_ALT_NAME=ldap
+      - GLUU_LDAP_ADVERTISE_ADDR=ldap
+      # - GLUU_PERSISTENCE_TYPE=hybrid
+      # - GLUU_PERSISTENCE_LDAP_MAPPING=user
+    container_name: ldap
+    volumes:
+      - ./volumes/opendj/config:/opt/opendj/config
+      - ./volumes/opendj/ldif:/opt/opendj/ldif
+      - ./volumes/opendj/logs:/opt/opendj/logs
+      - ./volumes/opendj/db:/opt/opendj/db
+      - ./volumes/opendj/flag:/flag
+      - ./volumes/opendj/backup:/opt/opendj/bak
+      - ./vault_role_id.txt:/etc/certs/vault_role_id
+      - ./vault_secret_id.txt:/etc/certs/vault_secret_id
+      # - ./101-ox.ldif:/opt/opendj/config/schema/101-ox.ldif
+    restart: unless-stopped
+    labels:
+      - "SERVICE_IGNORE=yes"
 
   oxauth:
     image: gluufederation/oxauth:4.0.0_dev
@@ -116,11 +114,11 @@ services:
       - GLUU_CONFIG_CONSUL_HOST=consul
       - GLUU_SECRET_VAULT_HOST=vault
       - GLUU_LDAP_URL=ldap:1636
-      # - GLUU_PERSISTENCE_TYPE=ldap
-      - GLUU_PERSISTENCE_TYPE=couchbase
+      - GLUU_PERSISTENCE_TYPE=ldap
+      # - GLUU_PERSISTENCE_TYPE=couchbase
       # - GLUU_PERSISTENCE_TYPE=hybrid
       # - GLUU_PERSISTENCE_LDAP_MAPPING=user
-      - GLUU_COUCHBASE_URL=couchbase
+      # - GLUU_COUCHBASE_URL=couchbase
     extra_hosts:
       - "${DOMAIN}:${HOST_IP}"
     container_name: oxauth
@@ -147,11 +145,11 @@ services:
       - GLUU_SECRET_VAULT_HOST=vault
       - GLUU_LDAP_URL=ldap:1636
       - GLUU_OXAUTH_BACKEND=oxauth:8080
-      # - GLUU_PERSISTENCE_TYPE=ldap
-      - GLUU_PERSISTENCE_TYPE=couchbase
+      - GLUU_PERSISTENCE_TYPE=ldap
+      # - GLUU_PERSISTENCE_TYPE=couchbase
       # - GLUU_PERSISTENCE_TYPE=hybrid
       # - GLUU_PERSISTENCE_LDAP_MAPPING=user
-      - GLUU_COUCHBASE_URL=couchbase
+      # - GLUU_COUCHBASE_URL=couchbase
     extra_hosts:
       - "${DOMAIN}:${HOST_IP}"
     container_name: oxtrust
@@ -244,21 +242,21 @@ services:
   #   labels:
   #     - "SERVICE_IGNORE=yes"
 
-  couchbase:
-    # image: couchbase:6.0.1
-    image: gluufederation/couchbase:4.0.0_dev
-    environment:
-      - GLUU_CONFIG_CONSUL_HOST=consul
-      - GLUU_SECRET_VAULT_HOST=vault
-      # - GLUU_PERSISTENCE_TYPE=hybrid
-      # - GLUU_PERSISTENCE_LDAP_MAPPING=user
-    volumes:
-      - ./vault_role_id.txt:/etc/certs/vault_role_id
-      - ./vault_secret_id.txt:/etc/certs/vault_secret_id
-      - ./volumes/couchbase/var:/opt/couchbase/var
-      - ./volumes/couchbase/flag:/flag
-    container_name: couchbase
-    restart: unless-stopped
-    mem_limit: 4096M
-    labels:
-      - "SERVICE_IGNORE=yes"
+  # couchbase:
+  #   # image: couchbase:6.0.1
+  #   image: gluufederation/couchbase:4.0.0_dev
+  #   environment:
+  #     - GLUU_CONFIG_CONSUL_HOST=consul
+  #     - GLUU_SECRET_VAULT_HOST=vault
+  #     # - GLUU_PERSISTENCE_TYPE=hybrid
+  #     # - GLUU_PERSISTENCE_LDAP_MAPPING=user
+  #   volumes:
+  #     - ./vault_role_id.txt:/etc/certs/vault_role_id
+  #     - ./vault_secret_id.txt:/etc/certs/vault_secret_id
+  #     - ./volumes/couchbase/var:/opt/couchbase/var
+  #     - ./volumes/couchbase/flag:/flag
+  #   container_name: couchbase
+  #   restart: unless-stopped
+  #   mem_limit: 4096M
+  #   labels:
+  #     - "SERVICE_IGNORE=yes"
