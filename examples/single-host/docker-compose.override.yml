@@ -6,3 +6,8 @@ services:
     volumes:
       - ./gcp_kms_stanza.hcl:/vault/config/stanza.hcl
       - ./gcp_kms_creds.json:/vault/config/creds.json
+
+  couchbase:
+    volumes:
+      - ./volumes/config-init/certs/couchbase_chain.pem:/opt/couchbase/var/lib/couchbase/inbox/chain.pem
+      - ./volumes/config-init/certs/couchbase_pkey.key:/opt/couchbase/var/lib/couchbase/inbox/pkey.key
