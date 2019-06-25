@@ -1,0 +1,8 @@
+# use v2.3 API to allow `mem_limit` option
+version: "2.3"
+
+services:
+  vault:
+    volumes:
+      - ./gcp_kms_stanza.hcl:/vault/config/stanza.hcl
+      - ./gcp_kms_creds.json:/vault/config/creds.json

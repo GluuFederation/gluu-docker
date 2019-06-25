@@ -26,8 +26,6 @@ services:
       - ./volumes/vault/data:/vault/data
       - ./volumes/vault/logs:/vault/logs
       - ./vault_gluu_policy.hcl:/vault/config/policy.hcl
-      - ./gcp_kms_stanza.hcl:/vault/config/stanza.hcl
-      - ./gcp_kms_creds.json:/vault/config/creds.json
     cap_add:
       - IPC_LOCK
     environment:
