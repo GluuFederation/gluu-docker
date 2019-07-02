@@ -12,4 +12,4 @@ These are fast deployments of Gluu for demonstration , exploration, and testing 
 
 ### License
 
-AGPL ./LICENSE
+[AGPL](./LICENSE.)
