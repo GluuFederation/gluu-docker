@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-cm
+  namespace: gluu-data
+data:
+  GLUU_SECRET_ADAPTER: "kubernetes"
+  ADMIN_PW: "secret"
+  EMAIL: "support@gluu.org"
+  DOMAIN: "kube.gluu.org"
+  ORG_NAME: "Gluu Inc"
+  COUNTRY_CODE: "US"
+  STATE: "TX"
+  CITY: "Austin"
+  GLUU_CONFIG_ADAPTER: "kubernetes"
+  LDAP_TYPE: "opendj"
+  
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: config-init
+spec:
+  template:
+    metadata:
+      labels:
+        app: config-init
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: config-volume-claim
+      containers:
+        - name: config-inits
+          image: gluufederation/config-init:3.1.6_02
+          volumeMounts:
+            - mountPath: /opt/config-init/db
+              name: config
+              subPath: db
+          envFrom:
+          - configMapRef:
+              name: config
+          args: ["generate", "--admin-pw", "$(ADMIN_PW)", "--email", "$(EMAIL)", "--domain", "$(DOMAIN)", "--org-name", "$(ORG_NAME)", "--country-code", "$(COUNTRY_CODE)", "--state", "$(STATE)", "--city", "$(CITY)", "--ldap-type", "$(LDAP_TYPE)"]

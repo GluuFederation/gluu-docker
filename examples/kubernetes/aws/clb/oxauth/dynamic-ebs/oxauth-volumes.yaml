@@ -1,0 +1,38 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: oxauth-gluu
+  annotations:
+    storageclass.beta.kubernetes.io/is-default-class: "false"
+provisioner: kubernetes.io/aws-ebs
+allowVolumeExpansion: true
+parameters:
+  type: gp2
+  encrypted: "true"
+  zones: us-west-2a
+reclaimPolicy: Retain
+mountOptions:
+- debug 
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: oxauth-volume-claim
+spec:
+  storageClassName: oxauth-gluu
+  #volumeName: oxauth-logs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  #selector:
+  #  matchLabels:
+  #    oxauth: logs
+
+
+
+
+
