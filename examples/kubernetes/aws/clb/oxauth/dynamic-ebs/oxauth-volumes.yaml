@@ -22,15 +22,12 @@ metadata:
   name: oxauth-volume-claim
 spec:
   storageClassName: oxauth-gluu
-  #volumeName: oxauth-logs
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
-  #selector:
-  #  matchLabels:
-  #    oxauth: logs
+
 
 
 

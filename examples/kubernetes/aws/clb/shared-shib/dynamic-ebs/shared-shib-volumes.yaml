@@ -4,12 +4,8 @@ metadata:
   name: shared-shib-volume-claim
 spec:
   storageClassName: oxtrust-gluu
-  #volumeName: oxtrust-gluu
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
       storage: 1Gi
-  #selector:
-  #  matchLabels:
-  #    oxauth: logs
