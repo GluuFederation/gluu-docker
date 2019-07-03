@@ -1,6 +1,6 @@
-# Gluu Server Docker Edition Test Drive Single-host 
+# Gluu Server Docker Edition Test Drive Single-host
 
-This is an example of running Gluu Server demo Docker Edition on a single VM. Its two steps really !! 
+This is an example of running Gluu Server demo Docker Edition on a single VM. Its two steps really !!
 **Get the run bash script and run it!**
 
 ## Requirements:
@@ -12,14 +12,14 @@ This is an example of running Gluu Server demo Docker Edition on a single VM. It
 ## Steps
 
 1) Create a directory for the bash script
-   
+
         mkdir gluu-demo
         cd gluu-demo
 
 1)  Obtain bash script for gluu single host installation:
 
         wget https://raw.githubusercontent.com/GluuFederation/gluu-docker/3.1.6/test-drive/single-host/run_all.sh && chmod +x run_all.sh
-        
+
 1)  Run the following command inside the `/path/to/docker-gluu-server/` directory and follow the prompts:
 
         ./run_all.sh
@@ -64,17 +64,17 @@ This is an example of running Gluu Server demo Docker Edition on a single VM. It
     The startup process may take some time. You can keep track of the deployment by using the following command:
 
         docker-compose logs -f
-        
+
 ## uninstall gluu demo
 
 1) In the same directory where `run_all.sh` was placed, here `gluu-demo` run:
-        
+
         docker-compose down
-        
+
 2) Delete the folder holding your installation configuration files, here `gluu-demo`:
- 
+
         rm -rf gluu-demo
-  
+
 ## FAQ
 
 1) What network is Gluu Server Docker Edition running on?
@@ -87,7 +87,7 @@ This is an example of running Gluu Server demo Docker Edition on a single VM. It
             --network container:consul \
             -e GLUU_CONFIG_ADAPTER=consul \
             -e GLUU_CONSUL_HOST=consul \
-            gluufederation/config-init:3.1.6_02 \
+            gluufederation/config-init:3.1.6_03 \
             generate \
             --ldap-type "${GLUU_LDAP_TYPE}" \
             --domain $domain \
@@ -112,7 +112,7 @@ This is an example of running Gluu Server demo Docker Edition on a single VM. It
     After that oxAuth, NGINX, then oxTrust, which relies on the `/.well-known/openid-configuration/` to properly set it's own configuration. These containers can be restarted at any time from that point on.
 
     Currently all of the images, with the exception of the `consul` and `registrator` containers, have wait-for-it scripts designed to prevent them from trying to start, before the necessary launch procedure is accomplished. This mitigates failure during the build process.
-    
+
 1) How do I stop and start the containers without uninstalling them?
 
 ```

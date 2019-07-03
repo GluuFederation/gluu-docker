@@ -10,7 +10,7 @@ data:
   GLUU_MAX_RAM_FRACTION: "1"
   LB_ADDR: ""
   DOMAIN: "kube.gluu.local"
-  
+
 ---
 
 apiVersion: v1
@@ -51,7 +51,7 @@ spec:
       containers:
       - name: oxtrust
         imagePullPolicy: Always
-        image: gluufederation/oxtrust:3.1.6_04
+        image: gluufederation/oxtrust:3.1.6_05
         command:
           - /bin/sh
           - -c

@@ -6,7 +6,7 @@ data:
   GLUU_CONFIG_ADAPTER: "kubernetes"
   GLUU_SECRET_ADAPTER: "kubernetes"
   GLUU_LDAP_URL: "opendj:1636"
-  
+
 ---
 
 apiVersion: v1
@@ -43,7 +43,7 @@ spec:
       containers:
       - name: key-rotation
         imagePullPolicy: Always
-        image: gluufederation/key-rotation:3.1.6_02
+        image: gluufederation/key-rotation:3.1.6_03
         envFrom:
         - configMapRef:
             name: key-rotation-cm

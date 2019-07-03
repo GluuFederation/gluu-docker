@@ -14,7 +14,7 @@ data:
   CITY: "Austin"
   GLUU_CONFIG_ADAPTER: "kubernetes"
   LDAP_TYPE: "opendj"
-  
+
 ---
 
 apiVersion: batch/v1
@@ -34,7 +34,7 @@ spec:
             claimName: config-volume-claim
       containers:
         - name: config-inits
-          image: gluufederation/config-init:3.1.6_02
+          image: gluufederation/config-init:3.1.6_03
           volumeMounts:
             - mountPath: /opt/config-init/db
               name: config

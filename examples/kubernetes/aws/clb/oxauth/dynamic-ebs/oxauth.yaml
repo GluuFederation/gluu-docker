@@ -46,7 +46,7 @@ spec:
       containers:
       - name: oxauth
         imagePullPolicy: Always
-        image: gluufederation/oxauth:3.1.6_02
+        image: gluufederation/oxauth:3.1.6_03
         command:
           - /bin/sh
           - -c
