@@ -114,17 +114,7 @@ Deploy Redis pod:
 
 ### Update scripts folder  
 
-<div class="panel panel-warning">
- 
-**Warning**
- 
-{: .panel-heading}
-<div class="panel-body">
- 
-If you are deploying in production please assign a static IP to your Loadbalancer and skip this section
-
-</div>
-</div>
+**_Warning:_**  If you are deploying in production please assign a static IP to your Loadbalancer and skip this section.
 
 
 1.  Create configmap for the update clb ip script.
