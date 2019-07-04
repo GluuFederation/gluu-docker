@@ -6,7 +6,7 @@
 ## Setup Cluster
 
 -  Follow this [guide](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
- to install a cluster with worker nodes.
+ to install a cluster with worker nodes. Please make sure that you have all the `IAM` policies for the AWS user that will be creating the cluster and volumes.
 
 ## Requirements
 
@@ -24,9 +24,9 @@
 
 # Deployment stratigies
 
-1. [Deploying Containers with volumes on host](#deploying-containers-with-volumes-on-host)
+1. [Deploying containers with volumes on host](#deploying-containers-with-volumes-on-host)
 
-1. [Deploying Containers with dynamically provisioned EBS volumes](#deploying-containers-with-dynamically-provisioned-ebs-volumes)
+1. [Deploying containers with dynamically provisioned EBS volumes](#deploying-containers-with-dynamically-provisioned-ebs-volumes)
 
 ## Deploying Containers with volumes on host
 
@@ -268,6 +268,27 @@ Deploy cr-rotate pod:
 
 ## Deploying Containers with dynamically provisioned EBS volumes
 
+In this section a deployment of gluu with automatically provisioned EBS volumes will be created. You must adjust the zones in all your storage classes where your volumes will be automattically provisioned in all the `*-volumes.yaml` files encountered during setup. The following is an example.
+
+### Example : Changing the oxauth storage class zone
+```
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: oxauth-gluu
+  annotations:
+    storageclass.beta.kubernetes.io/is-default-class: "false"
+provisioner: kubernetes.io/aws-ebs
+allowVolumeExpansion: true
+parameters:
+  type: gp2
+  encrypted: "true"
+  zones: us-west-2a <---------- adjust this to the zone where you want the volumes associated to be provisioned
+reclaimPolicy: Retain
+mountOptions:
+- debug 
+```
+
 ### Config
 
 1.  Go to `config/dynamic-ebs` directory:
@@ -370,11 +391,6 @@ Deploy Redis pod:
 ### oxAuth
 
 > **_Warning:_**  If you are deploying in production please skip the forth point on assiginnig your `LB_ADDR` env.
-
-
-If you are deploying in production please skip the forth point on assiginnig your `LB_ADDR` env.
-</div>
-</div>
 
 1. Get the current IP of the load balancer
 
