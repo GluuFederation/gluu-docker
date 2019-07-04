@@ -118,8 +118,9 @@ Deploy Redis pod:
 **Warning**
 {: .panel-heading}
 <div class="panel-body">
-
+ 
 If you are deploying in production please assign a static IP to your Loadbalancer and skip this section
+
 </div>
 </div>
 
