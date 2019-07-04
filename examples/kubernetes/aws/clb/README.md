@@ -1,6 +1,7 @@
 # Amazon Web Services (AWS) - Classic Load Balancer
 
-!!! NOTE:Following this example guide will install a classic load balancer with an `IP` that is not static. Do not worry about the `IP` changing as all pods will be updated automatically when a change in the `IP` of the load balancer occurs using a script. However, if you are deploying in production you **WILL NOT** use our script and instead assign a static `IP`  to your load balancer.  
+> **_NOTE:_**  Following this example guide will install a classic load balancer with an `IP` that is not static. Do not worry about the `IP` changing as all pods will be updated automatically when a change in the `IP` of the load balancer occurs using a script. However, if you are deploying in production you **WILL NOT** use our script and instead assign a static `IP`  to your load balancer.
+
 
 ## Setup Cluster
 
@@ -21,7 +22,13 @@
         unzip 3.1.6.zip
         cd gluu-docker-3.1.6/examples/kubernetes/aws/clb
 
-## Deploying Containers
+# Deployment stratigiesL
+
+1. [Deploying Containers with volumes on host](#Deploying Containers with volumes on host)
+
+1. [Deploying Containers with dynamically provisioned EBS volumes](#Deploying Containers with dynamically provisioned EBS volumes)
+
+## Deploying Containers with volumes on host
 
 ### Config
 
@@ -259,9 +266,7 @@ Deploy cr-rotate pod:
     kubectl apply -f cr-rotate-roles.yaml
     kubectl apply -f cr-rotate.yaml
 
-## Install using dynamic provisioning of EBS volumes
-
-## Deploying Containers
+## Deploying Containers with dynamically provisioned EBS volumes
 
 ### Config
 
