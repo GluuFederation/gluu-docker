@@ -44,7 +44,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gis
+      storage: 20Gi
   selector:
     matchLabels:
       opendj: config
