@@ -22,11 +22,11 @@
         unzip 3.1.6.zip
         cd gluu-docker-3.1.6/examples/kubernetes/aws/clb
 
-# Deployment stratigiesL
+# Deployment stratigies
 
-1. [Deploying Containers with volumes on host](#Deploying Containers with volumes on host)
+1. [Deploying Containers with volumes on host](#deploying-containers-with-volumes-on-host)
 
-1. [Deploying Containers with dynamically provisioned EBS volumes](#Deploying Containers with dynamically provisioned EBS volumes)
+1. [Deploying Containers with dynamically provisioned EBS volumes](#deploying-containers-with-dynamically-provisioned-ebs-volumes)
 
 ## Deploying Containers with volumes on host
 
