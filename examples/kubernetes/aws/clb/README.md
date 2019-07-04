@@ -126,7 +126,21 @@ Deploy Redis pod:
 
 ### Update scripts folder  
 
-> **_Warning:_**  If you are deploying in production please assign a static IP to your Loadbalancer and skip this section.
+> **_Warning:_**  If you are deploying in production please assign a static IP to your Loadbalancer and skip this section. The following files need to be modified `oxauth.yaml`, `oxpassport.yaml`, `oxshibboleth.yaml`, and `oxtrust.yaml` to comment out the `updateclbip` as following :
+       
+       volumeMounts:
+         ...
+         ...
+         #- mountPath: /scripts
+         #  name: update-clb-ip
+       ..
+       ..
+     volumes:
+     ...
+     ...
+     #- name: update-clb-ip
+     #  configMap:
+     #    name: updateclbip
 
 
 1.  Create configmap for the update clb ip script.
