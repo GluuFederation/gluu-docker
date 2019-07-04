@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oxauth
+data:
+  LB_ADDR: ""
+  GLUU_CONFIG_ADAPTER: "kubernetes"
+  GLUU_SECRET_ADAPTER: "kubernetes"
+  DOMAIN: "kube.gluu.local"
+  GLUU_LDAP_URL: "opendj:1636"
+  GLUU_MAX_RAM_FRACTION: "1"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: oxauth
+  labels:
+    app: oxauth
+spec:
+  ports:
+  - port: 8080
+    name: oxauth
+  selector:
+    app: oxauth
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oxauth
+  labels:
+    app: oxauth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oxauth
+  template:
+    metadata:
+      labels:
+        app: oxauth
+    spec:
+      containers:
+      - name: oxauth
+        imagePullPolicy: Always
+        image: gluufederation/oxauth:3.1.6_03
+        command:
+          - /bin/sh
+          - -c
+          - |
+              /usr/bin/python /scripts/update-clb-ip.py &
+              /opt/scripts/entrypoint.sh
+        resources:
+          requests:
+            memory: "1000Mi"
+          limits:
+            memory: "1536Mi"
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: oxauth
+        volumeMounts:
+          - mountPath: /opt/gluu/jetty/oxauth/logs
+            name: oxauth-volume
+            subPath: logs
+          - mountPath: /opt/gluu/jetty/oxauth/lib/ext
+            name: oxauth-volume
+            subPath: ext
+          - mountPath: /opt/gluu/jetty/oxauth/custom/static
+            name: oxauth-volume
+            subPath: static
+          - mountPath: /opt/gluu/jetty/oxauth/custom/pages
+            name: oxauth-volume
+            subPath: pages
+          - mountPath: /scripts
+            name: update-clb-ip
+            subPath: scripts
+        livenessProbe:
+          httpGet:
+            path: /oxauth/.well-known/openid-configuration
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /oxauth/.well-known/openid-configuration
+            port: 8080
+          initialDelaySeconds: 25
+          periodSeconds: 25
+      hostAliases:
+      - ip: NGINX_IP
+        hostnames:
+        - kube.gluu.local
+      volumes:
+      - name: oxauth-volume
+        persistentVolumeClaim:
+          claimName: oxauth-volume-claim
+      - name: update-clb-ip
+        configMap:
+          name: updateclbip
