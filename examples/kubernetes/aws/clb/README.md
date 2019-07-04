@@ -1,8 +1,6 @@
 # Amazon Web Services (AWS) - Classic Load Balancer
 
-!!! note:
-
-     Following this example guide will install a classic load balancer with an `IP` that is not static. Do not worry about the `IP` changing as all pods will be updated automatically when a change in the `IP` of the load balancer occurs using a script. However, if you are deploying in production you **WILL NOT** use our script and instead assign a static `IP`  to your load balancer.  
+!!! NOTE:Following this example guide will install a classic load balancer with an `IP` that is not static. Do not worry about the `IP` changing as all pods will be updated automatically when a change in the `IP` of the load balancer occurs using a script. However, if you are deploying in production you **WILL NOT** use our script and instead assign a static `IP`  to your load balancer.  
 
 ## Setup Cluster
 
@@ -127,9 +125,7 @@ Deploy Redis pod:
 
 ### oxAuth
 
-!!! warning:
-
-      If you are deploying in production please skip the forth point on assiginnig your `LB_ADDR` env.
+> **_Warning:_**  If you are deploying in production please skip the forth point on assiginnig your `LB_ADDR` env.
 
 1. Get the current IP of the load balancer
 
@@ -171,14 +167,7 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 
 ### oxTrust
 
-<div class="panel panel-warning">
-**Warning**
-{: .panel-heading}
-<div class="panel-body">
-
-If you are deploying in production please skip the forth point on assiginnig your `LB_ADDR` env.
-</div>
-</div>
+> **_Warning:_**  If you are deploying in production please skip the forth point on assiginnig your `LB_ADDR` env.
 
 1. Get the current ip of the load balancer
 
@@ -208,14 +197,7 @@ If you are deploying in production please skip the forth point on assiginnig you
 
 ### oxShibboleth
 
-<div class="panel panel-warning">
-**Warning**
-{: .panel-heading}
-<div class="panel-body">
-
-If you are deploying in production please skip the second point on assiginnig your `LB_ADDR` env.
-</div>
-</div>
+> **_Warning:_**  If you are deploying in production please skip the second point on assiginnig your `LB_ADDR` env.
 
 1.  Get the current ip of the load balancer
 
@@ -238,14 +220,8 @@ If you are deploying in production please skip the second point on assiginnig yo
 
 ### oxPassport
 
-<div class="panel panel-warning">
-**Warning**
-{: .panel-heading}
-<div class="panel-body">
+> **_Warning:_**  If you are deploying in production please skip the second point on assiginnig your `LB_ADDR` env.
 
-If you are deploying in production please skip the second point on assiginnig your `LB_ADDR` env.
-</div>
-</div>
 
 1.  Get the current ip of the load balancer
 
@@ -378,6 +354,8 @@ Deploy Redis pod:
 
 ### Update scripts folder
 
+> **_Warning:_**  If you are deploying in production please assign a static IP to your Loadbalancer and skip this section.
+
 1.  Create configmap for the update clb ip script.
         
         cd ../update-clb-ip
@@ -386,10 +364,8 @@ Deploy Redis pod:
 
 ### oxAuth
 
-<div class="panel panel-warning">
-**Warning**
-{: .panel-heading}
-<div class="panel-body">
+> **_Warning:_**  If you are deploying in production please skip the forth point on assiginnig your `LB_ADDR` env.
+
 
 If you are deploying in production please skip the forth point on assiginnig your `LB_ADDR` env.
 </div>
@@ -435,14 +411,8 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 
 ### oxTrust
 
-<div class="panel panel-warning">
-**Warning**
-{: .panel-heading}
-<div class="panel-body">
+> **_Warning:_**  If you are deploying in production please skip the forth point on assiginnig your `LB_ADDR` env.
 
-If you are deploying in production please skip the forth point on assiginnig your `LB_ADDR` env.
-</div>
-</div>
 
 1. Get the current ip of the load balancer
 
@@ -472,14 +442,8 @@ If you are deploying in production please skip the forth point on assiginnig you
 
 ### oxShibboleth
 
-<div class="panel panel-warning">
-**Warning**
-{: .panel-heading}
-<div class="panel-body">
+> **_Warning:_**  If you are deploying in production please skip the second point on assiginnig your `LB_ADDR` env.
 
-If you are deploying in production please skip the second point on assiginnig your `LB_ADDR` env.
-</div>
-</div>
 
 1.  Get the current ip of the load balancer
 
@@ -502,14 +466,8 @@ If you are deploying in production please skip the second point on assiginnig yo
 
 ### oxPassport
 
-<div class="panel panel-warning">
-**Warning**
-{: .panel-heading}
-<div class="panel-body">
+> **_Warning:_**  If you are deploying in production please skip the second point on assiginnig your `LB_ADDR` env.
 
-If you are deploying in production please skip the second point on assiginnig your `LB_ADDR` env.
-</div>
-</div>
 
 1.  Get the current ip of the load balancer
 
