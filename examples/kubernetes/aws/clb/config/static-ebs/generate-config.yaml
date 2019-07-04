@@ -39,5 +39,5 @@ spec:
               name: config
           envFrom:
           - configMapRef:
-              name: config
+              name: config-cm
           args: ["generate", "--admin-pw", "$(ADMIN_PW)", "--email", "$(EMAIL)", "--domain", "$(DOMAIN)", "--org-name", "$(ORG_NAME)", "--country-code", "$(COUNTRY_CODE)", "--state", "$(STATE)", "--city", "$(CITY)", "--ldap-type", "$(LDAP_TYPE)"]
