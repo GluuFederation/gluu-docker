@@ -457,18 +457,6 @@ Deploy Redis pod:
 
         NGINX_IP=35.240.221.38 sh deploy-pod.sh
 
-### Shared Shibboleth IDP Files
-
-As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to have volumes that shared across all nodes in the cluster.
-
-1.  Go to `shared-shib` directory:
-
-        cd ../shared-shib/dynamic-ebs
-
-1.  Prepare volumes for shared Shibboleth files:
-
-        kubectl apply -f shared-shib-volumes.yaml
-
 ### oxTrust
 
 > **_Warning:_**  If you are deploying in production please skip the forth point on assiginnig your `LB_ADDR` env.
@@ -488,6 +476,10 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 1.  Prepare volumes for oxTrust:
 
         kubectl apply -f oxtrust-volumes.yaml
+
+1. Prepare volumes for shared Shibboleth files:
+
+        kubectl apply -f ../shared-shib/dynamic-ebs/shared-shib-volumes.yaml
 
 1.  Modify the env  entry `LB_ADDR` to your LB address which in our case is `a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com`
 
@@ -734,18 +726,6 @@ Deploy Redis pod:
 
         NGINX_IP=35.240.221.38 sh deploy-pod.sh
 
-### Shared Shibboleth IDP Files
-
-As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to have volumes that shared across all nodes in the cluster.
-
-1.  Go to `shared-shib` directory:
-
-        cd ../shared-shib/static-ebs
-
-1.  Prepare volumes for shared Shibboleth files:
-
-        kubectl apply -f shared-shib-volumes.yaml
-
 ### oxTrust
 
 > **_Warning:_**  If you are deploying in production please skip the forth point on assiginnig your `LB_ADDR` env.
@@ -765,6 +745,10 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 1.  Prepare volumes for oxTrust:
 
         kubectl apply -f oxtrust-volumes.yaml
+        
+1. Prepare volumes for shared Shibboleth files:
+
+        kubectl apply -f ../shared-shib/static-ebs/shared-shib-volumes.yaml
 
 1.  Modify the env  entry `LB_ADDR` to your LB address which in our case is `a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com`
 
