@@ -114,7 +114,7 @@ Deploy Redis pod:
 
 ### Update scripts folder  
 
-**_Warning:_**  If you are deploying in production please assign a static IP to your Loadbalancer and skip this section.
+> **_Warning:_**  If you are deploying in production please assign a static IP to your Loadbalancer and skip this section.
 
 
 1.  Create configmap for the update clb ip script.
