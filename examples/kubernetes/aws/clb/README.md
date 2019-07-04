@@ -115,7 +115,9 @@ Deploy Redis pod:
 ### Update scripts folder  
 
 <div class="panel panel-warning">
+ 
 **Warning**
+ 
 {: .panel-heading}
 <div class="panel-body">
  
