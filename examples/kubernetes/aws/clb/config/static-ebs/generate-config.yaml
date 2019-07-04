@@ -26,6 +26,16 @@ spec:
       labels:
         app: config-init
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: failure-domain.beta.kubernetes.io/zone
+                operator: In
+                values:
+                # change this to same zone your volume was created at
+                - us-west-2a 
       restartPolicy: Never
       volumes:
         - name: config
