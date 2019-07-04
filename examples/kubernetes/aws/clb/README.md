@@ -1,6 +1,8 @@
 # Amazon Web Services (AWS) - Classic Load Balancer
 
-!!!Note: Following this example guide will install a classic load balancer with an `IP` that is not static. Do not worry about the `IP` changing as all pods will be updated automatically when a change in the `IP` of the load balancer occurs using a script. However, if you are deploying in production you **WILL NOT** use our script and instead assign a static `IP`  to your load balancer.  
+!!! note:
+
+     Following this example guide will install a classic load balancer with an `IP` that is not static. Do not worry about the `IP` changing as all pods will be updated automatically when a change in the `IP` of the load balancer occurs using a script. However, if you are deploying in production you **WILL NOT** use our script and instead assign a static `IP`  to your load balancer.  
 
 ## Setup Cluster
 
@@ -125,15 +127,9 @@ Deploy Redis pod:
 
 ### oxAuth
 
+!!! warning:
 
-<div class="panel panel-warning">
-**Warning**
-{: .panel-heading}
-<div class="panel-body">
-
-If you are deploying in production please skip the forth point on assiginnig your `LB_ADDR` env.
-</div>
-</div>
+      If you are deploying in production please skip the forth point on assiginnig your `LB_ADDR` env.
 
 1. Get the current IP of the load balancer
 
