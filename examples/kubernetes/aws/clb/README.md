@@ -456,6 +456,21 @@ Deploy Redis pod:
 1.  Adjust the hostname from `kube.gluu.local` in `oxauth.yaml` to the hostname you applied earlier while generating the configuration and deploy `oxauth`.
 
         NGINX_IP=35.240.221.38 sh deploy-pod.sh
+		
+		
+### Shared Shibboleth IDP Files
+
+> **_Warning:_**  Multi-Attach is not supported by EBS as this volume is shared with oxTrust and oxShibboleth . The current deployment is using the host. If you feel it is necessary use EFS on AWS for deploying this volume.
+
+As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to have volumes that shared across all nodes in the cluster.
+
+1.  Go to `shared-shib` directory:
+
+        cd ../shared-shib
+
+1.  Prepare volumes for shared Shibboleth files:
+
+        kubectl apply -f shared-shib-volumes.yaml
 
 ### oxTrust
 
@@ -477,9 +492,6 @@ Deploy Redis pod:
 
         kubectl apply -f oxtrust-volumes.yaml
 
-1. Prepare volumes for shared Shibboleth files:
-
-        kubectl apply -f ../shared-shib/dynamic-ebs/shared-shib-volumes.yaml
 
 1.  Modify the env  entry `LB_ADDR` to your LB address which in our case is `a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com`
 
@@ -579,6 +591,23 @@ spec:
   awsElasticBlockStore:
     volumeID: vol-9aiiiwa9hdfh0dfre0w <-- Place your volumeID associated with config here
     fsType ext4
+```
+
+### Example: Changing the zone to match zone of the volume created
+
+Note down which zone your volumes are created in you must deploy the services in the matching zones.
+
+```
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: failure-domain.beta.kubernetes.io/zone
+                operator: In
+                values:
+                # change this to same zone your volume was created at
+                - us-west-2a
 ```
 
 ### Config
@@ -726,6 +755,22 @@ Deploy Redis pod:
 
         NGINX_IP=35.240.221.38 sh deploy-pod.sh
 
+
+### Shared Shibboleth IDP Files
+
+> **_Warning:_**  Multi-Attach is not supported by EBS as this volume is shared with oxTrust and oxShibboleth . The current deployment is using the host. If you feel it is necessary use EFS on AWS for deploying this volume.
+
+As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to have volumes that shared across all nodes in the cluster.
+
+1.  Go to `shared-shib` directory:
+
+        cd ../shared-shib
+
+1.  Prepare volumes for shared Shibboleth files:
+
+        kubectl apply -f shared-shib-volumes.yaml
+
+
 ### oxTrust
 
 > **_Warning:_**  If you are deploying in production please skip the forth point on assiginnig your `LB_ADDR` env.
@@ -746,10 +791,6 @@ Deploy Redis pod:
 
         kubectl apply -f oxtrust-volumes.yaml
         
-1. Prepare volumes for shared Shibboleth files:
-
-        kubectl apply -f ../shared-shib/static-ebs/shared-shib-volumes.yaml
-
 1.  Modify the env  entry `LB_ADDR` to your LB address which in our case is `a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com`
 
 1.  Modify the env `DOMAIN` to the domain you chose at installation which in our case is `kube.gluu.local`
