@@ -21,7 +21,6 @@ metadata:
   name: config-volume-claim
 spec:
   storageClassName: ""
-  volumeName: config
   accessModes:
     - ReadWriteOnce
   resources:
