@@ -32,6 +32,9 @@
 
    This strategy is mostly used when your EBS volumes for  all services exist already.
 
+# How-to
+
+1. [How to expand EBS volumes](#how-to-expand-ebs-volumes)
 
 ## Deploying Containers with volumes on host
 
@@ -838,3 +841,11 @@ Deploy cr-rotate pod:
     cd ../cr-rotate
     kubectl apply -f cr-rotate-roles.yaml
     kubectl apply -f cr-rotate.yaml
+    
+## How to expand EBS volumes
+
+1. Make sure the `StorageClass` used in your deployment has the `allowVolumeExpansion` set to true. If you have used our EBS volume deployment strategy then you will find that this property has already been set for you.
+
+1. Edit your persistent volume claim using `kubectl edit pvc <claim-name> -n <namespace> ` and increase the value found for `storage:` to the value needed. Make sure the volumes expand by checking the `kubectl get pvc <claim-name> -n <namespace> `.
+
+1. Restart the associated services
