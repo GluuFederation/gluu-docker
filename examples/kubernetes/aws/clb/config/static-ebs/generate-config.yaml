@@ -45,8 +45,9 @@ spec:
         - name: config-init
           image: gluufederation/config-init:3.1.6_03
           volumeMounts:
-            - mountPath: /opt/config-init/db/
+            - mountPath: /opt/config-init/db
               name: config
+              subPath: db
           envFrom:
           - configMapRef:
               name: config-cm

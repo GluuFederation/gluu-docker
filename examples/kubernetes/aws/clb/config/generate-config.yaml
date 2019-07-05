@@ -35,9 +35,10 @@ spec:
         - name: config-init
           image: gluufederation/config-init:3.1.6_03
           volumeMounts:
-            - mountPath: /opt/config-init/db/
-              name: config-cm
+            - mountPath: /opt/config-init/db
+              name: config
+              subPath: db
           envFrom:
           - configMapRef:
-              name: config
+              name: config-cm
           args: ["generate", "--admin-pw", "$(ADMIN_PW)", "--email", "$(EMAIL)", "--domain", "$(DOMAIN)", "--org-name", "$(ORG_NAME)", "--country-code", "$(COUNTRY_CODE)", "--state", "$(STATE)", "--city", "$(CITY)", "--ldap-type", "$(LDAP_TYPE)"]
