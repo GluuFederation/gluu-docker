@@ -348,7 +348,7 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 
 1.  Adjust the hostname from `kube.gluu.local` in `oxtrust.yaml` to the hostname you applied earlier while generating the configuration and deploy `oxtrust`.
 
-        NGINX_IP=35.240.221.38 sh deploy-pod.sh
+        NGINX_IP=35.240.221.38 sh deploy-pod.sh ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
 
 ### oxShibboleth
 
@@ -371,7 +371,7 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 1.  Adjust the hostname from `kube.gluu.local` in `oxshibboleth.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxShibboleth pod:
 
         cd ../oxshibboleth
-        NGINX_IP=35.240.221.38P sh deploy-pod.sh
+        NGINX_IP=35.240.221.38P sh deploy-pod.sh ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
 
 ### oxPassport
 
@@ -394,7 +394,10 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 
 1.  Adjust the hostname from `kube.gluu.local` in `oxpassport.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxPassport pod:
         cd ../oxpassport
-        NGINX_IP=35.240.221.38 sh deploy-pod.sh
+		
+        NGINX_IP=35.240.221.38 sh deploy-pod.sh ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
+		
+        
 
 1.  Enable Passport support by following the official docs [here](https://gluu.org/docs/ce/authn-guide/passport/#setup-passportjs-with-gluu).
 
