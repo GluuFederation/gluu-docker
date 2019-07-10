@@ -1,4 +1,14 @@
-# Amazon Web Services (AWS) - Classic Load Balancer
+# Amazon Web Services (AWS)
+
+## Installation using different load balancers:
+
+A label will be shown for the commands to follow for each load balancer.
+
+- Classic Load Balancer 
+
+- Application Load Balancer
+
+- Network Load Balancer (Alpha)
 
 > **_NOTE:_**  Following this example guide will install a classic load balancer with an `IP` that is not static. Do not worry about the `IP` changing as all pods will be updated automatically when a change in the `IP` of the load balancer occurs using a script. However, if you are deploying in production you **WILL NOT** use our script and instead assign a static `IP`  to your load balancer.
 
