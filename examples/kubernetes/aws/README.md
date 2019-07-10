@@ -94,8 +94,7 @@ Deploy Redis pod:
 
 ### OpenDJ (LDAP)
  
-1.  ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
- Go to `ldap` directory:
+1.  Go to `ldap` directory: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         cd ../ldap
 		
