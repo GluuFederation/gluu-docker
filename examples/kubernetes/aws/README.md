@@ -59,24 +59,25 @@ A label will be shown for the commands to follow for each load balancer.
 
 ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
-1.  Prepare roles for config:
+2.  Prepare roles for config:
 
         kubectl apply -f config-roles.yaml
 
 ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
-1.  Prepare volumes for config:
+3.  Prepare volumes for config:
 
         kubectl apply -f config-volumes.yaml
 
 ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
-1.  Generate configuration:
+4.  Generate configuration:
 
         kubectl apply -f generate-config.yaml
 
 ### Redis (optional)
 ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+
 > **_NOTE:_** This pod is optional and used only when `GLUU_CACHE_TYPE` is set to `REDIS`. If `REDIS` is selected, make sure to change the `ConfigMap` definetion in the `ldap/opendj-init.yaml` file:
 
 ```
@@ -93,41 +94,48 @@ Deploy Redis pod:
 
 ### OpenDJ (LDAP)
 
-![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg) 
+![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+ 
 1.  ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
  Go to `ldap` directory:
 
         cd ../ldap
 		
-![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg) 
-1.  Prepare volumes for ldap:
+![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+
+2.  Prepare volumes for ldap:
 
         kubectl apply -f opendj-volumes.yaml
 
-![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg) 
-1.  Create constraints to assign container to specific nodes:
+![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+
+3.  Create constraints to assign container to specific nodes:
 
         kubectl get node
 
-![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg) 
-1. Pick one of the nodes, get the name, and attach a label to the node:
+![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+
+4. Pick one of the nodes, get the name, and attach a label to the node:
 
         kubectl label node NODE_NAME opendj-init=true
 
-![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg) 
-1.  Pick other nodes and attach a label for each node:
+![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+
+5.  Pick other nodes and attach a label for each node:
 
         kubectl label node NODE_NAME opendj-init=false
 
-![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg) 
-1.  Deploy OpenDJ pod that generates initial data:
+![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+
+6.  Deploy OpenDJ pod that generates initial data:
 
         kubectl apply -f opendj-init.yaml
 
     Please wait until pod is completed. Check the logs using `kubectl logs -f POD_NAME`
 
-![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg) 
-1.  Deploy additional OpenDJ pod:
+![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+
+7.  Deploy additional OpenDJ pod:
 
         kubectl apply -f opendj-repl.yaml
 
