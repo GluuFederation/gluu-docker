@@ -127,7 +127,7 @@ Deploy Redis pod:
 
 ### Nginx Ingress ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
-1.  To allow external traffic to the cluster, we need to deploy nginx Ingress and its controller. ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
+1.  To allow external traffic to the cluster, we need to deploy nginx Ingress and its controller. ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         cd ../nginx
         kubectl apply -f mandatory.yaml
@@ -273,65 +273,65 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 
         NGINX_IP=35.240.221.38 sh deploy-pod.sh
 
-### oxShibboleth
+### oxShibboleth ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
-> **_Warning:_**  If you are deploying in production please skip the second point on assiginnig your `LB_ADDR` env.
 
-1.  Get the current ip of the load balancer
+1.  Get the current ip of the load balancer ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+
 
         nslookup a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com
 
         Name : a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com
         Address : 35.240.221.38
 
-1.  Modify the env  entry `LB_ADDR` to your LB address which in our case is `a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com`
+1.  Modify the env  entry `LB_ADDR` to your LB address which in our case is `a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com` ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
 
-1.  Modify the env `DOMAIN` to the domain you chose at installation which in our case is `kube.gluu.local`
+1.  Modify the env `DOMAIN` to the domain you chose at installation which in our case is `kube.gluu.local` ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         LB_ADDR: "a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com"
         DOMAIN: "kube.gluu.local"
 
-1.  Adjust the hostname from `kube.gluu.local` in `oxshibboleth.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxShibboleth pod:
+1.  Adjust the hostname from `kube.gluu.local` in `oxshibboleth.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxShibboleth pod: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         cd ../oxshibboleth
         NGINX_IP=35.240.221.38P sh deploy-pod.sh
 
-### oxPassport
+### oxPassport ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
 > **_Warning:_**  If you are deploying in production please skip the second point on assiginnig your `LB_ADDR` env.
 
 
-1.  Get the current ip of the load balancer
+1.  Get the current ip of the load balancer ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         nslookup a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com
 
         Name : a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com
         Address : 35.240.221.38
 
-1.  Modify the env  entry `LB_ADDR` to your LB address which in our case is `a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com`
+1.  Modify the env  entry `LB_ADDR` to your LB address which in our case is `a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com` ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
 
-1.  Modify the env `DOMAIN` to the domain you chose at installation which in our case is `kube.gluu.local`
+1.  Modify the env `DOMAIN` to the domain you chose at installation which in our case is `kube.gluu.local` ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         LB_ADDR: "a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com"
         DOMAIN: "kube.gluu.local"
 
-1.  Adjust the hostname from `kube.gluu.local` in `oxpassport.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxPassport pod:
+1.  Adjust the hostname from `kube.gluu.local` in `oxpassport.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxPassport pod: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         cd ../oxpassport
         NGINX_IP=35.240.221.38 sh deploy-pod.sh
 
 1.  Enable Passport support by following the official docs [here](https://gluu.org/docs/ce/authn-guide/passport/#setup-passportjs-with-gluu).
 
-### key-rotation (OPTIONAL)
+### key-rotation (OPTIONAL) ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
-Deploy key-rotation pod:
+Deploy key-rotation pod: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
     cd ../key-rotation
     kubectl apply -f key-rotation.yaml
 
-### cr-rotate (OPTIONAL)
+### cr-rotate (OPTIONAL) ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
-Deploy cr-rotate pod:
+Deploy cr-rotate pod: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
     cd ../cr-rotate
     kubectl apply -f cr-rotate-roles.yaml
