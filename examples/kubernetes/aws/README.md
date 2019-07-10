@@ -7,7 +7,7 @@ A label will be shown for the commands to follow for each load balancer. **Only 
 
 - Classic Load Balancer - ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
 
-- Application Load Balancer - ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg))
+- Application Load Balancer - ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg)
 
 - Network Load Balancer (Alpha)- ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
@@ -49,28 +49,28 @@ A label will be shown for the commands to follow for each load balancer. **Only 
 
 ## Deploying Containers with volumes on host
 
-### Config ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+### Config ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
-1.  Go to `config` directory: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Go to `config` directory: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         cd config
 
 
-1.  Prepare roles for config: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Prepare roles for config: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         kubectl apply -f config-roles.yaml
 
 
-1.  Prepare volumes for config: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Prepare volumes for config: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         kubectl apply -f config-volumes.yaml
 
 
-1.  Generate configuration: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Generate configuration: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         kubectl apply -f generate-config.yaml
 
-### Redis (optional) ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+### Redis (optional) ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
 > **_NOTE:_** This pod is optional and used only when `GLUU_CACHE_TYPE` is set to `REDIS`. If `REDIS` is selected, make sure to change the `ConfigMap` definetion in the `ldap/opendj-init.yaml` file:
 
@@ -86,7 +86,7 @@ Deploy Redis pod:
     cd ../redis
     kubectl apply -f redis.yaml
 
-### OpenDJ (LDAP) ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+### OpenDJ (LDAP) ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
  
 1.  Go to `ldap` directory: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
