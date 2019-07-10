@@ -50,9 +50,9 @@ Images are hosted at Docker Hub:
 
 - The directory contains `README.md` as a guide to deploy a basic Gluu server stack on Minikube.
 
-[AWS CLB](./examples/kubernetes/aws/clb)
+[AWS](./examples/kubernetes/aws)
 
-- The directory contains `README.md` as a guide to deploy a basic Gluu server stack on AWS using a classic load balancer.
+- The directory contains `README.md` as a guide to deploy a basic Gluu server stack on AWS.
 
 ## Issues
 
