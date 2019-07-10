@@ -2,7 +2,7 @@
 
 ## Installation using different load balancers:
 
-A label will be shown for the commands to follow for each load balancer.
+A label will be shown for the commands to follow for each load balancer. **Only follow instructions that include the applicable tag for the load balancer in use.
 
 - Classic Load Balancer - ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
 
@@ -48,7 +48,7 @@ A label will be shown for the commands to follow for each load balancer.
 
 ## Deploying Containers with volumes on host
 
-### Config
+### Config ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
 1.  Go to `config` directory: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
@@ -69,8 +69,7 @@ A label will be shown for the commands to follow for each load balancer.
 
         kubectl apply -f generate-config.yaml
 
-### Redis (optional)
-![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+### Redis (optional) ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
 > **_NOTE:_** This pod is optional and used only when `GLUU_CACHE_TYPE` is set to `REDIS`. If `REDIS` is selected, make sure to change the `ConfigMap` definetion in the `ldap/opendj-init.yaml` file:
 
@@ -86,7 +85,7 @@ Deploy Redis pod:
     cd ../redis
     kubectl apply -f redis.yaml
 
-### OpenDJ (LDAP)
+### OpenDJ (LDAP) ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
  
 1.  Go to `ldap` directory: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
@@ -125,7 +124,7 @@ Deploy Redis pod:
 
         kubectl apply -f opendj-repl.yaml
 
-### Nginx Ingress
+### Nginx Ingress ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
 1.  To allow external traffic to the cluster, we need to deploy nginx Ingress and its controller. ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
 
@@ -178,7 +177,7 @@ Deploy Redis pod:
     
     You can see the host and IP after with `kubectl get ing`
 
-### Update scripts folder  
+### Update scripts folder  ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
 
 > **_Warning:_**  If you are deploying in production please assign a static IP to your Loadbalancer and skip this section. The following files need to be modified `oxauth.yaml`, `oxpassport.yaml`, `oxshibboleth.yaml`, and `oxtrust.yaml` to comment out the `updateclbip` as following :
        
