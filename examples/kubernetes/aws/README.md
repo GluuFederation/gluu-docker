@@ -172,7 +172,7 @@ Deploy Redis pod:
 
 1.  Adjust all references to the hostname `kube.gluu.local` in `nginx.yaml` to the hostname you applied earlier while generating the configuration. Afterwards deploy the custom Ingress for Gluu Server routes. ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
-        remove `secretName: tls-certificate` in `nginx.yaml` . ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+    Remove `secretName: tls-certificate` in `nginx.yaml` . ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 		
         kubectl apply -f nginx.yaml
     
