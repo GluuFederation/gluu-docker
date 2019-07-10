@@ -88,40 +88,40 @@ Deploy Redis pod:
 
 ### OpenDJ (LDAP) ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
  
-1.  Go to `ldap` directory: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Go to `ldap` directory: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         cd ../ldap
 		
-1.  Prepare volumes for ldap: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Prepare volumes for ldap: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
 
         kubectl apply -f opendj-volumes.yaml
 
 
-1.  Create constraints to assign container to specific nodes: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Create constraints to assign container to specific nodes: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         kubectl get node
 
 
-1. Pick one of the nodes, get the name, and attach a label to the node: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1. Pick one of the nodes, get the name, and attach a label to the node: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
 
         kubectl label node NODE_NAME opendj-init=true
 
 
-1.  Pick other nodes and attach a label for each node: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Pick other nodes and attach a label for each node: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         kubectl label node NODE_NAME opendj-init=false
 
 
-1.  Deploy OpenDJ pod that generates initial data: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Deploy OpenDJ pod that generates initial data: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         kubectl apply -f opendj-init.yaml
 
     Please wait until pod is completed. Check the logs using `kubectl logs -f POD_NAME`
 
 
-1.  Deploy additional OpenDJ pod: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Deploy additional OpenDJ pod: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         kubectl apply -f opendj-repl.yaml
 
@@ -178,9 +178,9 @@ Deploy Redis pod:
     
     You can see the host and IP after with `kubectl get ing`
 
-### Update scripts folder  ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+### Update scripts folder  ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
-> **_Warning:_**  If you are deploying in production please assign a static IP to your Loadbalancer and skip this section.However, the following files need to be modified `oxauth.yaml`, `oxpassport.yaml`, `oxshibboleth.yaml`, and `oxtrust.yaml` to comment out the `updateclbip` as following : ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+> **_Warning:_**  If you are deploying in production please assign a static IP to your Loadbalancer and skip this section.However, the following files need to be modified `oxauth.yaml`, `oxpassport.yaml`, `oxshibboleth.yaml`, and `oxtrust.yaml` to comment out the `updateclbip` as following : ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
        
        volumeMounts:
          ...
@@ -204,7 +204,7 @@ Deploy Redis pod:
         
         kubectl create -f update-clb-configmap.yaml
 
-### oxAuth ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+### oxAuth ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
 1. Get the current IP of the load balancer ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
@@ -213,39 +213,39 @@ Deploy Redis pod:
         Name : a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com
         Address : 35.240.221.38
 
-1.  Go to the `oxauth` directory: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Go to the `oxauth` directory: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         cd ../oxauth
 
-1.  Prepare volumes for oxAuth: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Prepare volumes for oxAuth: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         kubectl apply -f oxauth-volumes.yaml
 
 1.  Modify the env  entry `LB_ADDR` to your LB address which in our case is `a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com` ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
 
-1.  Modify the env `DOMAIN` to the domain you chose at installation which in our case is `kube.gluu.local` ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Modify the env `DOMAIN` to the domain you chose at installation which in our case is `kube.gluu.local` ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         LB_ADDR: "a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com"
         DOMAIN: "kube.gluu.local"
 
-1.  Adjust the hostname from `kube.gluu.local` in `oxauth.yaml` to the hostname you applied earlier while generating the configuration and deploy `oxauth`. ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Adjust the hostname from `kube.gluu.local` in `oxauth.yaml` to the hostname you applied earlier while generating the configuration and deploy `oxauth`. ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
  
         NGINX_IP=35.240.221.38 sh deploy-pod.sh ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 		
 
-### Shared Shibboleth IDP Files ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+### Shared Shibboleth IDP Files ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
 As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to have volumes that shared across all nodes in the cluster.
 
-1.  Go to `shared-shib` directory: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Go to `shared-shib` directory: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         cd ../shared-shib
 
-1.  Prepare volumes for shared Shibboleth files: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Prepare volumes for shared Shibboleth files: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         kubectl apply -f shared-shib-volumes.yaml
 
-### oxTrust ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+### oxTrust ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
 1. Get the current ip of the load balancer ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
