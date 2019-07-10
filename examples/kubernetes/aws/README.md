@@ -375,8 +375,6 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 
 ### oxPassport
 
-> **_Warning:_**  If you are deploying in production please skip the second point on assiginnig your `LB_ADDR` env.
-
 
 1.  Get the current ip of the load balancer ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
 
