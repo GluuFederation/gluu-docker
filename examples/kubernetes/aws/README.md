@@ -2,7 +2,8 @@
 
 ## Installation using different load balancers:
 
-A label will be shown for the commands to follow for each load balancer. **Only follow instructions that include the applicable tag for the load balancer in use.
+
+A label will be shown for the commands to follow for each load balancer. **Only follow instructions that include the applicable tag for the load balancer in use.**
 
 - Classic Load Balancer - ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
 
