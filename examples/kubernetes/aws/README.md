@@ -7,7 +7,7 @@ A label will be shown for the commands to follow for each load balancer. **Only 
 
 - Classic Load Balancer - ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
 
-- Application Load Balancer - ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg)
+- Application Load Balancer - ![CDNJS](https://img.shields.io/badge/ALB-underconstruction-red.svg)
 
 - Network Load Balancer (Alpha)- ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
