@@ -10,7 +10,7 @@ A label will be shown for the commands to follow for each load balancer.
 
 - Network Load Balancer (Alpha)- ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
-> **_NOTE:_**  Following this example guide will install a classic load balancer with an `IP` that is not static. Do not worry about the `IP` changing as all pods will be updated automatically when a change in the `IP` of the load balancer occurs using a script. However, if you are deploying in production you **WILL NOT** use our script and instead assign a static `IP`  to your load balancer.
+> **_NOTE:_**  ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) Following the CLB example guide will install a classic load balancer with an `IP` that is not static. Do not worry about the `IP` changing as all pods will be updated automatically when a change in the `IP` of the load balancer occurs using a script. However, if you are deploying in production you **WILL NOT** use our script and instead assign a static `IP`  to your load balancer.
 
 
 ## Setup Cluster
@@ -50,19 +50,19 @@ A label will be shown for the commands to follow for each load balancer.
 
 ### Config
 
-1.  Go to `config` directory:
+1.  ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg) Go to `config` directory:
 
         cd config
 
-1.  Prepare roles for config:
+1.  ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg) Prepare roles for config:
 
         kubectl apply -f config-roles.yaml
 
-1.  Prepare volumes for config:
+1.  ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg) Prepare volumes for config:
 
         kubectl apply -f config-volumes.yaml
 
-1.  Generate configuration:
+1.  ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg) Generate configuration:
 
         kubectl apply -f generate-config.yaml
 
