@@ -133,7 +133,7 @@ Deploy Redis pod:
         kubectl apply -f mandatory.yaml
         kubectl apply -f cloud-generic.yaml
 		
-1.  To allow external traffic to the cluster, we need to deploy nginx Ingress and its controller but for NLB we must add an annotation `service.beta.kubernetes.io/aws-load-balancer-type: nlb` to the `cloud-generic.yaml`. ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+    To allow external traffic to the cluster, we need to deploy nginx Ingress and its controller but for NLB we must add an annotation `service.beta.kubernetes.io/aws-load-balancer-type: nlb` to the `cloud-generic.yaml`. ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
         
 		cd ../nginx
 		vi cloud-generic.yaml
