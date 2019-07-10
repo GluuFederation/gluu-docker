@@ -46,6 +46,8 @@ A label will be shown for the commands to follow for each load balancer. **Only 
 
 ## Deploying containers with dynamically provisioned EBS volumes
 
+- Please take the following notes while following [Deploying containers with volumes on host](#deploying-containers-with-volumes-on-host) to deploy with dynamically provisioned EBS volumes :
+ 
 - To add a deployment of gluu with automatically provisioned EBS volumes you must adjust the zones in all your storage classes where your volumes will be automattically provisioned in all the `*-volumes.yaml` files encountered during setup. The following is an example.
 
 ### Example : Changing the oxauth storage class zone
@@ -81,6 +83,8 @@ In this guide you will be asked to `cd` into `config`. Instead you will
 As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to have volumes that shared across all nodes in the cluster.
 
 ## Deploying containers with statically provisioned EBS volumes
+
+- Please take the following notes while following [Deploying containers with volumes on host](#deploying-containers-with-volumes-on-host) to deploy with statically provisioned EBS volumes :
 
 In this section a deployment of gluu with statically provisioned EBS volumes will be created. You must have all your volumes available. Please note down all your EBS `volume-ids`.
 
