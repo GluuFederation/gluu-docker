@@ -46,7 +46,7 @@ A label will be shown for the commands to follow for each load balancer. **Only 
 
 ## Deploying containers with dynamically provisioned EBS volumes
 
-- Please take the following notes while following [Deploying containers with volumes on host](#deploying-containers-with-volumes-on-host) to deploy with dynamically provisioned EBS volumes :
+Please follow the  notes in this section while  [Deploying containers with volumes on host](#deploying-containers-with-volumes-on-host) to deploy with dynamically provisioned EBS volumes :
  
 - To add a deployment of gluu with automatically provisioned EBS volumes you must adjust the zones in all your storage classes where your volumes will be automattically provisioned in all the `*-volumes.yaml` files encountered during setup. The following is an example.
 
@@ -84,9 +84,9 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 
 ## Deploying containers with statically provisioned EBS volumes
 
-- Please take the following notes while following [Deploying containers with volumes on host](#deploying-containers-with-volumes-on-host) to deploy with statically provisioned EBS volumes :
+Please follow the  notes in this section while  [Deploying containers with volumes on host](#deploying-containers-with-volumes-on-host) to deploy with statically provisioned EBS volumes :
 
-In this section a deployment of gluu with statically provisioned EBS volumes will be created. You must have all your volumes available. Please note down all your EBS `volume-ids`.
+- In this section a deployment of gluu with statically provisioned EBS volumes will be created. You must have all your volumes available. Please note down all your EBS `volume-ids`.
 
 ### Example : Changing the config volumeID
 
@@ -107,9 +107,9 @@ spec:
     fsType ext4
 ```
 
-### Example: Changing the zone to match zone of the volume created
+- Note down which zone your volumes are created in you must deploy the services in the matching zones.
 
-Note down which zone your volumes are created in you must deploy the services in the matching zones.
+### Example: Changing the zone to match zone of the volume created
 
 ```
       affinity:
