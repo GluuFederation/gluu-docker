@@ -133,7 +133,7 @@ Deploy Redis pod:
         kubectl apply -f mandatory.yaml
         kubectl apply -f cloud-generic.yaml
 		
-    To allow external traffic to the cluster, we need to deploy nginx Ingress and its controller but for NLB we must add an annotation `service.beta.kubernetes.io/aws-load-balancer-type: nlb` to the `cloud-generic.yaml`. ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+    To allow external traffic to the cluster, we need to deploy nginx Ingress and its controller but for NLB we must add an annotation `service.beta.kubernetes.io/aws-load-balancer-type: nlb` along with other annotations for using the right certificate when deploying nginx. These annotaions are added to the `cloud-generic.yaml`. ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
         
 		cd ../nginx
 		vi cloud-generic.yaml
@@ -147,13 +147,21 @@ Deploy Redis pod:
             app: ingress-nginx
           annotations:
             service.beta.kubernetes.io/aws-load-balancer-type: nlb
+			service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "Name=example,Owner=ingress-nginx"
+			service.beta.kubernetes.io/aws-load-balancer-ssl-negotiation-policy: "ELBSecurityPolicy-TLS-..."
+			service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-west-2:2222222:certificate/324234-1111-fsef-efsf-daskjA98209a
+			service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
+			service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
+			service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
+			service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "60"
+			service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: true
 		  ...
 		  ...
 		  
         kubectl apply -f mandatory.yaml
         kubectl apply -f cloud-generic.yaml
 		
-1.  The commands above will deploy a `LoadBalancer` service in the `ingress-nginx` namespace. Run `kubectl get svc -n ingress-nginx`: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
+1.  The commands above will deploy a `LoadBalancer` service in the `ingress-nginx` namespace. Run `kubectl get svc -n ingress-nginx`: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP                                                        PORT(S)                      AGE
         ingress-nginx          LoadBalancer   10.11.254.183   a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com              80:30306/TCP,443:30247/TCP   50s
@@ -162,10 +170,12 @@ Deploy Redis pod:
 
         sh tls-secrets.sh
 
-1.  Adjust all references to the hostname `kube.gluu.local` in `nginx.yaml` to the hostname you applied earlier while generating the configuration. Afterwards deploy the custom Ingress for Gluu Server routes. ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
+1.  Adjust all references to the hostname `kube.gluu.local` in `nginx.yaml` to the hostname you applied earlier while generating the configuration. Afterwards deploy the custom Ingress for Gluu Server routes. ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
+        remove `secretName: tls-certificate` in `nginx.yaml` . ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+		
         kubectl apply -f nginx.yaml
-
+    
     You can see the host and IP after with `kubectl get ing`
 
 ### Update scripts folder  
