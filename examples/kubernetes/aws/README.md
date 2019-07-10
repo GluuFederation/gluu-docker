@@ -55,17 +55,17 @@ A label will be shown for the commands to follow for each load balancer.
         cd config
 
 
-2.  Prepare roles for config: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Prepare roles for config: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         kubectl apply -f config-roles.yaml
 
 
-3.  Prepare volumes for config: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Prepare volumes for config: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         kubectl apply -f config-volumes.yaml
 
 
-4.  Generate configuration: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Generate configuration: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         kubectl apply -f generate-config.yaml
 
@@ -92,57 +92,77 @@ Deploy Redis pod:
 
         cd ../ldap
 		
-2.  Prepare volumes for ldap: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Prepare volumes for ldap: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
 
         kubectl apply -f opendj-volumes.yaml
 
 
-3.  Create constraints to assign container to specific nodes: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Create constraints to assign container to specific nodes: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         kubectl get node
 
 
-4. Pick one of the nodes, get the name, and attach a label to the node: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1. Pick one of the nodes, get the name, and attach a label to the node: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
 
         kubectl label node NODE_NAME opendj-init=true
 
 
-5.  Pick other nodes and attach a label for each node: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Pick other nodes and attach a label for each node: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         kubectl label node NODE_NAME opendj-init=false
 
 
-6.  Deploy OpenDJ pod that generates initial data: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Deploy OpenDJ pod that generates initial data: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         kubectl apply -f opendj-init.yaml
 
     Please wait until pod is completed. Check the logs using `kubectl logs -f POD_NAME`
 
 
-7.  Deploy additional OpenDJ pod: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+1.  Deploy additional OpenDJ pod: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
         kubectl apply -f opendj-repl.yaml
 
 ### Nginx Ingress
 
-1.  To allow external traffic to the cluster, we need to deploy nginx Ingress and its controller.
+1.  To allow external traffic to the cluster, we need to deploy nginx Ingress and its controller. ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
 
         cd ../nginx
         kubectl apply -f mandatory.yaml
         kubectl apply -f cloud-generic.yaml
-
-1.  The commands above will deploy a `LoadBalancer` service in the `ingress-nginx` namespace. Run `kubectl get svc -n ingress-nginx`:
+		
+1.  To allow external traffic to the cluster, we need to deploy nginx Ingress and its controller but for NLB we must add an annotation `service.beta.kubernetes.io/aws-load-balancer-type: nlb` to the `cloud-generic.yaml`. ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
+        
+		cd ../nginx
+		vi cloud-generic.yaml
+		
+		  ...
+		  ...
+		  metadata:
+          name: ingress-nginx
+          namespace: ingress-nginx
+          labels:
+            app: ingress-nginx
+          annotations:
+            service.beta.kubernetes.io/aws-load-balancer-type: nlb
+		  ...
+		  ...
+		  
+        kubectl apply -f mandatory.yaml
+        kubectl apply -f cloud-generic.yaml
+		
+1.  The commands above will deploy a `LoadBalancer` service in the `ingress-nginx` namespace. Run `kubectl get svc -n ingress-nginx`: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
 
         NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP                                                        PORT(S)                      AGE
         ingress-nginx          LoadBalancer   10.11.254.183   a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com              80:30306/TCP,443:30247/TCP   50s
 
-1.  Create secrets to store TLS cert and key:
+1.  Create secrets to store TLS cert and key: ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
 
         sh tls-secrets.sh
 
-1.  Adjust all references to the hostname `kube.gluu.local` in `nginx.yaml` to the hostname you applied earlier while generating the configuration. Afterwards deploy the custom Ingress for Gluu Server routes.
+1.  Adjust all references to the hostname `kube.gluu.local` in `nginx.yaml` to the hostname you applied earlier while generating the configuration. Afterwards deploy the custom Ingress for Gluu Server routes. ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
 
         kubectl apply -f nginx.yaml
 
