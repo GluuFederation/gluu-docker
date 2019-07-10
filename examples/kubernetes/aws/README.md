@@ -178,9 +178,9 @@ Deploy Redis pod:
     
     You can see the host and IP after with `kubectl get ing`
 
-### Update scripts folder  ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
+### Update scripts folder  ![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
-> **_Warning:_**  If you are deploying in production please assign a static IP to your Loadbalancer and skip this section. The following files need to be modified `oxauth.yaml`, `oxpassport.yaml`, `oxshibboleth.yaml`, and `oxtrust.yaml` to comment out the `updateclbip` as following :
+> **_Warning:_**  If you are deploying in production please assign a static IP to your Loadbalancer and skip this section. The following files need to be modified `oxauth.yaml`, `oxpassport.yaml`, `oxshibboleth.yaml`, and `oxtrust.yaml` to comment out the `updateclbip` as following : ![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg) ![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
        
        volumeMounts:
          ...
