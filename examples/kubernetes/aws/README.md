@@ -4,11 +4,11 @@
 
 A label will be shown for the commands to follow for each load balancer.
 
-- Classic Load Balancer - [](https://img.shields.io/badge/CLB-passed-green.svg)
+- Classic Load Balancer - [![CDNJS](https://img.shields.io/badge/CLB-passed-green.svg)
 
-- Application Load Balancer - [](https://img.shields.io/badge/ALB-passed-green.svg)
+- Application Load Balancer - [![CDNJS](https://img.shields.io/badge/ALB-passed-green.svg)
 
-- Network Load Balancer (Alpha)- [](https://img.shields.io/badge/NLB-alpha-orange.svg)
+- Network Load Balancer (Alpha)- [![CDNJS](https://img.shields.io/badge/NLB-alpha-orange.svg)
 
 > **_NOTE:_**  Following this example guide will install a classic load balancer with an `IP` that is not static. Do not worry about the `IP` changing as all pods will be updated automatically when a change in the `IP` of the load balancer occurs using a script. However, if you are deploying in production you **WILL NOT** use our script and instead assign a static `IP`  to your load balancer.
 
