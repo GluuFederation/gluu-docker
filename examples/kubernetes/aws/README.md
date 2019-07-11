@@ -3,15 +3,15 @@
 ## Installation using different load balancers:
 
 
-A label will be shown for the commands to follow for each load balancer. **Only follow instructions that include the applicable tag for the load balancer in use. If there is no tag specified that means the commands are applicable to all load balancers in use**
+A label will be shown for the commands to follow for each load balancer. **Only follow instructions that include the applicable tag for the load balancer in use. If there is no tag specified that means the commands are applicable to all load balancers in use.** These are example deployments and we highly recommend using your own custome DNS entries . This is especially important when choosing a load balancer of type ALB or NLB.
 
 - Classic Load Balancer - ![CDNJS](https://img.shields.io/badge/CLB--green.svg)
 
-- Application Load Balancer - ![CDNJS](https://img.shields.io/badge/ALB--red.svg) ** Coming soon
+- Application Load Balancer (Beta) - ![CDNJS](https://img.shields.io/badge/ALB--red.svg) ** Coming soon
 
 - Network Load Balancer (Alpha)- ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
 
-> **_NOTE:_**  ![CDNJS](https://img.shields.io/badge/CLB--green.svg) Following the CLB example guide will install a classic load balancer with an `IP` that is not static. Do not worry about the `IP` changing as all pods will be updated automatically when a change in the `IP` of the load balancer occurs using a script. However, if you are deploying in production you **WILL NOT** use our script and instead assign a static `IP`  to your load balancer.
+> **_NOTE:_**  ![CDNJS](https://img.shields.io/badge/CLB--green.svg) Following the CLB example guide will install a classic load balancer with an `IP` that is not static. Do not worry about the `IP` changing as all pods will be updated automatically when a change in the `IP` of the load balancer occurs using a script. However, if you are deploying in production you **WILL NOT** use our script and instead assign a CNAME record for the LoadBalancer DNS name, or use Amazon Route 53 to create a hosted zone. You can find more help following this [guide](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/using-domain-names-with-elb.html?icmpid=docs_elb_console).
 
 
 ## Setup Cluster
@@ -32,6 +32,10 @@ A label will be shown for the commands to follow for each load balancer. **Only 
         wget -q https://github.com/GluuFederation/gluu-docker/archive/3.1.6.zip
         unzip 3.1.6.zip
         cd gluu-docker-3.1.6/examples/kubernetes/aws/clb
+
+-  Please follow this [guide](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/controller/setup/) to install the `aws-alb-ingress-controller` ![CDNJS](https://img.shields.io/badge/ALB--red.svg)
+
+-  Go to the IAM Console, create a policy with the contents in the [iam-policy.json](https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.0.0/docs/examples/iam-policy.json) file and save it as `ingressController-iam-policy`. This policy must be attached to all your `EKS Nodes`. ![CDNJS](https://img.shields.io/badge/ALB--red.svg)
 		
 
 # Deployment strategies
@@ -124,7 +128,56 @@ spec:
                 - us-west-2a
 ```
 
+## Notes on using loadbalancers
 
+- All service definitions for `oxTrust` , `oxAuth`, `oxPassport`, and `oxShibboleth` must be changed from `type : ClusterIP` to `type: NodePort`. ![CDNJS](https://img.shields.io/badge/ALB--red.svg)
+
+### Example: Changing service type for oxAuth 
+
+Before:
+
+		apiVersion: v1
+		kind: Service
+		metadata:
+		  name: oxauth
+		  labels:
+			app: oxauth
+		spec:
+		  ports:
+		  - port: 8080
+			name: oxauth
+		  selector:
+			app: oxauth
+After:
+
+		apiVersion: v1
+		kind: Service
+		metadata:
+		  name: oxauth
+		  labels:
+			app: oxauth
+		spec:
+		  ports:
+		  - port: 8080
+			name: oxauth
+			protocol: TCP
+			targetPort: 8080
+			nodePort: 30100 <--- This number must be different for each service
+		  selector:
+			app: oxauth
+		  type: NodePort
+		  
+- It is highly recommended to assign a DNS stable name to your loadbalancer. Ignoring this note espicially when moving with `NLB` or `ALB` might hinder your deployment.  ![CDNJS](https://img.shields.io/badge/ALB--red.svg) ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
+
+- Remove all occurences of `hostAliases` : ![CDNJS](https://img.shields.io/badge/ALB--red.svg)
+
+        hostAliases:
+        - ip: NGINX_IP
+          hostnames:
+          - kube.gluu.local
+  
+  This also applies to `CLB` and `NLB` if a DNS name is clearly assigned. ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
+  
 # How-to
 
 1. [How to expand EBS volumes](#how-to-expand-ebs-volumes)
@@ -207,6 +260,13 @@ Deploy Redis pod:
 
         kubectl apply -f opendj-repl.yaml
 
+
+### ALB Ingress ![CDNJS](https://img.shields.io/badge/ALB--red.svg)
+
+        cd ../alb-ingress
+		kubectl apply -f ingress.yaml
+
+
 ### Nginx Ingress ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
 
 1.  To allow external traffic to the cluster, we need to deploy nginx Ingress and its controller. ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
@@ -236,7 +296,6 @@ Deploy Redis pod:
 			service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "http"
 			service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "https"
 			service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: "60"
-			service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: true
 		  ...
 		  ...
 		  
@@ -248,13 +307,13 @@ Deploy Redis pod:
         NAME                   TYPE           CLUSTER-IP      EXTERNAL-IP                                                        PORT(S)                      AGE
         ingress-nginx          LoadBalancer   10.11.254.183   a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com              80:30306/TCP,443:30247/TCP   50s
 
-1.  Create secrets to store TLS cert and key: ![CDNJS](https://img.shields.io/badge/CLB--green.svg)
+1.  Create secrets to store TLS cert and key: ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
 
         sh tls-secrets.sh
+		
+	An option to generate an ACM certificate and load it in nginx is available. This would require to insert the `.crt` and `key` in the `tls-certificate` secret
 
 1.  Adjust all references to the hostname `kube.gluu.local` in `nginx.yaml` to the hostname you applied earlier while generating the configuration. Afterwards deploy the custom Ingress for Gluu Server routes. ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
-
-    Remove `secretName: tls-certificate` in `nginx.yaml` . ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
 		
         kubectl apply -f nginx.yaml
     
@@ -262,7 +321,7 @@ Deploy Redis pod:
 
 ### Update scripts folder
 
-> **_Warning:_**  If you are deploying in production please assign a static IP to your Loadbalancer and skip this section.However, the following files need to be modified `oxauth.yaml`, `oxpassport.yaml`, `oxshibboleth.yaml`, and `oxtrust.yaml` to comment out the `updateclbip` as following : ![CDNJS](https://img.shields.io/badge/ALB--red.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
+> **_Warning:_**  If you are deploying in production please assign a CNAME record for the LoadBalancer DNS name, or use Amazon Route 53 to create a hosted  and do not use the following script. However, the following files need to be modified `oxauth.yaml`, `oxpassport.yaml`, `oxshibboleth.yaml`, and `oxtrust.yaml` to comment out the `updateclbip` as following : ![CDNJS](https://img.shields.io/badge/ALB--red.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
        
        volumeMounts:
          ...
@@ -310,8 +369,14 @@ Deploy Redis pod:
         DOMAIN: "kube.gluu.local"
 
 1.  Adjust the hostname from `kube.gluu.local` in `oxauth.yaml` to the hostname you applied earlier while generating the configuration and deploy `oxauth`.
- 
-        NGINX_IP=35.240.221.38 sh deploy-pod.sh ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
+
+    ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
+	
+        NGINX_IP=35.240.221.38 sh deploy-pod.sh 
+	
+	![CDNJS](https://img.shields.io/badge/ALB--red.svg)
+	
+		kubectl apply -f oxauth.yaml 
 		
 
 ### Shared Shibboleth IDP Files
@@ -352,7 +417,13 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 
 1.  Adjust the hostname from `kube.gluu.local` in `oxtrust.yaml` to the hostname you applied earlier while generating the configuration and deploy `oxtrust`.
 
-        NGINX_IP=35.240.221.38 sh deploy-pod.sh ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
+    ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
+
+        NGINX_IP=35.240.221.38 sh deploy-pod.sh 
+		
+	![CDNJS](https://img.shields.io/badge/ALB--red.svg)
+	
+		kubectl apply -f oxauth.yaml 
 
 ### oxShibboleth
 
@@ -375,7 +446,14 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 1.  Adjust the hostname from `kube.gluu.local` in `oxshibboleth.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxShibboleth pod:
 
         cd ../oxshibboleth
-        NGINX_IP=35.240.221.38P sh deploy-pod.sh ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
+
+    ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
+
+        NGINX_IP=35.240.221.38 sh deploy-pod.sh 
+		
+	![CDNJS](https://img.shields.io/badge/ALB--red.svg)
+	
+		kubectl apply -f oxauth.yaml 
 
 ### oxPassport
 
@@ -395,9 +473,16 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
         DOMAIN: "kube.gluu.local"
 
 1.  Adjust the hostname from `kube.gluu.local` in `oxpassport.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxPassport pod:
+
         cd ../oxpassport
 		
-        NGINX_IP=35.240.221.38 sh deploy-pod.sh ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
+    ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
+
+        NGINX_IP=35.240.221.38 sh deploy-pod.sh 
+		
+	![CDNJS](https://img.shields.io/badge/ALB--red.svg)
+	
+		kubectl apply -f oxauth.yaml 
 		
         
 
