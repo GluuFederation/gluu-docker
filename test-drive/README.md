@@ -6,7 +6,7 @@ Quick start deployments of the Gluu Server for demonstration, exploration, and t
 
 [Single Host](./single-host/)
 
-- This is test driving Gluu broken down into microservices in containers at a single node instance using docker and docker-compose.
+- Single node instance of the Gluu Server using Docker and Docker Compose. 
 
 - The directory contains `README.md` as a guide to deploy a basic single-host Gluu server stack
 
