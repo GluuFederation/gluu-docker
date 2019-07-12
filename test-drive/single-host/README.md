@@ -133,7 +133,7 @@ Currently all images, with the exception of the `consul` and `registrator` conta
 
 ```
 
-1) Locked out of your gluu demo? This is how Vault can be manually unlocked
+- **Locked out of your gluu demo? This is how Vault can be manually unlocked**
 
    1. Get Unseal key from `vault_key_token.txt`
    
