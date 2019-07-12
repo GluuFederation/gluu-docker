@@ -2,7 +2,7 @@
 
 ## Installation using different load balancers
 
-A label is shown for commands that apply to each type of load balancer. **Only follow instructions that include the applicable tag for the load balancer in use. If no tag is specified, the command is applicable to all load balancers.** 
+A label is shown for commands that apply to each type of load balancer. **Only follow instructions that include the applicable tag for the load balancer in use. If no tag is specified, the command is applicable for all load balancers.** 
 
 These are example deployments and we highly recommend using your own custom DNS entries. This is especially important with an ALB or NLB load balancer.
 
