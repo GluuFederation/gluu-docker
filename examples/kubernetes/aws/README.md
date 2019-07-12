@@ -2,7 +2,7 @@
 
 ## Installation using different load balancers
 
-This documentation includes instructions for using the following types of Load Balancers:
+This document includes installation instructions for AWS, with specific commands for the following types of Load Balancers:
 
 - Classic Load Balancer - ![CDNJS](https://img.shields.io/badge/CLB--green.svg)
 
