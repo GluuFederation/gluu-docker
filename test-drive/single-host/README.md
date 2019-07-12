@@ -1,7 +1,9 @@
 # Gluu Server Docker Edition Test Drive Single-host
 
-This is an example of running Gluu Server demo Docker Edition on a single VM. Its two steps really !!
-**Get the run bash script and run it!**
+This is an example of running the Gluu Server Docker Edition demo on a single VM. It's just two steps:
+
+1. Get the run bash script   
+1. Run it!   
 
 ## Requirements:
 
