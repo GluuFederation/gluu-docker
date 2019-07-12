@@ -2,13 +2,15 @@
 
 ## Installation using different load balancers
 
-The below labels are used throughout these docs to indicate certain commands that only apply to a specific type of load balancer. **If no tag is specified, the command is applicable for all load balancers.** 
+This documentation includes instructions for using the following types of Load Balancers:
 
 - Classic Load Balancer - ![CDNJS](https://img.shields.io/badge/CLB--green.svg)
 
 - Application Load Balancer (Beta) - ![CDNJS](https://img.shields.io/badge/ALB--red.svg) ** Coming soon
 
 - Network Load Balancer (Alpha)- ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
+
+The labels displayed above are used throughout the docs to indicate certain commands that only apply to a specific type of load balancer. **If no tag is specified, the command is applicable for all load balancers.** 
 
 > **_NOTE:_** These are example deployments. We highly recommend using your own custom DNS entries. This is especially important with an ALB or NLB load balancer.
 
