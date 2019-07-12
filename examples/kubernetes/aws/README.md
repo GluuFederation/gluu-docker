@@ -1,9 +1,10 @@
 # Amazon Web Services (AWS)
 
-## Installation using different load balancers:
+## Installation using different load balancers
 
+A label is shown for commands that apply to each type of load balancer. **Only follow instructions that include the applicable tag for the load balancer in use. If no tag is specified, the command is applicable to all load balancers.** 
 
-A label will be shown for the commands to follow for each load balancer. **Only follow instructions that include the applicable tag for the load balancer in use. If there is no tag specified that means the commands are applicable to all load balancers in use.** These are example deployments and we highly recommend using your own custome DNS entries . This is especially important when choosing a load balancer of type ALB or NLB.
+These are example deployments and we highly recommend using your own custom DNS entries. This is especially important with an ALB or NLB load balancer.
 
 - Classic Load Balancer - ![CDNJS](https://img.shields.io/badge/CLB--green.svg)
 
@@ -11,7 +12,7 @@ A label will be shown for the commands to follow for each load balancer. **Only 
 
 - Network Load Balancer (Alpha)- ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
 
-> **_NOTE:_**  ![CDNJS](https://img.shields.io/badge/CLB--green.svg) Following the CLB example guide will install a classic load balancer with an `IP` that is not static. Do not worry about the `IP` changing as all pods will be updated automatically when a change in the `IP` of the load balancer occurs using a script. However, if you are deploying in production you **WILL NOT** use our script and instead assign a CNAME record for the LoadBalancer DNS name, or use Amazon Route 53 to create a hosted zone. You can find more help following this [guide](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/using-domain-names-with-elb.html?icmpid=docs_elb_console).
+> **_NOTE:_**  ![CDNJS](https://img.shields.io/badge/CLB--green.svg) Following the CLB example guide will install a classic load balancer with an `IP` that is not static. Don't worry about the `IP` changing. All pods will be updated automatically with our script when a change in the `IP` of the load balancer occurs. However, when deploying in production, **DO NOT** use our script. Instead, assign a CNAME record for the LoadBalancer DNS name, or use Amazon Route 53 to create a hosted zone. More details in this [AWS guide](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/using-domain-names-with-elb.html?icmpid=docs_elb_console).
 
 
 ## Setup Cluster
