@@ -77,7 +77,7 @@ This is an example of running Gluu Server demo Docker Edition on a single VM. It
 
 ## FAQ
 
-- What network is Gluu Server Docker Edition running on?
+- **What network is Gluu Server Docker Edition running on?**
 
 In this script, it launches consul using the `docker-compose up consul` command, where docker-compose creates a custom bridge network, based on the name of your current directory. So, for example, the network would be named `dockergluuserver_bridge`. You can assign a custom network in the `docker-compose.yaml`. Please see [the Docker-compose official documentation](https://docs.docker.com/compose/networking/#specify-custom-networks) for further understanding.
 
@@ -99,7 +99,7 @@ All other containers in the docker-compose file are connected to that same netwo
             --city $city
     - Note this command is to create the initial configuration and is slightly different than the `load` or `dump` option of config-init.
 
-- What is the launch process for the containers?
+- **What is the launch process for the containers?**
 
 There are a couple containers which have to be launched first to successfully launch the dependent Gluu Server containers.
 
@@ -113,7 +113,7 @@ After that oxAuth, NGINX, then oxTrust, which relies on the `/.well-known/openid
 
 Currently all of the images, with the exception of the `consul` and `registrator` containers, have wait-for-it scripts designed to prevent them from trying to start, before the necessary launch procedure is accomplished. This mitigates failure during the build process.
 
--How do I stop and start the containers without uninstalling them?
+- **How do I stop and start the containers without uninstalling them?**
 
 ```
 # docker stop $(docker ps -aq)
