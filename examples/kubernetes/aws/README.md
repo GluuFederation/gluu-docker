@@ -2,15 +2,15 @@
 
 ## Installation using different load balancers
 
-A label is shown for commands that apply to each type of load balancer. **Only follow instructions that include the applicable tag for the load balancer in use. If no tag is specified, the command is applicable for all load balancers.** 
-
-These are example deployments. We highly recommend using your own custom DNS entries. This is especially important with an ALB or NLB load balancer.
+The below labels are used throughout these docs to indicate certain commands that only apply to a specific type of load balancer. **If no tag is specified, the command is applicable for all load balancers.** 
 
 - Classic Load Balancer - ![CDNJS](https://img.shields.io/badge/CLB--green.svg)
 
 - Application Load Balancer (Beta) - ![CDNJS](https://img.shields.io/badge/ALB--red.svg) ** Coming soon
 
 - Network Load Balancer (Alpha)- ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
+
+> **_NOTE:_** These are example deployments. We highly recommend using your own custom DNS entries. This is especially important with an ALB or NLB load balancer.
 
 > **_NOTE:_**  ![CDNJS](https://img.shields.io/badge/CLB--green.svg) Following the CLB example guide will install a classic load balancer with an `IP` that is not static. Don't worry about the `IP` changing. All pods will be updated automatically with our script when a change in the `IP` of the load balancer occurs. However, when deploying in production, **DO NOT** use our script. Instead, assign a CNAME record for the LoadBalancer DNS name, or use Amazon Route 53 to create a hosted zone. More details in this [AWS guide](https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/using-domain-names-with-elb.html?icmpid=docs_elb_console).
 
