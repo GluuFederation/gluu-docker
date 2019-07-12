@@ -140,6 +140,8 @@ Currently all images, with the exception of the `consul` and `registrator` conta
    1. log into vault container: `docker exec -it vault sh`
    
    1. Run this command : `vault operator unseal`
+   
+   1. Wait for about 10 mins for the containers to get back to work. 
 
 ## Documentation
 
