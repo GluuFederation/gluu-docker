@@ -1,4 +1,4 @@
-# Gluu Server Docker Edition Test Drive Single-host
+# Gluu Server DE single-host test drive
 
 This is an example of running the Gluu Server Docker Edition demo on a single VM. It's just two steps:
 
