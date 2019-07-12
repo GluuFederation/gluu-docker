@@ -130,6 +130,14 @@ This is an example of running Gluu Server demo Docker Edition on a single VM. It
 
 ```
 
+1) Locked out of your gluu demo? This is how Vault can be manually unlocked
+
+   1. Get Unseal key from `vault_key_token.txt`
+   
+   1. log into vault container: `docker exec -it vault sh`
+   
+   1. Run this command : `vault operator unseal`
+
 ## Documentation
 
 Please refer to the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/de/3.1.6) for further reading on Docker image implementations.
