@@ -4,7 +4,7 @@ Quick start deployments of the Gluu Server for demonstration, exploration, and t
 
 ## Examples
 
-[Single Host](./single-host/)
+### [Single Host](./single-host/)
 
 - Single node instance of the Gluu Server using Docker and Docker Compose. 
 
