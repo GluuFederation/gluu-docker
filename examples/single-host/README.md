@@ -1,4 +1,4 @@
-# Gluu Server Docker Edition Single-host Setup -- ![CDNJS](https://img.shields.io/badge/UNDERCONSTRUCTION-red.svg?style=for-the-badge)
+# Gluu Server Docker Edition Single-host Setup ![CDNJS](https://img.shields.io/badge/UNDERCONSTRUCTION-red.svg?style=for-the-badge)
 
 This is an example of running Gluu Server Docker Edition on a single VM.
 

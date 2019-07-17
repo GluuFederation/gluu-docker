@@ -1,4 +1,4 @@
-# Amazon Web Services (AWS) -- ![CDNJS](https://img.shields.io/badge/UNDERCONSTRUCTION-red.svg?style=for-the-badge)
+# Amazon Web Services (AWS) ![CDNJS](https://img.shields.io/badge/UNDERCONSTRUCTION-red.svg?style=for-the-badge)
 
 ## Installation using different load balancers
 
