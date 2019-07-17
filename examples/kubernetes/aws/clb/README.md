@@ -17,9 +17,9 @@
 
 -   Get the source code:
 
-        wget -q https://github.com/GluuFederation/gluu-docker/archive/3.1.6.zip
-        unzip 3.1.6.zip
-        cd gluu-docker-3.1.6/examples/kubernetes/aws/clb
+        wget -q https://github.com/GluuFederation/gluu-docker/archive/4.0.0.zip
+        unzip 4.0.0.zip
+        cd gluu-docker-4.0.0/examples/kubernetes/aws/clb
 
 ## Deploying Containers
 
