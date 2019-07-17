@@ -1,4 +1,4 @@
-# Multi-host Deployment using Docker Swarm
+# Multi-host Deployment using Docker Swarm -- ![CDNJS](https://img.shields.io/badge/UNDERCONSTRUCTION-red.svg?style=for-the-badge)
 
 This is an example of how to deploy Gluu Server Docker Edition on multi-host setup.
 
