@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: opendj-repl
+spec:
+  serviceName: opendj
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opendj
+  template:
+    metadata:
+      labels:
+        app: opendj
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - opendj
+            topologyKey: "kubernetes.io/hostname"
+      volumes:
+        - name: opendj-config
+          persistentVolumeClaim:
+            claimName: opendj-config-volume-claim
+        - name: opendj-ldif
+          persistentVolumeClaim:
+            claimName: opendj-ldif-volume-claim
+        - name: opendj-logs
+          persistentVolumeClaim:
+            claimName: opendj-logs-volume-claim
+        - name: opendj-db
+          persistentVolumeClaim:
+            claimName: opendj-db-volume-claim
+      containers:
+        - name: opendj
+          image: gluufederation/opendj:4.0.0_dev
+          env:
+            - name: GLUU_CONFIG_ADAPTER
+              value: "kubernetes"
+            - name: GLUU_SECRET_ADAPTER
+              value: "kubernetes"
+            - name: GLUU_LDAP_INIT
+              value: "false"
+            # the value must match serviceName `opendj` because other containers
+            - name: GLUU_CERT_ALT_NAME
+              value: "opendj"
+          ports:
+            - containerPort: 1636
+              name: ldaps
+            - containerPort: 1389
+              name: ldap
+            - containerPort: 8989
+              name: replication
+            - containerPort: 4444
+              name: admin
+          volumeMounts:
+            - mountPath: /opt/opendj/config
+              name: opendj-config
+            - mountPath: /opt/opendj/ldif
+              name: opendj-ldif
+            - mountPath: /opt/opendj/logs
+              name: opendj-logs
+            - mountPath: /opt/opendj/db
+              name: opendj-db
+          readinessProbe:
+            tcpSocket:
+              port: 1636
+            initialDelaySeconds: 25
+            periodSeconds: 25
+          livenessProbe:
+            tcpSocket:
+              port: 1636
+            initialDelaySeconds: 30
+            periodSeconds: 30
+      nodeSelector:
+        opendj-init: "false"
