@@ -53,9 +53,27 @@
 
     where `ZONE_NAME` is the name of zone used when creating cluster
 
-1.  Modify the `generate-config.yaml` environment variables to match your desired parameters, i.e. domain name, email, org, password, etc. Then run the following command to generate configuration:
+1.  Create `generate.json` to define parameters for generating new config and secret:
 
-        kubectl apply -f generate-config.yaml
+    Example:
+
+        {
+            "hostname": "kube.gluu.local",
+            "country_code": "US",
+            "state": "TX",
+            "city": "Austin",
+            "admin_pw": "S3cr3t+pass",
+            "email": "s@gluu.local",
+            "org_name": "Gluu Inc."
+        }
+
+    Afterwards, save this file into ConfigMaps:
+
+        kubectl create cm config-generate-params --from-file=generate.json
+
+1.  Load config and secret:
+
+        kubectl apply -f load-config.yaml
 
 ### Redis (optional)
 
