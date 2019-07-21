@@ -30,9 +30,27 @@
 
         kubectl apply -f config-volumes.yaml
 
-4.  Generate configuration:
+4.  Create `generate.json` to define parameters for generating new config and secret:
 
-        kubectl apply -f generate-config.yaml
+    Example:
+
+    {
+        "hostname": "kube.gluu.local",
+        "country_code": "US",
+        "state": "TX",
+        "city": "Austin",
+        "admin_pw": "S3cr3t+pass",
+        "email": "s@gluu.local",
+        "org_name": "Gluu Inc."
+    }
+
+    Afterwards, save this file into ConfigMaps:
+
+        kubectl create cm config-generate-params --from-file=generate.json
+
+5.  Load config and secret:
+
+        kubectl apply -f load-config.yaml
 
 ### Redis (optional)
 

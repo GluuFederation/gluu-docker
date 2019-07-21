@@ -13,12 +13,18 @@ spec:
         - name: config
           persistentVolumeClaim:
             claimName: config-volume-claim
+        - name: config-generate-params
+            configMap:
+              name: config-generate-params
       containers:
         - name: config-init-load
           image: gluufederation/config-init:4.0.0_dev
           volumeMounts:
             - mountPath: /opt/config-init/db/
               name: config
+            - mountPath: /opt/config-init/db/generate.json
+              name: config-generate-params
+              subPath: generate.json
           env:
             - name: GLUU_CONFIG_ADAPTER
               value: kubernetes
