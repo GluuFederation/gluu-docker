@@ -34,15 +34,15 @@
 
     Example:
 
-    {
-        "hostname": "kube.gluu.local",
-        "country_code": "US",
-        "state": "TX",
-        "city": "Austin",
-        "admin_pw": "S3cr3t+pass",
-        "email": "s@gluu.local",
-        "org_name": "Gluu Inc."
-    }
+        {
+            "hostname": "kube.gluu.local",
+            "country_code": "US",
+            "state": "TX",
+            "city": "Austin",
+            "admin_pw": "S3cr3t+pass",
+            "email": "s@gluu.local",
+            "org_name": "Gluu Inc."
+        }
 
     Afterwards, save this file into ConfigMaps:
 
