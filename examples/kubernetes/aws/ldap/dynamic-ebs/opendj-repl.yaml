@@ -1,0 +1,89 @@
+# headless for peer discovery
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opendj-repl
+data:
+  GLUU_CONFIG_ADAPTER: "kubernetes"
+  GLUU_SECRET_ADAPTER: "kubernetes"
+  GLUU_LDAP_INIT: "false"
+  GLUU_LDAP_INIT_HOST: "opendj"
+  GLUU_LDAP_INIT_PORT: "1636"
+  GLUU_OXTRUST_CONFIG_GENERATION: "false"
+  GLUU_CACHE_TYPE: "NATIVE_PERSISTENCE"
+  #GLUU_CACHE_TYPE: "REDIS"
+  #GLUU_REDIS_URL: "redis:6379"
+  #GLUU_REDIS_TYPE: "STANDALONE"
+  GLUU_CERT_ALT_NAME: "opendj"
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: opendj-repl
+spec:
+  serviceName: opendj
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opendj
+  template:
+    metadata:
+      labels:
+        app: opendj
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - opendj
+            topologyKey: "kubernetes.io/hostname"
+      volumes:
+        - name: opendj-repl
+          persistentVolumeClaim:
+            claimName: opendj-repl-claim
+      containers:
+        - name: opendj
+          image: gluufederation/opendj:4.0.0_dev
+          envFrom:
+          - configMapRef:
+              name: opendj-repl
+          ports:
+            - containerPort: 1636
+              name: ldaps
+            - containerPort: 1389
+              name: ldap
+            - containerPort: 8989
+              name: replication
+            - containerPort: 4444
+              name: admin
+          volumeMounts:
+            - mountPath: /opt/opendj/config
+              name: opendj-repl
+              subPath: config
+            - mountPath: /opt/opendj/ldif
+              name: opendj-repl
+              subPath: ldif
+            - mountPath: /opt/opendj/logs
+              name: opendj-repl
+              subPath: logs
+            - mountPath: /opt/opendj/db
+              name: opendj-repl
+              subPath: db
+          readinessProbe:
+            tcpSocket:
+              port: 1636
+            initialDelaySeconds: 25
+            periodSeconds: 25
+          livenessProbe:
+            tcpSocket:
+              port: 1636
+            initialDelaySeconds: 30
+            periodSeconds: 30
+      nodeSelector:
+        opendj-init: "false"

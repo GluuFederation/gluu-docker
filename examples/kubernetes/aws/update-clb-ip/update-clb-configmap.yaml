@@ -1,0 +1,33 @@
+apiVersion: v1
+data:
+  update-clb-ip.py: "#!/usr/bin/env python\r\n\"\"\"\r\nUpdate the IP of the classic
+    load balancer automatically\r\n\"\"\"\r\nimport socket\r\nimport sys\r\nimport
+    os\r\nimport logging\r\nimport time\r\n\r\nlogger = logging.getLogger(\"update-clb-ip\")\r\nlogger.setLevel(logging.INFO)\r\nch
+    = logging.StreamHandler()\r\nfmt = logging.Formatter('%(levelname)s - %(asctime)s
+    - %(message)s')\r\nch.setFormatter(fmt)\r\nlogger.addHandler(ch)\r\n\r\ndef backup(hosts):\r\n
+    \   timenow = time.strftime(\"%c\")\r\n    timestamp = \"Backup occured %s \\n\"
+    % timenow\r\n    logger.info(\"Backing up hosts file to /etc/hosts.back ...\")\r\n
+    \   with open('/etc/hosts.back', 'a+') as f:\r\n        f.write(timestamp)\r\n
+    \       for line in hosts:\r\n            f.write(line)\r\n\r\n\r\ndef get_hosts(LB_ADDR,
+    DOMAIN):\r\n    ip_list = []\r\n    hosts_list = []\r\n    ais = socket.getaddrinfo(LB_ADDR,
+    0, 0, 0, 0)\r\n    for result in ais:\r\n        ip_list.append(result[-1][0])\r\n
+    \   ip_list = list(set(ip_list))\r\n    for ip in ip_list:\r\n        add_host
+    = ip + \" \" + DOMAIN\r\n        hosts_list.append(add_host)\r\n\r\n    return
+    hosts_list\r\n\r\n\r\ndef main():\r\n    try:\r\n        while True:\r\n            LB_ADDR
+    = os.environ.get(\"LB_ADDR\", \"\")\r\n            DOMAIN = os.environ.get(\"DOMAIN\",
+    \"kube.gluu.local\")\r\n            host_file = open('/etc/hosts', 'r').readlines()\r\n
+    \           hosts = get_hosts(LB_ADDR, DOMAIN)\r\n            stop = []\r\n            for
+    host in hosts:\r\n                for i in host_file:\r\n                    if
+    host.replace(\" \", \"\") in i.replace(\" \", \"\"):\r\n                        stop.append(\"found\")\r\n
+    \           if len(stop) != len(hosts):\r\n                backup(host_file)\r\n
+    \               logger.info(\"Writing new hosts file\")\r\n                with
+    open('/etc/hosts', 'w') as f:\r\n                    for line in host_file:\r\n
+    \                       if DOMAIN not in line:\r\n                            f.write(line)\r\n
+    \                   for host in hosts:\r\n                        f.write(host)\r\n
+    \                   f.write(\"\\n\")\r\n            time.sleep(300)\r\n    except
+    KeyboardInterrupt:\r\n        logger.warn(\"Canceled by user; exiting ...\")\r\n\r\n\r\nif
+    __name__ == \"__main__\":\r\n    main()\r\n"
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: updateclbip

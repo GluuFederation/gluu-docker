@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-cm
+data:
+  GLUU_CONFIG_ADAPTER: "kubernetes"
+  GLUU_SECRET_ADAPTER: "kubernetes"
+
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: config-init-load
+spec:
+  template:
+    metadata:
+      labels:
+        app: config-init-load
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: config-volume-claim
+        - name: config-generate-params
+            configMap:
+              name: config-generate-params
+      containers:
+        - name: config-init-load
+          image: gluufederation/config-init:4.0.0_dev
+          volumeMounts:
+            - mountPath: /opt/config-init/db/
+              name: config
+            - mountPath: /opt/config-init/db/generate.json
+              name: config-generate-params
+              subPath: generate.json
+          envFrom:
+          - configMapRef:
+              name: config-cm
+          args: ["load"]

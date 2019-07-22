@@ -1,0 +1,61 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: opendj-gluu
+  annotations:
+    storageclass.beta.kubernetes.io/is-default-class: "false"
+provisioner: kubernetes.io/aws-ebs
+allowVolumeExpansion: true
+parameters:
+  type: gp2
+  encrypted: "true"
+  zones: us-west-2a
+reclaimPolicy: Retain
+mountOptions:
+- debug 
+  
+---
+
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: opendj-repl
+  annotations:
+    storageclass.beta.kubernetes.io/is-default-class: "false"
+provisioner: kubernetes.io/aws-ebs
+allowVolumeExpansion: true
+parameters:
+  type: gp2
+  encrypted: "true"
+  zones: us-west-2c
+reclaimPolicy: Retain
+mountOptions:
+- debug 
+  
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: opendj-volume-claim
+spec:
+  storageClassName: opendj-gluu
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: opendj-repl-claim
+spec:
+  storageClassName: opendj-repl
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
