@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: opendj-init
+  name: opendj-init-cm
 data:
   GLUU_CONFIG_ADAPTER: "kubernetes"
   GLUU_SECRET_ADAPTER: "kubernetes"
@@ -83,7 +83,7 @@ spec:
         image: gluufederation/opendj:3.1.6_02
         envFrom:
         - configMapRef:
-            name: opendj-init
+            name: opendj-init-cm
         ports:
           - containerPort: 1636
             name: ldaps
