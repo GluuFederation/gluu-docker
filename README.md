@@ -1,4 +1,4 @@
-# Gluu Server Docker Edition ![CDNJS](https://img.shields.io/badge/UNDERCONSTRUCTION-red.svg?style=for-the-badge)
+# Gluu Server Docker Edition
 
 [Gluu Server Docker Edition Documentation](https://gluu.org/docs/de/4.0.0)
 
@@ -50,9 +50,9 @@ Images are hosted at Docker Hub:
 
 - The directory contains `README.md` as a guide to deploy a basic Gluu server stack on Minikube.
 
-[AWS CLB](./examples/kubernetes/aws/clb)
+[AWS](./examples/kubernetes/aws)
 
-- The directory contains `README.md` as a guide to deploy a basic Gluu server stack on on AWS using a classic load balancer.
+- The directory contains `README.md` as a guide to deploy a basic Gluu server stack on AWS.
 
 ## Issues
 
