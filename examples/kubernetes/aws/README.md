@@ -380,6 +380,7 @@ Deploy Redis pod:
         cd ../oxauth
 
 1.  Prepare volumes for oxAuth:
+
         kubectl apply -f oxauth-volumes.yaml
 
 1.  Modify the env  entry `LB_ADDR` to your LB address which in our case is `a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com` ![CDNJS](https://img.shields.io/badge/CLB--green.svg)
