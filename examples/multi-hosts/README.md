@@ -1,8 +1,8 @@
 # Multi-host Deployment using Docker Swarm
 
-This is an example of how to deploy Gluu Server Enterprise Edition on multi-host setup.
+This is an example of how to deploy Gluu Server Docker Edition on multi-host setup.
 
-For futher reading, please see the [Gluu Server Enterprise Edition Documentation](https://gluu.org/docs/de/3.1.6).
+For futher reading, please see the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/de/3.1.6).
 
 ## Requirements
 

@@ -264,7 +264,7 @@ check_license() {
     if [ ! -f volumes/license_ack ]; then
         echo "Gluu License Agreement: https://github.com/GluuFederation/gluu-docker/blob/3.1.6/LICENSE"
         echo ""
-        read -p "Do you acknowledge that use of Gluu Server Enterprise Edition is subject to the Gluu Support License [y/N]: " ACCEPT_LICENSE
+        read -p "Do you acknowledge that use of Gluu Server Docker Edition is subject to the Gluu Support License [y/N]: " ACCEPT_LICENSE
 
         case $ACCEPT_LICENSE in
             y|Y)
