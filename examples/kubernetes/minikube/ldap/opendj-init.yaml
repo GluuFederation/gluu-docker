@@ -1,5 +1,24 @@
 # headless for peer discovery
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opendj-init-cm
+data:
+  GLUU_CONFIG_ADAPTER: "kubernetes"
+  GLUU_SECRET_ADAPTER: "kubernetes"
+  GLUU_LDAP_INIT: "true"
+  GLUU_LDAP_INIT_HOST: "opendj"
+  GLUU_LDAP_INIT_PORT: "1636"
+  GLUU_OXTRUST_CONFIG_GENERATION: "true"
+  GLUU_CACHE_TYPE: "NATIVE_PERSISTENCE"
+  #GLUU_CACHE_TYPE: "REDIS"
+  #GLUU_REDIS_URL: "redis:6379"
+  #GLUU_REDIS_TYPE: "STANDALONE"
+  GLUU_CERT_ALT_NAME: "opendj"
+
+---
+
+apiVersion: v1
 kind: Service
 metadata:
   name: opendj
@@ -64,30 +83,9 @@ spec:
       - name: opendj
         imagePullPolicy: Always
         image: gluufederation/opendj:4.0.0_dev
-        env:
-          - name: GLUU_CONFIG_ADAPTER
-            value: "kubernetes"
-          - name: GLUU_SECRET_ADAPTER
-            value: "kubernetes"
-          - name: GLUU_LDAP_INIT
-            value: "true"
-          - name: GLUU_LDAP_INIT_HOST
-            value: "opendj"
-          - name: GLUU_LDAP_INIT_PORT
-            value: "1636"
-          - name: GLUU_OXTRUST_CONFIG_GENERATION
-            value: "true"
-          - name: GLUU_CACHE_TYPE
-            value: "NATIVE_PERSISTENCE"
-          # - name: GLUU_CACHE_TYPE
-          #   value: "REDIS"
-          # - name: GLUU_REDIS_TYPE
-          #   value: "STANDALONE"
-          # - name: GLUU_REDIS_URL
-          #   value: "redis:6379"
-          # the value must match serviceName `opendj` because other containers use this as LDAP hostname
-          - name: GLUU_CERT_ALT_NAME
-            value: "opendj"
+        envFrom:
+        - configMapRef:
+            name: opendj-init-cm
         ports:
           - containerPort: 1636
             name: ldaps
