@@ -1,4 +1,18 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oxtrust-cm
+data:
+  GLUU_CONFIG_ADAPTER: "kubernetes"
+  GLUU_SECRET_ADAPTER: "kubernetes"
+  GLUU_OXAUTH_BACKEND: "oxauth:8080"
+  GLUU_LDAP_URL: "opendj:1636"
+  GLUU_MAX_RAM_FRACTION: "1"
+  DOMAIN: "kube.gluu.local"
+
+---
+
+apiVersion: v1
 kind: Service
 metadata:
   name: oxtrust
@@ -31,6 +45,7 @@ spec:
     metadata:
       labels:
         app: oxtrust
+        APP_NAME: oxtrust
     spec:
       containers:
       - name: oxtrust
@@ -43,17 +58,9 @@ spec:
             memory: "1536Mi"
         ports:
         - containerPort: 8080
-        env:
-          - name: GLUU_CONFIG_ADAPTER
-            value: "kubernetes"
-          - name: GLUU_SECRET_ADAPTER
-            value: "kubernetes"
-          - name: GLUU_LDAP_URL
-            value: "opendj:1636"
-          - name: GLUU_OXAUTH_BACKEND
-            value: "oxauth:8080"
-          - name: GLUU_MAX_RAM_FRACTION
-            value: "1"
+        envFrom:
+        - configMapRef:
+            name: oxtrust-cm
         volumeMounts:
           # name must match the volume name below
           - name: shared-shib
