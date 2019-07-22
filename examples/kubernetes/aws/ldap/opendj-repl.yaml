@@ -1,3 +1,15 @@
+# headless for peer discovery
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opendj-repl-cm
+data:
+  GLUU_CONFIG_ADAPTER: "kubernetes"
+  GLUU_SECRET_ADAPTER: "kubernetes"
+  GLUU_LDAP_INIT: "false"
+  GLUU_CERT_ALT_NAME: "opendj"
+
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -39,16 +51,9 @@ spec:
       containers:
         - name: opendj
           image: gluufederation/opendj:3.1.6_02
-          env:
-            - name: GLUU_CONFIG_ADAPTER
-              value: "kubernetes"
-            - name: GLUU_SECRET_ADAPTER
-              value: "kubernetes"
-            - name: GLUU_LDAP_INIT
-              value: "false"
-            # the value must match serviceName `opendj` because other containers
-            - name: GLUU_CERT_ALT_NAME
-              value: "opendj"
+          envFrom:
+          - configMapRef:
+              name: opendj-repl-cm
           ports:
             - containerPort: 1636
               name: ldaps
