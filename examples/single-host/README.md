@@ -1,6 +1,6 @@
-# Gluu Server Enterprise Edition Single-host Setup ![CDNJS](https://img.shields.io/badge/UNDERCONSTRUCTION-red.svg?style=for-the-badge)
+# Gluu Server Docker Edition Single-host Setup ![CDNJS](https://img.shields.io/badge/UNDERCONSTRUCTION-red.svg?style=for-the-badge)
 
-This is an example of running Gluu Server Enterprise Edition on a single VM.
+This is an example of running Gluu Server Docker Edition on a single VM.
 
 ## Requirements:
 
@@ -79,7 +79,7 @@ This is an example of running Gluu Server Enterprise Edition on a single VM.
 
 ## FAQ
 
-1) What network is Gluu Server Enterprise Edition running on?
+1) What network is Gluu Server Docker Edition running on?
 
     In this script, it launches consul using the `docker-compose up consul` command, where docker-compose creates a custom bridge network, based on the name of your current directory. So, for example, the network would be named `dockergluuserver_bridge`. You can assign a custom network in the `docker-compose.yaml`. Please see [the Docker-compose official documentation](https://docs.docker.com/compose/networking/#specify-custom-networks) for further understanding.
 
@@ -117,4 +117,4 @@ This is an example of running Gluu Server Enterprise Edition on a single VM.
 
 ## Documentation
 
-Please refer to the [Gluu Server Enterprise Edition Documentation](https://gluu.org/docs/de/4.0.0) for further reading on Docker image implementations.
+Please refer to the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/de/4.0.0) for further reading on Docker image implementations.

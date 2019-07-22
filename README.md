@@ -1,6 +1,6 @@
-# Gluu Server Enterprise Edition
+# Gluu Server Docker Edition
 
-[Gluu Server Enterprise Edition Documentation](https://gluu.org/docs/de/4.0.0)
+[Gluu Server Docker Edition Documentation](https://gluu.org/docs/de/4.0.0)
 
 ## Code Repositories
 
