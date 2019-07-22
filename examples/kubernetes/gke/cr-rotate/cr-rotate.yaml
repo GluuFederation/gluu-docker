@@ -1,40 +1,49 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cr-rotate-cm
+data:
+  GLUU_CONFIG_ADAPTER: "kubernetes"
+  GLUU_SECRET_ADAPTER: "kubernetes"
+  GLUU_LDAP_URL: "opendj:1636"
+  GLUU_CONTAINER_METADATA: "kubernetes"
+
+---
+
+apiVersion: v1
 kind: Service
 metadata:
-  name: cr_rotate
+  name: cr-rotate
   labels:
-    app: cr_rotate
+    app: cr-rotate
 spec:
+  ports:
+  - port: 8080
+    name: cr-rotate
   selector:
-    app: cr_rotate
+    app: cr-rotate
 
 ---
 
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: cr_rotate
+  name: cr-rotate
   labels:
-    app: cr_rotate
+    app: cr-rotate
 spec:
   selector:
     matchLabels:
-      app:
+      app: cr-rotate
   template:
     metadata:
       labels:
-        app: cr_rotate
+        app: cr-rotate
     spec:
       containers:
-      - name: cr_rotate
+      - name: cr-rotate
         imagePullPolicy: Always
         image: gluufederation/cr-rotate:4.0.0_dev
-        env:
-          - name: GLUU_CONFIG_ADAPTER
-            value: "kubernetes"
-          - name: GLUU_SECRET_ADAPTER
-            value: "kubernetes"
-          - name: GLUU_LDAP_URL
-            value: "opendj:1636"
-          - name: GLUU_CONTAINER_METADATA
-            value: "kubernetes"
+        envFrom:
+        - configMapRef:
+            name: cr-rotate-cm

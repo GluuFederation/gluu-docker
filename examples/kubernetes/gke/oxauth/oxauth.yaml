@@ -1,4 +1,17 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oxauth-cm
+data:
+  GLUU_CONFIG_ADAPTER: "kubernetes"
+  GLUU_SECRET_ADAPTER: "kubernetes"
+  DOMAIN: "kube.gluu.local"
+  GLUU_LDAP_URL: "opendj:1636"
+  GLUU_MAX_RAM_FRACTION: "1"
+
+---
+
+apiVersion: v1
 kind: Service
 metadata:
   name: oxauth
@@ -40,15 +53,9 @@ spec:
             memory: "1536Mi"
         ports:
         - containerPort: 8080
-        env:
-          - name: GLUU_CONFIG_ADAPTER
-            value: "kubernetes"
-          - name: GLUU_SECRET_ADAPTER
-            value: "kubernetes"
-          - name: GLUU_LDAP_URL
-            value: "opendj:1636"
-          - name: GLUU_MAX_RAM_FRACTION
-            value: "1"
+        envFrom:
+        - configMapRef:
+            name: oxauth-cm
         volumeMounts:
           - mountPath: /opt/gluu/jetty/oxauth/logs
             name: oxauth-logs
@@ -75,15 +82,15 @@ spec:
         hostnames:
         - kube.gluu.local
       volumes:
-        - name: oxauth-logs
-          persistentVolumeClaim:
-            claimName: oxauth-logs-volume-claim
-        - name: oxauth-lib-ext
-          persistentVolumeClaim:
-            claimName: oxauth-lib-ext-volume-claim
-        - name: oxauth-custom-static
-          persistentVolumeClaim:
-            claimName: oxauth-custom-static-volume-claim
-        - name: oxauth-custom-pages
-          persistentVolumeClaim:
-            claimName: oxauth-custom-pages-volume-claim
+      - name: oxauth-logs
+        persistentVolumeClaim:
+          claimName: oxauth-logs-volume-claim
+      - name: oxauth-lib-ext
+        persistentVolumeClaim:
+          claimName: oxauth-lib-ext-volume-claim
+      - name: oxauth-custom-static
+        persistentVolumeClaim:
+          claimName: oxauth-custom-static-volume-claim
+      - name: oxauth-custom-pages
+        persistentVolumeClaim:
+          claimName: oxauth-custom-pages-volume-claim
