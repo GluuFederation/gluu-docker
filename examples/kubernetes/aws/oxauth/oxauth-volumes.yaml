@@ -70,24 +70,6 @@ spec:
       
 ---
 
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: update-clb-ip-volume-claim
-spec:
-  storageClassName: ""
-  volumeName: update-clb-ip
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10M
-  selector:
-    matchLabels:
-      update-clb-ip: update-ip
-
----
-
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -150,19 +132,4 @@ spec:
   hostPath:
     path: "/data/oxauth/custom/pages"
 
----
 
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: update-clb-ip
-  labels:
-      update-clb-ip: update-ip
-spec:
-  capacity:
-    storage: 10M
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/data/scripts"
-    type: DirectoryOrCreate

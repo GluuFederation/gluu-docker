@@ -1,4 +1,18 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oxpassport-cm
+data:
+  LB_ADDR: ""
+  GLUU_CONFIG_ADAPTER: "kubernetes"
+  GLUU_SECRET_ADAPTER: "kubernetes"
+  DOMAIN: "kube.gluu.local"
+  GLUU_LDAP_URL: "opendj:1636"
+  GLUU_MAX_RAM_FRACTION: "1"
+
+---
+
+apiVersion: v1
 kind: Service
 metadata:
   name: oxpassport
@@ -44,15 +58,9 @@ spec:
               /opt/scripts/entrypoint.sh
         ports:
         - containerPort: 8090
-        env:
-          - name: LB_ADDR
-            value: ""
-          - name: DOMAIN
-            value: "kube.gluu.local"
-          - name: GLUU_CONFIG_ADAPTER
-            value: "kubernetes"
-          - name: GLUU_SECRET_ADAPTER
-            value: "kubernetes"
+        envFrom:
+        - configMapRef:
+            name: oxpassport-cm
         volumeMounts:
           # name must match the volume name below
           - mountPath: /scripts
@@ -75,5 +83,5 @@ spec:
         - kube.gluu.local
       volumes:
       - name: update-clb-ip
-        persistentVolumeClaim:
-          claimName: update-clb-ip-volume-claim
+        configMap:
+          name: updateclbip
