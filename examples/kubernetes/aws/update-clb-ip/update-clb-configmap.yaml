@@ -15,7 +15,7 @@ data:
     = ip + \" \" + DOMAIN\r\n        hosts_list.append(add_host)\r\n\r\n    return
     hosts_list\r\n\r\n\r\ndef main():\r\n    try:\r\n        while True:\r\n            LB_ADDR
     = os.environ.get(\"LB_ADDR\", \"\")\r\n            DOMAIN = os.environ.get(\"DOMAIN\",
-    \"kube.gluu.local\")\r\n            host_file = open('/etc/hosts', 'r').readlines()\r\n
+    \"demoexample.gluu.org\")\r\n            host_file = open('/etc/hosts', 'r').readlines()\r\n
     \           hosts = get_hosts(LB_ADDR, DOMAIN)\r\n            stop = []\r\n            for
     host in hosts:\r\n                for i in host_file:\r\n                    if
     host.replace(\" \", \"\") in i.replace(\" \", \"\"):\r\n                        stop.append(\"found\")\r\n

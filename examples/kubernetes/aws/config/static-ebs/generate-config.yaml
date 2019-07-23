@@ -6,7 +6,7 @@ data:
   GLUU_SECRET_ADAPTER: "kubernetes"
   ADMIN_PW: "secret"
   EMAIL: "support@gluu.org"
-  DOMAIN: "kube.gluu.local"
+  DOMAIN: "demoexample.gluu.org"
   ORG_NAME: "Gluu Inc"
   COUNTRY_CODE: "US"
   STATE: "TX"

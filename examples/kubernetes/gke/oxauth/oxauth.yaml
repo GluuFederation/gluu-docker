@@ -5,7 +5,7 @@ metadata:
 data:
   GLUU_CONFIG_ADAPTER: "kubernetes"
   GLUU_SECRET_ADAPTER: "kubernetes"
-  DOMAIN: "kube.gluu.local"
+  DOMAIN: "demoexample.gluu.org"
   GLUU_LDAP_URL: "opendj:1636"
   GLUU_MAX_RAM_FRACTION: "1"
 
@@ -80,7 +80,7 @@ spec:
       hostAliases:
       - ip: NGINX_IP
         hostnames:
-        - kube.gluu.local
+        - demoexample.gluu.org
       volumes:
       - name: oxauth-logs
         persistentVolumeClaim:

@@ -177,7 +177,7 @@ After:
         hostAliases:
         - ip: NGINX_IP
           hostnames:
-          - kube.gluu.local
+          - demoexample.gluu.org
   
   This also applies to `CLB` and `NLB` if a DNS name is clearly assigned. ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
   
@@ -316,7 +316,7 @@ Deploy Redis pod:
 		
 	An option to generate an ACM certificate and load it in nginx is available. This would require to insert the `.crt` and `key` in the `tls-certificate` secret
 
-1.  Adjust all references to the hostname `kube.gluu.local` in `nginx.yaml` to the hostname you applied earlier while generating the configuration. Afterwards deploy the custom Ingress for Gluu Server routes. ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
+1.  Adjust all references to the hostname `demoexample.gluu.org` in `nginx.yaml` to the hostname you applied earlier while generating the configuration. Afterwards deploy the custom Ingress for Gluu Server routes. ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
 		
         kubectl apply -f nginx.yaml
     
@@ -366,12 +366,12 @@ Deploy Redis pod:
 
 1.  Modify the env  entry `LB_ADDR` to your LB address which in our case is `a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com` ![CDNJS](https://img.shields.io/badge/CLB--green.svg)
 
-1.  Modify the env `DOMAIN` to the domain you chose at installation which in our case is `kube.gluu.local`
+1.  Modify the env `DOMAIN` to the domain you chose at installation which in our case is `demoexample.gluu.org`
 
         LB_ADDR: "a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com"
-        DOMAIN: "kube.gluu.local"
+        DOMAIN: "demoexample.gluu.org"
 
-1.  Adjust the hostname from `kube.gluu.local` in `oxauth.yaml` to the hostname you applied earlier while generating the configuration and deploy `oxauth`.
+1.  Adjust the hostname from `demoexample.gluu.org` in `oxauth.yaml` to the hostname you applied earlier while generating the configuration and deploy `oxauth`.
 
     ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
 	
@@ -413,12 +413,12 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 
 1.  Modify the env  entry `LB_ADDR` to your LB address which in our case is `a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com` ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
 
-1.  Modify the env `DOMAIN` to the domain you chose at installation which in our case is `kube.gluu.local`
+1.  Modify the env `DOMAIN` to the domain you chose at installation which in our case is `demoexample.gluu.org`
 
         LB_ADDR: "a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com"
-        DOMAIN: "kube.gluu.local"
+        DOMAIN: "demoexample.gluu.org"
 
-1.  Adjust the hostname from `kube.gluu.local` in `oxtrust.yaml` to the hostname you applied earlier while generating the configuration and deploy `oxtrust`.
+1.  Adjust the hostname from `demoexample.gluu.org` in `oxtrust.yaml` to the hostname you applied earlier while generating the configuration and deploy `oxtrust`.
 
     ![CDNJS](https://img.shields.io/badge/CLB--green.svg) ![CDNJS](https://img.shields.io/badge/NLB--orange.svg)
 
@@ -441,12 +441,12 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 
 1.  Modify the env  entry `LB_ADDR` to your LB address which in our case is `a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com` ![CDNJS](https://img.shields.io/badge/CLB--green.svg)
 
-1.  Modify the env `DOMAIN` to the domain you chose at installation which in our case is `kube.gluu.local`
+1.  Modify the env `DOMAIN` to the domain you chose at installation which in our case is `demoexample.gluu.org`
 
         LB_ADDR: "a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com"
-        DOMAIN: "kube.gluu.local"
+        DOMAIN: "demoexample.gluu.org"
 
-1.  Adjust the hostname from `kube.gluu.local` in `oxshibboleth.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxShibboleth pod:
+1.  Adjust the hostname from `demoexample.gluu.org` in `oxshibboleth.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxShibboleth pod:
 
         cd ../oxshibboleth
 
@@ -470,12 +470,12 @@ As oxTrust and oxShibboleth shares Shibboleth configuration files, we need to ha
 
 1.  Modify the env  entry `LB_ADDR` to your LB address which in our case is `a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com` ![CDNJS](https://img.shields.io/badge/CLB--green.svg)
 
-1.  Modify the env `DOMAIN` to the domain you chose at installation which in our case is `kube.gluu.local`
+1.  Modify the env `DOMAIN` to the domain you chose at installation which in our case is `demoexample.gluu.org`
 
         LB_ADDR: "a73fkddo22203aom22-899102.eu-west-1.elb.amazonaws.com"
-        DOMAIN: "kube.gluu.local"
+        DOMAIN: "demoexample.gluu.org"
 
-1.  Adjust the hostname from `kube.gluu.local` in `oxpassport.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxPassport pod:
+1.  Adjust the hostname from `demoexample.gluu.org` in `oxpassport.yaml` to the hostname you applied earlier while generating the configuration. Deploy oxPassport pod:
 
         cd ../oxpassport
 		
