@@ -4,7 +4,7 @@ Our [gluu-docker](https://github.com/GluuFederation/gluu-docker/blob/4.0.0) edit
 
 Our fully expected move will be in Augest 2019. You are very welcome to explore the underconstruction repo for the new edition!!! But please be aware it is in the development stage.
 
-**We haven't moved our previous versions yet!! So please continue to use this repo pre version 4.0.0
+**We haven't moved our previous versions yet!! So please continue to use this repo pre version 4.0.0**
 
 ## Issues
 
