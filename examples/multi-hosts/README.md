@@ -286,7 +286,7 @@ To enable key rotation for oxAuth keys (useful when we have RP) and cr-rotate (t
 
 **By using this software you are automatically acknowledging that use of Gluu Server Enterprise Edition is subject to the Gluu Support License**
 
-1) Ignore [Set up nodes](https://github.com/GluuFederation/enterprise-edition/tree/4.0.0/examples/multi-hosts#set-up-nodes) and [Requirments](https://github.com/GluuFederation/enterprise-edition/tree/4.0.0/examples/multi-hosts#requirements) section.
+1) Ignore [Set up nodes](#set-up-nodes) and [Requirments](#requirements) section.
 
 1) **Docker machine will not be used**
 
@@ -386,4 +386,4 @@ To enable key rotation for oxAuth keys (useful when we have RP) and cr-rotate (t
             
     ```
    
-1) Continue [deploying services](https://github.com/GluuFederation/enterprise-edition/tree/4.0.0/examples/multi-hosts#deploying-services). But note that you will not use any `docker-machine` commands, but instead execute the commands directly on the respective node here `Node-1` is the manager.
+1) Continue [deploying services](#deploying-services). But note that you will not use any `docker-machine` commands, but instead execute the commands directly on the respective node here `Node-1` is the manager.
