@@ -34,7 +34,7 @@ The labels displayed above are used throughout the docs to indicate certain comm
 
         wget -q https://github.com/GluuFederation/gluu-docker/archive/3.1.6.zip
         unzip 3.1.6.zip
-        cd gluu-docker-3.1.6/examples/kubernetes/aws/clb
+        cd gluu-docker-3.1.6/examples/kubernetes/aws
 
 -  Please follow this [guide](https://kubernetes-sigs.github.io/aws-alb-ingress-controller/guide/controller/setup/) to install the `aws-alb-ingress-controller` ![CDNJS](https://img.shields.io/badge/ALB--red.svg)
 
