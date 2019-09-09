@@ -1,8 +1,8 @@
 apiVersion: v1
 data:
-  update-clb-ip.py: "#!/usr/bin/env python\r\n\"\"\"\r\nUpdate the IP of the classic
-    load balancer automatically\r\n\"\"\"\r\nimport socket\r\nimport sys\r\nimport
-    os\r\nimport logging\r\nimport time\r\n\r\nlogger = logging.getLogger(\"update-clb-ip\")\r\nlogger.setLevel(logging.INFO)\r\nch
+  update-clb-ip.py: "#!/usr/bin/env python\r\n\"\"\"\r\nUpdate the IP of the load balancer
+    automatically\r\n\"\"\"\r\nimport socket\r\nimport sys\r\nimport os\r\nimport
+    logging\r\nimport time\r\n\r\nlogger = logging.getLogger(\"update-clb-ip\")\r\nlogger.setLevel(logging.INFO)\r\nch
     = logging.StreamHandler()\r\nfmt = logging.Formatter('%(levelname)s - %(asctime)s
     - %(message)s')\r\nch.setFormatter(fmt)\r\nlogger.addHandler(ch)\r\n\r\ndef backup(hosts):\r\n
     \   timenow = time.strftime(\"%c\")\r\n    timestamp = \"Backup occured %s \\n\"
@@ -23,11 +23,12 @@ data:
     \               logger.info(\"Writing new hosts file\")\r\n                with
     open('/etc/hosts', 'w') as f:\r\n                    for line in host_file:\r\n
     \                       if DOMAIN not in line:\r\n                            f.write(line)\r\n
-    \                   for host in hosts:\r\n                        f.write(host)\r\n
+    \                   for host in hosts:\r\n                        f.write(host)\r\n\t\t\t\t\t\tf.write(\"\\n\")\r\n
     \                   f.write(\"\\n\")\r\n            time.sleep(300)\r\n    except
     KeyboardInterrupt:\r\n        logger.warn(\"Canceled by user; exiting ...\")\r\n\r\n\r\nif
-    __name__ == \"__main__\":\r\n    main()\r\n"
+    __name__ == \"__main__\":\r\n    main()"
 kind: ConfigMap
 metadata:
-  creationTimestamp: null
+  labels:
+    app: update-clb-ip
   name: updateclbip
