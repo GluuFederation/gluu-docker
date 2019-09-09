@@ -11,10 +11,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - kube.gluu.local
+      - demoexample.gluu.org
       secretName: tls-certificate
   rules:
-  - host: kube.gluu.local
+  - host: demoexample.gluu.org
     http:
       paths:
       - path: /
@@ -37,10 +37,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - kube.gluu.local
+      - demoexample.gluu.org
       secretName: tls-certificate
   rules:
-  - host: kube.gluu.local
+  - host: demoexample.gluu.org
     http:
       paths:
       - path: /.well-known/openid-configuration
@@ -63,10 +63,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - kube.gluu.local
+      - demoexample.gluu.org
       secretName: tls-certificate
   rules:
-  - host: kube.gluu.local
+  - host: demoexample.gluu.org
     http:
       paths:
       - path: /.well-known/uma2-configuration
@@ -89,10 +89,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - kube.gluu.local
+      - demoexample.gluu.org
       secretName: tls-certificate
   rules:
-  - host: kube.gluu.local
+  - host: demoexample.gluu.org
     http:
       paths:
       - path: /.well-known/webfinger
@@ -115,10 +115,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - kube.gluu.local
+      - demoexample.gluu.org
       secretName: tls-certificate
   rules:
-  - host: kube.gluu.local
+  - host: demoexample.gluu.org
     http:
       paths:
       - path: /.well-known/simple-web-discovery
@@ -141,10 +141,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - kube.gluu.local
+      - demoexample.gluu.org
       secretName: tls-certificate
   rules:
-  - host: kube.gluu.local
+  - host: demoexample.gluu.org
     http:
       paths:
       - path: /.well-known/scim-configuration
@@ -167,10 +167,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - kube.gluu.local
+      - demoexample.gluu.org
       secretName: tls-certificate
   rules:
-  - host: kube.gluu.local
+  - host: demoexample.gluu.org
     http:
       paths:
       - path: /.well-known/fido-u2f-configuration
@@ -191,10 +191,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - kube.gluu.local
+      - demoexample.gluu.org
       secretName: tls-certificate
   rules:
-  - host: kube.gluu.local
+  - host: demoexample.gluu.org
     http:
       paths:
       - path: /oxauth
@@ -219,10 +219,10 @@ metadata:
 spec:
   tls:
     - hosts:
-      - kube.gluu.local
+      - demoexample.gluu.org
       secretName: tls-certificate
   rules:
-  - host: kube.gluu.local
+  - host: demoexample.gluu.org
     http:
       paths:
       - path: /identity

@@ -1,0 +1,56 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gluu-ingress-base
+  annotations:
+    kubernetes.io/ingress.class: alb
+
+spec:
+  rules:
+  - host: demoexample.gluu.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: oxtrust
+          servicePort: 8080
+      - path: /.well-known/openid-configuration
+        backend:
+          serviceName: oxauth
+          servicePort: 8080
+      - path: /.well-known/uma2-configuration
+        backend:
+          serviceName: oxauth
+          servicePort: 8080
+      - path: /.well-known/webfinger
+        backend:
+          serviceName: oxauth
+          servicePort: 8080
+      - path: /.well-known/simple-web-discovery
+        backend:
+          serviceName: oxauth
+          servicePort: 8080
+      - path: /.well-known/scim-configuration
+        backend:
+          serviceName: oxtrust
+          servicePort: 8080
+      - path: /.well-known/fido-u2f-configuration
+        backend:
+          serviceName: oxauth
+          servicePort: 8080
+      - path: /oxauth
+        backend:
+          serviceName: oxauth
+          servicePort: 8080
+      - path: /identity
+        backend:
+          serviceName: oxtrust
+          servicePort: 8080
+      - path: /idp
+        backend:
+          serviceName: oxshibboleth
+          servicePort: 8080
+      - path: /passport
+        backend:
+          serviceName: oxpassport
+          servicePort: 8090

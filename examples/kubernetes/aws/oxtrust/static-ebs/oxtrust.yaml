@@ -9,7 +9,7 @@ data:
   GLUU_LDAP_URL: "opendj:1636"
   GLUU_MAX_RAM_FRACTION: "1"
   LB_ADDR: ""
-  DOMAIN: "kube.gluu.local"
+  DOMAIN: "demoexample.gluu.org"
 
 ---
 
@@ -112,7 +112,7 @@ spec:
       hostAliases:
       - ip: NGINX_IP
         hostnames:
-        - kube.gluu.local
+        - demoexample.gluu.org
       volumes:
       - name: shared-shib
         persistentVolumeClaim:

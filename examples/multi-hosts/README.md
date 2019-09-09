@@ -4,6 +4,8 @@ This is an example of how to deploy Gluu Server Docker Edition on multi-host set
 
 For futher reading, please see the [Gluu Server Docker Edition Documentation](https://gluu.org/docs/de/3.1.6).
 
+Are you using **Openstack** take a look at [these](https://github.com/GluuFederation/enterprise-edition/blob/4.0.0/examples/multi-hosts/README.md#notes-on-deploying-multi-hosts-gluu-example-on-openstack) notes before moving forward.
+
 ## Requirements
 
 -   [Docker](https://docs.docker.com/install/)
@@ -279,3 +281,109 @@ Enable Passport support by following the official docs [here](https://gluu.org/d
 To enable key rotation for oxAuth keys (useful when we have RP) and cr-rotate (to monitor cycled IP address of oxTrust container used for cache refresh), run the following command:
 
     docker stack deploy -c utils.yml gluu
+
+# Notes on deploying multi-hosts gluu example on openstack
+
+**By using this software you are automatically acknowledging that use of Gluu Server Enterprise Edition is subject to the Gluu Support License**
+
+1) Ignore [Set up nodes](#set-up-nodes) and [Requirments](#requirements) section.
+
+1) **Docker machine will not be used**
+
+1) **Ignore using `./node.sh` for deploying**
+
+1) Provision three VMs with at least 8GB RAM each with OS flavor of your choosing that being ubuntu 18, CentOS7 ...etc
+
+1) Make sure the ports associated with installation are open. Including docker swarm ports. In CentOS that might mean adding the allowed VMs and their respective ports.
+
+    ```bash
+        iptables -N GLUU
+        iptables -A GLUU -s 104.130.198.53 -j ACCEPT  # VM docker-swarm-node-1
+        iptables -A GLUU -s 104.130.217.164 -j ACCEPT # VM docker-swarm node-2
+        iptables -A GLUU -s 104.130.217.190 -j ACCEPT # VM docker-swarm-node-3
+        # SWARM PORTS
+        iptables -I INPUT -p tcp --dport 2376 -j GLUU
+        iptables -I INPUT -p tcp --dport 2377 -j GLUU
+        iptables -I INPUT -p tcp --dport 7946 -j GLUU
+        iptables -I INPUT -p udp --dport 7946 -j GLUU
+        iptables -I INPUT -p udp --dport 4789 -j GLUU
+        # SSL PORT
+         iptables -I INPUT -p tcp --dport 443 -j GLUU
+         #or 
+         iptables -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT 
+        ####
+        iptables -A GLUU -j LOG --log-prefix "unauth-swarm-access"
+   ```
+   
+1) Please note that networking is **key** for a successful installation. Before initializing the setup make sure your nodes can reach each other on the ports used for gluu i.e **attach the security policies that allow inner communications between the nodes**.
+
+1) Install latest [Docker](https://docs.docker.com/install/) on each VM.
+
+1) Initialize Docker swarm mode for your first VM here that would be `Node-1`
+
+    ```bash
+    
+        docker swarm init --advertise-addr <ip-for-node-1>
+        # docker swarm init --advertise-addr 104.130.198.53
+    ```
+    
+1) The above command will initialize Docker swarm and output a command that will be used to add workers to this manager node.
+
+    ```bash
+    
+        To add a worker to this swarm, run the following command:
+
+        docker swarm join \
+        --token SWMTKN-1-3pu6hszjassdfsdfknkj234u2938u4jksdfnl-1awxwuwd3z9j1z3puu7rcgdbx \
+        104.130.198.53:2377
+        
+    ```
+    
+1) Execute the output command on the other nodes here `Node-2` and `Node-3`.
+
+    ```bash
+    
+        docker swarm join \
+        --token SWMTKN-1-3pu6hszjassdfsdfknkj234u2938u4jksdfnl-1awxwuwd3z9j1z3puu7rcgdbx \
+        104.130.198.53:2377
+        
+    ```
+    
+1) **Optional** If you want all of the nodes to be managers promote them using the following command:
+
+    ```bash
+    
+    docker node promote node1 node2
+    
+    ```
+    
+1) Create the network.
+
+    ```bash
+    
+        docker network create -d overlay gluu
+        
+    ```
+    
+1) Create volumes for `Node-1`
+
+    ```bash
+        mkdir -p /opt/config-init/db \
+        /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs /opt/opendj/backup /opt/opendj/flag \
+        /opt/consul \
+        /opt/vault/config /opt/vault/data /opt/vault/logs \
+        /opt/shared-shibboleth-idp
+    ```
+
+1) Create volumes for `Node-2` and `Node-3`
+
+    ```bash
+    
+        mkdir -p /opt/opendj/config /opt/opendj/db /opt/opendj/ldif /opt/opendj/logs /opt/opendj/backup \
+            /opt/consul \
+            /opt/vault/config /opt/vault/data /opt/vault/logs \
+            /opt/shared-shibboleth-idp
+            
+    ```
+   
+1) Continue [deploying services](#deploying-services). But note that you will not use any `docker-machine` commands, but instead execute the commands directly on the respective node here `Node-1` is the manager.

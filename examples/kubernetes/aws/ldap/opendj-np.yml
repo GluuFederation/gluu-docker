@@ -1,0 +1,92 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: opendj-np
+spec:
+  policyTypes:
+    - Ingress
+    - Egress
+  podSelector:
+    matchLabels:
+      app: opendj
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: opendj
+    ports:
+    - protocol: TCP
+      port: 1636
+    - protocol: TCP
+      port: 8989
+    - protocol: TCP
+      port: 4444
+  - from:
+    - podSelector:
+        matchLabels:
+          app: oxauth
+    ports:
+    - protocol: TCP
+      port: 1636
+  - from:
+    - podSelector:
+        matchLabels:
+          app: oxtrust
+    ports:
+    - protocol: TCP
+      port: 1636
+  - from:
+    - podSelector:
+        matchLabels:
+          app: cr-rotate
+    ports:
+    - protocol: TCP
+      port: 1636
+  - from:
+    - podSelector:
+        matchLabels:
+          app: key-rotation
+    ports:
+    - protocol: TCP
+      port: 1636
+  - from:
+    - podSelector:
+        matchLabels:
+          app: oxpassport
+    ports:
+    - protocol: TCP
+      port: 1636
+  - from:
+    - podSelector:
+        matchLabels:
+          app: ldapbrowser
+    ports:
+    - protocol: TCP
+      port: 1636
+  - from:
+    - podSelector:
+        matchLabels:
+          app: oxshibboleth
+    ports:
+    - protocol: TCP
+      port: 1636
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: opendj
+    ports:
+    - protocol: TCP
+      port: 1636
+    - protocol: TCP
+      port: 4444
+    - protocol: TCP
+      port: 8989
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+    ports:
+    - protocol: TCP
+      port: 443
+    - protocol: UDP
+      port: 53
