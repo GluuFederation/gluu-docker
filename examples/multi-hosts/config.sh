@@ -80,7 +80,7 @@ generate_config() {
         -e GLUU_CONFIG_CONSUL_HOST=consul.server \
         -e GLUU_SECRET_VAULT_HOST=vault.server \
         gluufederation/config-init:3.1.6_03 generate \
-            --admin-pw secret \
+            --admin-pw $adminPw \
             --email $email \
             --domain $domain \
             --org-name "$orgName" \
