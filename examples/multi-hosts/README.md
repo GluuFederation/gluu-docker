@@ -237,7 +237,7 @@ LDAP containers are divided into two roles:
     Before deploying this service (and other services that need to run after LDAP is ready),
     we need to check if existing LDAP server in `manager` node has been fully ready:
 
-        docker-machine ssh manager 'docker logs $(docker ps --filter name=gluu_ldap_init -q) 2>&1' | grep 'The Directory Server has started successfully'
+        docker-machine ssh manager 'docker logs $(docker ps --filter name=gluu_ldap_manager -q) 2>&1' | grep 'The Directory Server has started successfully'
 
     If we see the output similar to this one:
 
