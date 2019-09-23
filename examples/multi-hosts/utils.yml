@@ -11,6 +11,8 @@ services:
       - GLUU_CONFIG_CONSUL_HOST=consul.server
       - GLUU_SECRET_VAULT_HOST=vault.server
       - GLUU_LDAP_URL=ldap.server:1636
+    networks:
+      - gluu
     deploy:
       update_config:
         parallelism: 1
@@ -35,6 +37,8 @@ services:
       - GLUU_SECRET_VAULT_HOST=vault.server
       - GLUU_LDAP_URL=ldap.server:1636
       - GLUU_CR_ROTATION_CHECK=60
+    networks:
+      - gluu
     deploy:
       mode: global
       update_config:
@@ -54,7 +58,6 @@ services:
         target: /etc/certs/vault_role_id
       - source: vault_secret_id
         target: /etc/certs/vault_secret_id
-
 
 secrets:
   vault_role_id:
