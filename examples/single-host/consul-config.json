@@ -1,0 +1,9 @@
+{
+	"client_addr": "0.0.0.0",
+	"ports": {
+		"dns": 53
+	},
+	"ui": true,
+	"server": true,
+    "bootstrap_expect": 1
+}

@@ -4,7 +4,6 @@ version: "2.3"
 services:
   consul:
     image: consul
-    command: agent -server -bootstrap -ui
     hostname: consul-1
     environment:
       - CONSUL_BIND_INTERFACE=eth0
@@ -13,6 +12,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./volumes/consul:/consul/data
+      - ./consul-config.json:/consul/etc/config.json
     labels:
       - "SERVICE_IGNORE=yes"
     restart: unless-stopped
