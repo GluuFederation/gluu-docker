@@ -50,11 +50,17 @@ done
 
 check_health(){
     echo -n "[I] Launching "
-    timeout="10 minute"
-    endtime=$(date -ud "$timeout" +%s)
+    unameOut="$(uname -s)"
+    case "${unameOut}" in
+        Darwin)
+            timeout="10m"
+            endtime=$(date -v "+$timeout" +%s);;
+        *)
+            timeout="10 minute"
+            endtime=$(date -ud "$timeout" +%s);;
+    esac
     while [[ $(date -u +%s) -le $endtime ]]; do
-        nginx_ip=$($DOCKER inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nginx)
-        status_code=$(timeout 5s curl -o /dev/null --silent -k --head --write-out '%{http_code}\n' https://"$nginx_ip" || true)
+        status_code=$(timeout 5s curl -o /dev/null --silent -k --head --write-out '%{http_code}\n' https://${DOMAIN} || true)
         if [ "$status_code" -eq "302" ] &>/dev/null
         then
                 printf "\n[I] Gluu Server installed successfully; please visit https://$DOMAIN\n"
@@ -158,7 +164,7 @@ prepare_config_secret() {
     while [[ $retry -le 3 ]]; do
         sleep 5
         consul_ip=$($DOCKER inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul)
-        DOMAIN=$(curl $consul_ip:8500/v1/kv/gluu/config/hostname?raw -s)
+        DOMAIN=$($DOCKER exec -it consul curl localhost:8500/v1/kv/gluu/config/hostname?raw -s)
 
         if [[ $DOMAIN != "" ]]; then
             break
@@ -358,7 +364,7 @@ unseal_vault() {
         echo "[I] Vault already unsealed"
     else
         has_gcp=$(cat gcp_kms_creds.json|wc -l)
-        if [ "$has_gcp" = "0" ]; then
+        if [ $has_gcp -eq 0 ]; then
             echo "[I] Unsealing Vault manually"
             $DOCKER exec vault vault operator unseal $(get_unseal_key)
         fi
