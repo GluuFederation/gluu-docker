@@ -163,7 +163,6 @@ prepare_config_secret() {
     retry=1
     while [[ $retry -le 3 ]]; do
         sleep 5
-        consul_ip=$($DOCKER inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' consul)
         DOMAIN=$($DOCKER exec -it consul curl localhost:8500/v1/kv/gluu/config/hostname?raw -s)
 
         if [[ $DOMAIN != "" ]]; then
