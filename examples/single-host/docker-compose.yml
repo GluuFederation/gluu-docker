@@ -4,15 +4,12 @@ version: "2.3"
 services:
   consul:
     image: consul
-    command: agent -server -bootstrap -ui
     hostname: consul-1
     environment:
       - CONSUL_BIND_INTERFACE=eth0
       - CONSUL_CLIENT_INTERFACE=eth0
     container_name: consul
     restart: unless-stopped
-    ports:
-      - "8500:8500"
     volumes:
       - ./volumes/consul:/consul/data
       - ./consul-config.json:/consul/etc/config.json
