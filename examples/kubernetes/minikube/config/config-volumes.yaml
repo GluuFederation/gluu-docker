@@ -29,3 +29,4 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: "/data/config/db"
+    type: DirectoryOrCreate
