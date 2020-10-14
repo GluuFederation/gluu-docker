@@ -1,4 +1,7 @@
+# This repo has been depreciated in favor of https://github.com/GluuFederation/cloud-native-edition
+
 # Gluu Server Docker Edition
+
 
 [Gluu Server Docker Edition Documentation](https://gluu.org/docs/de/3.1.6)
 
