@@ -1,4 +1,8 @@
-# This repo has been depreciated in favor of https://github.com/GluuFederation/cloud-native-edition
+# This repo has been depreciated in favor of https://github.com/GluuFederation/cloud-native-edition.
+
+|Version|Status|Release Date|Community EOL Date|Enterprise EOL Date|
+|-------|------|------------|------------------|-------------------|
+|3.1.6.x|Active|April 2019|October 2020|April 2021|
 
 # Gluu Server Docker Edition
 
